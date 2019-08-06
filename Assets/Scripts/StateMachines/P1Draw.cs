@@ -8,7 +8,7 @@ public class P1Draw : StateMachineBehaviour
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-       // TextViewer.Instance.SetText("Player 1 Draw");
+        TextViewer.Instance.SetText("Player 1 Draw");
         Discard.Instance.ShowParticles(true);
         Deck.Instance.ShowParticles(true);    
     }
@@ -60,6 +60,8 @@ public class P1Draw : StateMachineBehaviour
             {
                 card.MoveTo(Card.Position.PlayerChoice);
                 card.SetHidden(false);
+                Deck.Instance.ShowParticles(false);
+                Discard.Instance.ShowParticles(false);
                 GameManager.Instance.gameLogic.SetTrigger("DrawComplete");
             }
         }

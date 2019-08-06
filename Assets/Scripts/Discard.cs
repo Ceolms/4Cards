@@ -5,7 +5,6 @@ using UnityEngine;
 public class Discard : MonoBehaviour
 {
     public List<GameObject> stack;
-    public int count;
     public static System.Random rnd = new System.Random();
     public static Discard Instance;
     ParticleSystem ps;
@@ -14,8 +13,9 @@ public class Discard : MonoBehaviour
     void Start()
     {
         Instance = this;
-        ps = this.transform.GetChild(0).GetChild(0).GetComponent<ParticleSystem>();
+        ps = this.transform.GetChild(0).GetComponent<ParticleSystem>();
         ShowParticles(false);
+        PreWarm();
         stack = new List<GameObject>();
     }
 
@@ -41,6 +41,7 @@ public class Discard : MonoBehaviour
         main.prewarm = true;
         if (b) ps.Play();
         else ps.Stop();
+        Debug.Log("Particle : " + b + "(Discard)");
     }
     
     public void PreWarm()

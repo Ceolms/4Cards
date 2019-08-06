@@ -13,8 +13,7 @@ public class LookPhase : StateMachineBehaviour
     {
         TextViewer.Instance.SetText("Look Phase");
         cardsSelected = 0;
-        //Deck.Instance.PreWarm();
-        Discard.Instance.PreWarm();
+        
     }
 
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -45,9 +44,10 @@ public class LookPhase : StateMachineBehaviour
         }
         else if(true) // TODO WAIT otherPlayer
         {
-            GameManager.Instance.gameLogic.SetTrigger("LookComplete");
+            if(GameManager.Instance.firstToPlay == 1) GameManager.Instance.gameLogic.SetTrigger("LookCompleteP1");
+            else GameManager.Instance.gameLogic.SetTrigger("LookCompleteP2");
             selectedCard1.SetHidden(true);
-            selectedCard2.SetHidden(true); 
+            selectedCard2.SetHidden(true);
         }
     }
 

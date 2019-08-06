@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviour
     private float animatorSpeed;
     Card cardSelected;
     public GameObject powerPanel;
+    public int firstToPlay = 1;
     public int endTurn = 0; // 0 false , 1 for P1 and 2 for P2
 
     private List<Card> cardsList = new List<Card>();

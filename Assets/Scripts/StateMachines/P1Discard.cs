@@ -70,18 +70,18 @@ public class P1Discard : StateMachineBehaviour
                 c.SetHidden(true);
                 c.MoveTo(p);
                 c.owner = Card.Owner.Player;
-
+                /*
                 if(card.value == "Q") GameManager.Instance.UsePower('Q');
-                if (card.value == "J") GameManager.Instance.UsePower('J');
+                if (card.value == "J") GameManager.Instance.UsePower('J'); */
                 GameManager.Instance.gameLogic.SetTrigger("DiscardComplete");
             }
             else if (card.position == Card.Position.PlayerChoice) // else if it's the one he drawn
             {
                 card.owner = Card.Owner.Discard;
                 card.MoveTo(Card.Position.Discard);
-
+                /*
                 if (card.value == "Q") GameManager.Instance.UsePower('Q');
-                if (card.value == "J") GameManager.Instance.UsePower('J');
+                if (card.value == "J") GameManager.Instance.UsePower('J');*/
                 GameManager.Instance.gameLogic.SetTrigger("DiscardComplete");
             }
         }

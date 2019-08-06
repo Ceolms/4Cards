@@ -6,7 +6,6 @@ using UnityEngine;
 public class Deck : MonoBehaviour
 {
     public List<GameObject> stack;
-    public int count;
     public static System.Random rnd = new System.Random();
     public static Deck Instance;
     ParticleSystem ps;
@@ -15,8 +14,9 @@ public class Deck : MonoBehaviour
     void Start()
     {
         Instance = this;
-        ps = this.transform.GetChild(0).GetChild(0).GetComponent<ParticleSystem>();
+        ps = this.transform.GetChild(0).GetComponent<ParticleSystem>();
         ShowParticles(false);
+        PreWarm();
         stack = new List<GameObject>();
     }
 
@@ -66,7 +66,7 @@ public class Deck : MonoBehaviour
         card.owner = Card.Owner.Discard;
         card.MoveTo(Card.Position.Discard);
         yield return new WaitUntil(() => card.isMoving == false);
-        GameManager.Instance.gameLogic.SetTrigger("DrawComplete"); // Draw Phase Complete, proceed to next phase
+        GameManager.Instance.gameLogic.SetTrigger("DistributeComplete"); // Draw Phase Complete, proceed to next phase
     }
 
 
@@ -147,9 +147,9 @@ public class Deck : MonoBehaviour
     public void ShowParticles(bool b)
     {
         var main = ps.main;
-        main.prewarm = true;
         if (b) ps.Play();
         else ps.Stop();
+        Debug.Log("Particle : " + b + "(Deck)");
     }
     
     public void PreWarm()
