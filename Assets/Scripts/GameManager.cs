@@ -109,7 +109,7 @@ public class GameManager : MonoBehaviour
     {
         if(cardSelected.owner == Card.Owner.Player)
         {
-            if (cardSelected.value == Discard.Instance.stack[0].GetComponent<Card>().value)
+            if (Discard.Instance.stack.Count > 0 && cardSelected.value == Discard.Instance.stack[0].GetComponent<Card>().value)
             {
                 cardSelected.owner = Card.Owner.Discard;
                 cardSelected.MoveTo(Card.Position.Discard);
@@ -129,10 +129,11 @@ public class GameManager : MonoBehaviour
 
     public void UsePower(char p)
     {
+        Debug.Log("Power activated : " + p);
         gameLogic.speed = 0;
         powerPanel.SetActive(true);
         if(p == 'Q') GameObject.Find("TextPower").GetComponent<UnityEngine.UI.Text>().text = "Queen : Look at one of your cards";
-        if (p == 'J') GameObject.Find("TextPower").GetComponent<UnityEngine.UI.Text>().text = "Jack : Exchange two cards";
+        else if (p == 'J') GameObject.Find("TextPower").GetComponent<UnityEngine.UI.Text>().text = "Jack : Exchange two cards";
         StartCoroutine(SpecialPower(p));
     }
 

@@ -76,6 +76,7 @@
     <Compile Include="Assets\Scripts\StateMachines\P1Discard.cs" />
     <Compile Include="Assets\Scripts\StateMachines\P1Draw.cs" />
     <Compile Include="Assets\Scripts\StateMachines\P1Look.cs" />
+    <Compile Include="Assets\Scripts\StateMachines\P2Draw.cs" />
     <Compile Include="Assets\Scripts\StateMachines\P2Look.cs" />
     <Compile Include="Assets\Scripts\TextViewer.cs" />
     <Compile Include="Assets\SpriteOutlineFx\SpriteOutlineFx.cs" />

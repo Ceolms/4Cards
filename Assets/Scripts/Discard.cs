@@ -15,7 +15,6 @@ public class Discard : MonoBehaviour
         Instance = this;
         ps = this.transform.GetChild(0).GetComponent<ParticleSystem>();
         ShowParticles(false);
-        PreWarm();
         stack = new List<GameObject>();
     }
 
@@ -38,15 +37,14 @@ public class Discard : MonoBehaviour
     public void ShowParticles(bool b)
     {
         var main = ps.main;
-        main.prewarm = true;
-        if (b) ps.Play();
-        else ps.Stop();
-        Debug.Log("Particle : " + b + "(Discard)");
-    }
-    
-    public void PreWarm()
-    {
-        var main = ps.main;
-        main.prewarm = true;
+        if (b)
+        {
+            ps.Simulate(4f);
+            ps.Play();
+        }
+        else
+        {
+            ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        }
     }
 }

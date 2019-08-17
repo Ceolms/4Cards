@@ -90,7 +90,7 @@ public class Card : MonoBehaviour
     }
     public IEnumerator Hide()
     {
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(2.5f);
         isHidden = true;
     }
 
@@ -110,7 +110,7 @@ public class Card : MonoBehaviour
                 destination = GameObject.Find("DiscardPosition").transform;
                 owner = Owner.Discard;
                 isMoving = true;
-                Deck.Instance.stack.Insert(0, this.gameObject);
+                Discard.Instance.stack.Insert(0, this.gameObject);
                 SetHidden(false);
                 break;
             case Position.Player_Slot1:

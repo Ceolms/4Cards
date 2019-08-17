@@ -15,15 +15,18 @@ public class Deck : MonoBehaviour
     {
         Instance = this;
         ps = this.transform.GetChild(0).GetComponent<ParticleSystem>();
+        ps.Simulate(4f);
+        ps.Play();
         ShowParticles(false);
-        PreWarm();
         stack = new List<GameObject>();
     }
 
     Card Draw()
     {
-        GameObject obj = RemoveAndGet<GameObject>(this.stack, 0);
-        return obj.GetComponent<Card>();
+        GameObject obj = stack[0];
+        stack.RemoveAt(0);
+        Card c = obj.GetComponent<Card>();
+        return c;
     }
 
     private IEnumerator Distribute()
@@ -79,24 +82,18 @@ public class Deck : MonoBehaviour
 
         foreach (GameObject obj in GameObject.FindGameObjectsWithTag("Card"))
         {
-            stack.Add(obj);
             Card c = obj.GetComponent<Card>();
             c.owner = Card.Owner.Deck;
-
             c.isVisible = true;
-            c.MoveTo(Card.Position.Deck);
-            
+            c.MoveTo(Card.Position.Deck);           
         }
-        
 
         Shuffle(); // for the cards to move to the Deck
         
         for (int i = 0; i < stack.Count; i++) // show only first card of deck and with the hidden face
         {
             Card c = stack[i].GetComponent<Card>();
-            c.isHidden = true;
-            //c.isVisible = false;
-            //if (i <= 8) c.isVisible = true; // berk
+            c.isHidden = false; // DEBUG view
         }
         
         StartCoroutine(Distribute());
@@ -133,28 +130,18 @@ public class Deck : MonoBehaviour
         //Debug.Log("Shuffling Done");
         
     }
-
-    private static T RemoveAndGet<T>(IList<T> list, int index)
-    {
-        lock (list)
-        {
-            T value = list[index];
-            list.RemoveAt(index);
-            return value;
-        }
-    }
-
+    
     public void ShowParticles(bool b)
     {
         var main = ps.main;
-        if (b) ps.Play();
-        else ps.Stop();
-        Debug.Log("Particle : " + b + "(Deck)");
-    }
-    
-    public void PreWarm()
-    {
-        var main = ps.main;
-        main.prewarm = true;
+        if (b)
+        {
+            ps.Simulate(4f);
+            ps.Play();
+        }
+        else
+        {
+            ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+        }
     }
 }

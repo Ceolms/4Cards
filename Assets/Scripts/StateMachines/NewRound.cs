@@ -9,8 +9,7 @@ public class NewRound : StateMachineBehaviour
     {
         //Debug.Log("New Round StateEnter");
        // TextViewer.Instance.SetText("Distribute Phase");
-        GameManager.Instance.InitRound();
-       
+        GameManager.Instance.InitRound();  
     }
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state

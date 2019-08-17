@@ -1256,7 +1256,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stack: []
-  count: 0
 --- !u!23 &258025030
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -3987,7 +3986,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stack: []
-  count: 0
 --- !u!1001 &1031623564
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5838,6 +5836,11 @@ PrefabInstance:
     - target: {fileID: 2716010434204994669, guid: d475c7bface307d4fadcaa72a7405499,
         type: 3}
       propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2716010434204994669, guid: d475c7bface307d4fadcaa72a7405499,
+        type: 3}
+      propertyPath: moveWithTransform
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2716010434205029821, guid: d475c7bface307d4fadcaa72a7405499,
