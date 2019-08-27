@@ -15,10 +15,21 @@ public class Deck : MonoBehaviour
     {
         Instance = this;
         ps = this.transform.GetChild(0).GetComponent<ParticleSystem>();
-        ps.Simulate(4f);
-        ps.Play();
         ShowParticles(false);
         stack = new List<GameObject>();
+    }
+
+    public void UpdatePosition()
+    {
+        if (stack.Count > 0)
+        {
+            stack[0].GetComponent<Card>().SetFront(true);
+
+            for (int i = 1; i < stack.Count; i++)
+            {
+                stack[0].GetComponent<Card>().SetFront(false);
+            }
+        }
     }
 
     Card Draw()
@@ -26,6 +37,7 @@ public class Deck : MonoBehaviour
         GameObject obj = stack[0];
         stack.RemoveAt(0);
         Card c = obj.GetComponent<Card>();
+        c.SetFront(true);
         return c;
     }
 
@@ -84,7 +96,7 @@ public class Deck : MonoBehaviour
         {
             Card c = obj.GetComponent<Card>();
             c.owner = Card.Owner.Deck;
-            c.isVisible = true;
+            c.SetFront(true);
             c.MoveTo(Card.Position.Deck);           
         }
 
@@ -93,7 +105,7 @@ public class Deck : MonoBehaviour
         for (int i = 0; i < stack.Count; i++) // show only first card of deck and with the hidden face
         {
             Card c = stack[i].GetComponent<Card>();
-            c.isHidden = false; // DEBUG view
+            c.isHidden = true; // DEBUG view
         }
         
         StartCoroutine(Distribute());
@@ -141,6 +153,7 @@ public class Deck : MonoBehaviour
         }
         else
         {
+            
             ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         }
     }

@@ -7,13 +7,28 @@ public class LookPhase : StateMachineBehaviour
     public int cardsSelected;
     private Card selectedCard1;
     private Card selectedCard2;
-
+    private List<Card> cardsList;
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         TextViewer.Instance.SetText("Look Phase");
-        cardsSelected = 0;
-        
+
+        cardsList = new List<Card>();
+        cardsList.Add(GameManager.Instance.FindByPosition(Card.Position.Player_Slot1));
+        cardsList.Add(GameManager.Instance.FindByPosition(Card.Position.Player_Slot2));
+        cardsList.Add(GameManager.Instance.FindByPosition(Card.Position.Player_Slot3));
+        cardsList.Add(GameManager.Instance.FindByPosition(Card.Position.Player_Slot4));
+        cardsList.Add(GameManager.Instance.FindByPosition(Card.Position.Player_Slot5));
+        cardsList.Add(GameManager.Instance.FindByPosition(Card.Position.Player_Slot6));
+
+        foreach (Card c in cardsList)
+        {
+            if (c != null)
+            {
+                c.SetParticles(true);
+            }
+        }   
+       cardsSelected = 0;
     }
 
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -54,7 +69,13 @@ public class LookPhase : StateMachineBehaviour
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-
+        foreach (Card c in cardsList)
+        {
+            if (c != null)
+            {
+                c.SetParticles(false);
+            }
+        }
     }
 
     private void CheckTouch(Ray ray)
@@ -70,6 +91,7 @@ public class LookPhase : StateMachineBehaviour
             if (cardsSelected == 1) selectedCard1 = card;
             else if (cardsSelected == 2) selectedCard2 = card;
             card.SetHidden(false);
+            card.SetParticles(false);
         }
     }
 }

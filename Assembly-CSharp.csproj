@@ -86,6 +86,7 @@
     <None Include="Assets\Shaders\BasicAura.shader" />
     <None Include="Assets\Shaders\DistortionSphere.shader" />
     <None Include="Assets\Shaders\BetterEmbers.shader" />
+    <None Include="Assets\TODO.txt" />
     <None Include="Assets\Textures\Silhouetted_Diffuse.shader" />
     <None Include="Assets\Particlecollection_Free samples\Plugins\Effect\Shader\Toon Additive.shader" />
     <None Include="Assets\Shaders\BasicAuraArray.shader" />

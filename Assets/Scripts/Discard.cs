@@ -18,6 +18,19 @@ public class Discard : MonoBehaviour
         stack = new List<GameObject>();
     }
 
+    public void UpdatePosition()
+    {
+        if (stack.Count > 0)
+        {
+            stack[0].GetComponent<Card>().SetFront(true);
+
+            for (int i = 1; i < stack.Count; i++)
+            {
+                stack[i].GetComponent<Card>().SetFront(false);
+            }
+        }
+    }
+
     Card Draw()
     {
         GameObject obj = RemoveAndGet<GameObject>(this.stack, 0);

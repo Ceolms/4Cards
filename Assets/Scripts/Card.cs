@@ -8,7 +8,8 @@ public class Card : MonoBehaviour
     public enum Color {Spades ,Club ,Heart ,Diamond }
     public enum Owner {Deck ,Discard ,Player ,Player2 }
     public enum Position {Deck,Discard,Player_Slot1,Player_Slot2,Player_Slot3,Player_Slot4, Player_Slot5, Player_Slot6, Player2_Slot1,Player2_Slot2,Player2_Slot3,Player2_Slot4, Player2_Slot5,Player2_Slot6, PlayerChoice,Player2Choice} // to set position on the board
-    public ParticleSystem ps;
+    private GameObject particleObject;
+    private Vector3 poPosition;
     public string value; // A , 2 ,6 , K...
 
     public Color color;
@@ -38,10 +39,10 @@ public class Card : MonoBehaviour
         Material mat = GetComponent<Renderer>().material;
         Material matNew = Instantiate(mat);
         GetComponent<Renderer>().material = matNew;
-        ps = this.transform.GetChild(0).GetChild(0).GetComponent<ParticleSystem>();
-        ps.Stop();
-        var main = ps.main;
-        main.prewarm = true;
+
+        foreach (Transform tr in this.transform)  { if (tr.tag == "ParticlesObject"){particleObject = tr.gameObject;} }
+        poPosition = particleObject.transform.localPosition;
+        SetParticles(false);
     }
 
     // Update is called once per frame
@@ -69,6 +70,8 @@ public class Card : MonoBehaviour
             }
             else
             {
+                Deck.Instance.UpdatePosition();
+                Discard.Instance.UpdatePosition();
                 isMoving = false;
                // Debug.Log("Card Move completed");
             }
@@ -94,6 +97,38 @@ public class Card : MonoBehaviour
         isHidden = true;
     }
 
+    public void SetParticles(bool b)
+    {
+        
+        if (b)
+        {
+            particleObject.transform.localPosition = poPosition;
+            ParticleSystem ps = particleObject.GetComponent<ParticleSystem>();
+            ps.Simulate(4f);
+            ps.Play();
+        }
+        else
+        {
+            ParticleSystem ps = particleObject.GetComponent<ParticleSystem>();
+            ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+            particleObject.transform.localPosition = new Vector3(10000,10000,10000);   
+        }
+    }
+
+    public void SetFront(bool b)
+    {
+        if(b)
+        {
+             this.transform.position = new Vector3(transform.position.x, transform.position.y, -0.5f);
+           // isVisible = true;
+        }
+        else
+        {
+            this.transform.position = new Vector3(transform.position.x, transform.position.y, 0);
+           // isVisible = false;
+        }
+    }
+
     public void MoveTo(Position p)
     {
        // Debug.Log("Card(" + value+ "," + color + ") MoveTo " + p);
@@ -104,14 +139,14 @@ public class Card : MonoBehaviour
                 destination = GameObject.Find("DeckPosition").transform;
                 owner = Owner.Deck;
                 isMoving = true;
-                Deck.Instance.stack.Insert(0, this.gameObject);
+                Deck.Instance.stack.Insert(0, this.gameObject);               
                 break;
             case Position.Discard:
+                SetHidden(false);
                 destination = GameObject.Find("DiscardPosition").transform;
                 owner = Owner.Discard;
                 isMoving = true;
-                Discard.Instance.stack.Insert(0, this.gameObject);
-                SetHidden(false);
+                Discard.Instance.stack.Insert(0, this.gameObject);      
                 break;
             case Position.Player_Slot1:
                 destination = GameObject.Find("PlayerHand_Slot1").transform;
@@ -175,12 +210,14 @@ public class Card : MonoBehaviour
                 break;
             case Position.PlayerChoice:
                 destination = GameObject.Find("PlayerChoicePosition").transform;
+                owner = Owner.Player;
                 isMoving = true;
                 break;
             case Position.Player2Choice:
                 destination = GameObject.Find("Player2ChoicePosition").transform;
+                owner = Owner.Player2;
                 isMoving = true;
                 break;
-        }
+        }     
     }
 }

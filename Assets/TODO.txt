@@ -1,0 +1,8 @@
+Corriger boucle pouvoir carte
+IA basique
+test sur mobile
+Multi
+Debug
+Meilleurs particules
+Animations cartes
+Graphisme ?

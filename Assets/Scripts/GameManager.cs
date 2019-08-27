@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
     public GameObject powerPanel;
     public int firstToPlay = 1;
     public int endTurn = 0; // 0 false , 1 for P1 and 2 for P2
-
+    private char powerChar;
     private List<Card> cardsList = new List<Card>();
 
     // Start is called before the first frame update
@@ -41,7 +41,7 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // DEBUG Pour jetter une carte correspondante au Discard , faire un double click
+        // Pour jetter une carte correspondante au Discard , faire un double click
         if (!gameLogic.GetCurrentAnimatorStateInfo(0).IsName("NewRound") && !gameLogic.GetCurrentAnimatorStateInfo(0).IsName("LookPhase") && !gameLogic.GetCurrentAnimatorStateInfo(0).IsName("EndPhase"))
         {
             if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
@@ -66,6 +66,7 @@ public class GameManager : MonoBehaviour
                 }
             }
         }
+        CheckPower();
     }
 
     private void CheckTouch(Ray ray)
@@ -113,6 +114,15 @@ public class GameManager : MonoBehaviour
             {
                 cardSelected.owner = Card.Owner.Discard;
                 cardSelected.MoveTo(Card.Position.Discard);
+                Debug.Log("Card deleted!");
+
+                if (cardSelected.value == "Q") UsePower('Q');
+                if (cardSelected.value == "J") UsePower('J');
+            }
+            else
+            {
+                Debug.Log("wrong card deleted!");
+                //TODO pioche
             }
         }
     }
@@ -127,23 +137,10 @@ public class GameManager : MonoBehaviour
         return null;
     }
 
-    public void UsePower(char p)
+    public void CheckPower()
     {
-        Debug.Log("Power activated : " + p);
-        gameLogic.speed = 0;
-        powerPanel.SetActive(true);
-        if(p == 'Q') GameObject.Find("TextPower").GetComponent<UnityEngine.UI.Text>().text = "Queen : Look at one of your cards";
-        else if (p == 'J') GameObject.Find("TextPower").GetComponent<UnityEngine.UI.Text>().text = "Jack : Exchange two cards";
-        StartCoroutine(SpecialPower(p));
-    }
-
-    private IEnumerator SpecialPower(char p)
-    {
-        bool selection=false;
-
-        while(selection == false)
+        if (powerChar != 'N')
         {
-            // DEBUG Pour jetter une carte correspondante au Discard , faire un double click
             if (!gameLogic.GetCurrentAnimatorStateInfo(0).IsName("NewRound") && !gameLogic.GetCurrentAnimatorStateInfo(0).IsName("LookPhase") && !gameLogic.GetCurrentAnimatorStateInfo(0).IsName("EndPhase"))
             {
                 if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
@@ -158,14 +155,15 @@ public class GameManager : MonoBehaviour
                             if (s == "YesButton")
                             {
                                 powerPanel.SetActive(false);
-                                if (p == 'J') StartCoroutine(UsePowerExchange());
-                                else if (p == 'Q') StartCoroutine(UsePowerLook());
+                                if (powerChar == 'J') StartCoroutine(UsePowerExchange());
+                                else if (powerChar == 'Q') StartCoroutine(UsePowerLook());
+                                powerChar = 'N';
                             }
                             else if (s == "NoButton")
                             {
                                 powerPanel.SetActive(false);
                                 gameLogic.speed = animatorSpeed;
-                                return null;
+                                powerChar = 'N';
                             }
                         }
                     }
@@ -180,37 +178,44 @@ public class GameManager : MonoBehaviour
                         if (s == "YesButton")
                         {
                             powerPanel.SetActive(false);
-                            if (p == 'J') StartCoroutine(UsePowerExchange());
-                            else if (p == 'Q') StartCoroutine(UsePowerLook());
+                            if (powerChar == 'J') StartCoroutine(UsePowerExchange());
+                            else if (powerChar == 'Q') StartCoroutine(UsePowerLook());
+                            powerChar = 'N';
                         }
                         else if (s == "NoButton")
                         {
                             powerPanel.SetActive(false);
                             gameLogic.speed = animatorSpeed;
-                            return null;
+                            powerChar = 'N';
                         }
                     }
                 }
             }
         }
-        return null;
     }
 
-    private IEnumerator UsePowerLook()
+    public void UsePower(char p)
     {
-        GameManager.Instance.gameLogic.SetTrigger("Select one of your card to reveal");
-        foreach(Card c in cardsList)
-        {
-            if(c.owner == Card.Owner.Player)
-            {
-                c.ps.Play();
-            }
-        }
+        Debug.Log("Power activated : " + p);
+        gameLogic.speed = 0;
+        powerPanel.SetActive(true);
+        powerChar = p;
+        if (p == 'Q') GameObject.Find("TextPower").GetComponent<UnityEngine.UI.Text>().text = "Queen : Look at one of your cards";
+        else if (p == 'J') GameObject.Find("TextPower").GetComponent<UnityEngine.UI.Text>().text = "Jack : Exchange two cards";    
+    }
 
+
+    private IEnumerator UsePowerLook()
+    { 
+        //GameManager.Instance.gameLogic.SetTrigger("Select one of your card to reveal");
+        Debug.Log("LookPower Activated");
+        gameLogic.speed = animatorSpeed;
         return null;
     }
     private IEnumerator UsePowerExchange()
     {
+        Debug.Log("Exchange Activated");
+        gameLogic.speed = animatorSpeed;
         return null;
     }
 }

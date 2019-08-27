@@ -4711,7 +4711,7 @@ GameObject:
   - component: {fileID: 8337764440927338684}
   m_Layer: 0
   m_Name: ParticleLineYellow
-  m_TagString: Untagged
+  m_TagString: ParticlesObject
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -4724,7 +4724,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8337764440945845510}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -6.02, y: 0.174, z: -12.382139}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 8337764440945644904}

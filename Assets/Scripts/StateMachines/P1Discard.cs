@@ -56,16 +56,13 @@ public class P1Discard : StateMachineBehaviour
             GameObject cardHit = hit.collider.gameObject;
             Card card = cardHit.GetComponent<Card>();
 
-            if (card.owner == Card.Owner.Player) // If the player want to discard one of his cards
+            if (card.owner == Card.Owner.Player && card.position != Card.Position.PlayerChoice) // If the player want to discard one of his cards
             {
                 Card.Position p = card.position;
                 card.owner = Card.Owner.Discard;
                 card.MoveTo(Card.Position.Discard); // move old card to discard
 
                 Card c = GameManager.Instance.FindByPosition(Card.Position.PlayerChoice); // take the new one to slot
-                
-                card.owner = Card.Owner.Discard;
-                card.MoveTo(Card.Position.Discard);
 
                 c.SetHidden(true);
                 c.MoveTo(p);
@@ -75,7 +72,7 @@ public class P1Discard : StateMachineBehaviour
                 if (card.value == "J") GameManager.Instance.UsePower('J'); 
                 GameManager.Instance.gameLogic.SetTrigger("DiscardComplete");
             }
-            else if (card.position == Card.Position.PlayerChoice) // else if it's the one he drawn
+            else if (card.owner == Card.Owner.Player && card.position == Card.Position.PlayerChoice) // else if it's the one he drawn
             {
                 card.owner = Card.Owner.Discard;
                 card.MoveTo(Card.Position.Discard);
