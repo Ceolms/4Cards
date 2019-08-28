@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class P1Draw : StateMachineBehaviour
+public class P1Draw : StateMachineBehaviour,IExecute
 {
-    bool cardSelected = false;
+    Card card;
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
@@ -15,7 +15,7 @@ public class P1Draw : StateMachineBehaviour
 
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (!cardSelected)
+        if (card ==  null)
         {
             if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
             {
@@ -41,12 +41,6 @@ public class P1Draw : StateMachineBehaviour
         }
     }
 
-    // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
-    override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    {
-
-    }
-
     private void CheckTouch(Ray ray)
     {
         RaycastHit hit;
@@ -54,16 +48,32 @@ public class P1Draw : StateMachineBehaviour
         if (Physics.Raycast(ray, out hit))
         {
             GameObject cardHit = hit.collider.gameObject;
-            Card card = cardHit.GetComponent<Card>();
-            
-            if(card.owner == Card.Owner.Deck || card.owner == Card.Owner.Discard)
+            Card c = cardHit.GetComponent<Card>();  
+            if(c.owner == Card.Owner.Deck || c.owner == Card.Owner.Discard)
             {
-                card.MoveTo(Card.Position.PlayerChoice);
-                card.SetHidden(false);
-                Deck.Instance.ShowParticles(false);
-                Discard.Instance.ShowParticles(false);
-                GameManager.Instance.gameLogic.SetTrigger("DrawComplete");
+                card = c; 
+                // Double click Checking
+                if(GameManager.Instance.gameObject.GetComponent<DoubleClick>() == null)
+                {
+                    GameManager.Instance.gameObject.AddComponent<DoubleClick>();
+                    GameManager.Instance.gameObject.GetComponent<DoubleClick>().state = this;
+                }
+                GameManager.Instance.gameObject.GetComponent<DoubleClick>().CheckDoubleClick(c);
             }
         }
+    }
+
+    public void Draw()
+    {
+        card.MoveTo(Card.Position.PlayerChoice);
+        card.SetHidden(false);
+        Deck.Instance.ShowParticles(false);
+        Discard.Instance.ShowParticles(false);
+        GameManager.Instance.gameLogic.SetTrigger("DrawComplete");
+    }
+
+    public void Execute()
+    {
+        Draw();
     }
 }

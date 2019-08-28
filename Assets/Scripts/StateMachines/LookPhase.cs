@@ -87,11 +87,15 @@ public class LookPhase : StateMachineBehaviour
             GameObject cardHit = hit.collider.gameObject;
             Card card = cardHit.GetComponent<Card>();
             Debug.Log("Card Touched:" + card);
-            cardsSelected += 1;
-            if (cardsSelected == 1) selectedCard1 = card;
-            else if (cardsSelected == 2) selectedCard2 = card;
-            card.SetHidden(false);
-            card.SetParticles(false);
+            if(card.owner == Card.Owner.Player)
+            {
+                cardsSelected += 1;
+                if (cardsSelected == 1) selectedCard1 = card;
+                else if (cardsSelected == 2) selectedCard2 = card;
+                card.SetHidden(false);
+                card.SetParticles(false);
+            }
+            
         }
     }
 }

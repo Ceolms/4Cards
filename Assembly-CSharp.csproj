@@ -69,6 +69,7 @@
     <Compile Include="Assets\Scripts\Card.cs" />
     <Compile Include="Assets\Scripts\Deck.cs" />
     <Compile Include="Assets\Scripts\Discard.cs" />
+    <Compile Include="Assets\Scripts\DoubleClick.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\MultiplayerManager.cs" />
     <Compile Include="Assets\Scripts\StateMachines\LookPhase.cs" />

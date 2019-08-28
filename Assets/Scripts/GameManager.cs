@@ -102,7 +102,7 @@ public class GameManager : MonoBehaviour
     }
     private IEnumerator CountDown()
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
         cardSelected = null;
     }
 
@@ -114,7 +114,7 @@ public class GameManager : MonoBehaviour
             {
                 cardSelected.owner = Card.Owner.Discard;
                 cardSelected.MoveTo(Card.Position.Discard);
-                Debug.Log("Card deleted!");
+                Debug.Log("Card deleted:" + cardSelected);
 
                 if (cardSelected.value == "Q") UsePower('Q');
                 if (cardSelected.value == "J") UsePower('J');
@@ -138,7 +138,7 @@ public class GameManager : MonoBehaviour
     }
 
     public void CheckPower()
-    {
+    {   
         if (powerChar != 'N')
         {
             if (!gameLogic.GetCurrentAnimatorStateInfo(0).IsName("NewRound") && !gameLogic.GetCurrentAnimatorStateInfo(0).IsName("LookPhase") && !gameLogic.GetCurrentAnimatorStateInfo(0).IsName("EndPhase"))
@@ -197,11 +197,13 @@ public class GameManager : MonoBehaviour
     public void UsePower(char p)
     {
         Debug.Log("Power activated : " + p);
+        /*
         gameLogic.speed = 0;
         powerPanel.SetActive(true);
         powerChar = p;
         if (p == 'Q') GameObject.Find("TextPower").GetComponent<UnityEngine.UI.Text>().text = "Queen : Look at one of your cards";
         else if (p == 'J') GameObject.Find("TextPower").GetComponent<UnityEngine.UI.Text>().text = "Jack : Exchange two cards";    
+        */
     }
 
 
@@ -210,12 +212,14 @@ public class GameManager : MonoBehaviour
         //GameManager.Instance.gameLogic.SetTrigger("Select one of your card to reveal");
         Debug.Log("LookPower Activated");
         gameLogic.speed = animatorSpeed;
+        //TODO POWER
         return null;
     }
     private IEnumerator UsePowerExchange()
     {
         Debug.Log("Exchange Activated");
         gameLogic.speed = animatorSpeed;
+        //TODO POWER
         return null;
     }
 }

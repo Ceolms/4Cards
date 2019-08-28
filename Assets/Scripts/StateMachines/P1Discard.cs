@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class P1Discard : StateMachineBehaviour
+public class P1Discard : StateMachineBehaviour,IExecute
 {
     bool cardSelected = false;
+    Card card;
     
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
@@ -41,10 +42,38 @@ public class P1Discard : StateMachineBehaviour
         }
     }
 
-    // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
-    override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
+    public void Execute()
     {
+        DiscardCard();
+    }
 
+    public void DiscardCard()
+    {
+        if (card.owner == Card.Owner.Player && card.position != Card.Position.PlayerChoice) // If the player want to discard one of his cards
+        {
+            Card.Position p = card.position;
+            card.owner = Card.Owner.Discard;
+            card.MoveTo(Card.Position.Discard); // move old card to discard
+
+            Card c = GameManager.Instance.FindByPosition(Card.Position.PlayerChoice); // take the new one to slot
+
+            c.SetHidden(true);
+            c.MoveTo(p);
+            c.owner = Card.Owner.Player;
+
+            if (card.value == "Q") GameManager.Instance.UsePower('Q');
+            if (card.value == "J") GameManager.Instance.UsePower('J');
+            GameManager.Instance.gameLogic.SetTrigger("DiscardComplete");
+        }
+        else if (card.owner == Card.Owner.Player && card.position == Card.Position.PlayerChoice) // else if it's the one he drawn
+        {
+            card.owner = Card.Owner.Discard;
+            card.MoveTo(Card.Position.Discard);
+
+            if (card.value == "Q") GameManager.Instance.UsePower('Q');
+            if (card.value == "J") GameManager.Instance.UsePower('J');
+            GameManager.Instance.gameLogic.SetTrigger("DiscardComplete");
+        }
     }
 
     private void CheckTouch(Ray ray)
@@ -54,32 +83,19 @@ public class P1Discard : StateMachineBehaviour
         if (Physics.Raycast(ray, out hit))
         {
             GameObject cardHit = hit.collider.gameObject;
-            Card card = cardHit.GetComponent<Card>();
+            Card c = cardHit.GetComponent<Card>();
 
-            if (card.owner == Card.Owner.Player && card.position != Card.Position.PlayerChoice) // If the player want to discard one of his cards
+            if (card.owner == Card.Owner.Player || card.position == Card.Position.PlayerChoice)
             {
-                Card.Position p = card.position;
-                card.owner = Card.Owner.Discard;
-                card.MoveTo(Card.Position.Discard); // move old card to discard
+                card = c;
+                // Double click Checking
+                if (GameManager.Instance.gameObject.GetComponent<DoubleClick>() == null)
+                {
+                    GameManager.Instance.gameObject.AddComponent<DoubleClick>();
+                    GameManager.Instance.gameObject.GetComponent<DoubleClick>().state = this;
+                }
+                GameManager.Instance.gameObject.GetComponent<DoubleClick>().CheckDoubleClick(c);
 
-                Card c = GameManager.Instance.FindByPosition(Card.Position.PlayerChoice); // take the new one to slot
-
-                c.SetHidden(true);
-                c.MoveTo(p);
-                c.owner = Card.Owner.Player;
-                
-                if(card.value == "Q") GameManager.Instance.UsePower('Q');
-                if (card.value == "J") GameManager.Instance.UsePower('J'); 
-                GameManager.Instance.gameLogic.SetTrigger("DiscardComplete");
-            }
-            else if (card.owner == Card.Owner.Player && card.position == Card.Position.PlayerChoice) // else if it's the one he drawn
-            {
-                card.owner = Card.Owner.Discard;
-                card.MoveTo(Card.Position.Discard);
-                
-                if (card.value == "Q") GameManager.Instance.UsePower('Q');
-                if (card.value == "J") GameManager.Instance.UsePower('J');
-                GameManager.Instance.gameLogic.SetTrigger("DiscardComplete");
             }
         }
     }
