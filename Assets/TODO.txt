@@ -3,6 +3,7 @@ IA basique
 test sur mobile
 Multi
 Debug
+retour utilisateur mauvais carte jeté
 Meilleurs particules
 Animations cartes
 Graphisme ?

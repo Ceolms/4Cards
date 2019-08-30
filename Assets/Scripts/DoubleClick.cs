@@ -5,34 +5,40 @@ using UnityEngine;
 public class DoubleClick : MonoBehaviour // This class is used to check if a card is clicked or double clicked
 {
     public Card card;
-    public IExecute state;
     private bool isRunning = false;
-    private bool canExecute = true;
+    public int count = 0;
 
-    public DoubleClick(IExecute state)
+    public DoubleClick(Card c)
     {
-        this.state = state;
+        this.card = c;
     }
 
-    public void CheckDoubleClick(Card c)
+    public void CheckDoubleClick()
     {
-        
         if(!isRunning)
         {
-            card = c;
+           // Debug.Log("Click First");
+            count += 1;
             StartCoroutine(CheckDoubleClick_Routine());
-        }
-        else
-        {
-            if (c = card) canExecute = false;
-        }
+        } 
     }
 
     public IEnumerator CheckDoubleClick_Routine() // is the card is clicked only once , we can execute the action
     {
+        Debug.Log("DoubleClick Routine Started");
         isRunning = true;
-        yield return new WaitForSeconds(0.5f);
-        if (canExecute) state.Execute();
+        yield return new WaitForSeconds(2f);
+        Debug.Log("Routine click count : " + count);
+        if (count < 2)
+        {
+            Debug.Log("Routine ended , Execute()");
+            GameManager.Instance.state.Execute(this.card);
+        }
+        else
+        {
+            Debug.Log("Routine ended , double click detected");
+            GameManager.Instance.TryDeleteCard(this.card);
+        }
         Destroy(this);
     }
 }

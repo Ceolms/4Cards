@@ -59,8 +59,7 @@ public class Card : MonoBehaviour
 		{
             meshRenderer.enabled = false;
             boxCollider.enabled = false;
-		}
-		
+		}	
         if(isMoving)
         {
             if (Vector3.Distance(transform.position, destination.position) > 0.001f)
@@ -76,8 +75,55 @@ public class Card : MonoBehaviour
                // Debug.Log("Card Move completed");
             }
         }
+        else
+        {
+            if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
+            {
+                if (Input.touchCount > 0 && Input.touchCount < 2)
+                {
+                    if (Input.GetTouch(0).phase == TouchPhase.Began)
+                    {
+                        Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
+                        CheckTouch(ray);
+                    }
+                }
+            }
+            else if (Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.OSXEditor)
+            {
+                if (Input.GetMouseButtonDown(0))
+                {
+                    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                    CheckTouch(ray);
+                }
+            }
+        }
     }
 
+
+    private void CheckTouch(Ray ray)
+    {
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit))
+        {
+            GameObject cardHit = hit.collider.gameObject;
+            Card c = cardHit.GetComponent<Card>();
+            if (c == this)
+            {
+                if(this.gameObject.GetComponent<DoubleClick>() == null)
+                {
+                    DoubleClick dc = this.gameObject.AddComponent<DoubleClick>();
+                    dc.card = this;
+                    dc.CheckDoubleClick();
+                }    
+                else
+                {
+                    DoubleClick dc = this.gameObject.GetComponent<DoubleClick>();
+                    dc.count += 1;
+                }
+            }    
+        }
+    }
     public void SetHidden(bool h)
     {
         
@@ -221,3 +267,26 @@ public class Card : MonoBehaviour
         }     
     }
 }
+/*
+  if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
+        {
+            //Debug.Log("MobileApplication");
+            if (Input.touchCount > 0 && Input.touchCount < 2)
+            {
+                if (Input.GetTouch(0).phase == TouchPhase.Began)
+                {
+                    Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
+                    CheckTouch(ray);
+                }
+            }
+        }
+        else if (Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.OSXEditor)
+        {
+            //Debug.Log("WindowsApplication");
+            if (Input.GetMouseButtonDown(0))
+            {
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                CheckTouch(ray);
+            }
+        }
+ */

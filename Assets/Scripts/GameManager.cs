@@ -8,10 +8,10 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
     public Animator gameLogic;
     private float animatorSpeed;
-    Card cardSelected;
     public GameObject powerPanel;
     public int firstToPlay = 1;
     public int endTurn = 0; // 0 false , 1 for P1 and 2 for P2
+    public CustomStateMachine state;
     private char powerChar;
     private List<Card> cardsList = new List<Card>();
 
@@ -41,49 +41,7 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // Pour jetter une carte correspondante au Discard , faire un double click
-        if (!gameLogic.GetCurrentAnimatorStateInfo(0).IsName("NewRound") && !gameLogic.GetCurrentAnimatorStateInfo(0).IsName("LookPhase") && !gameLogic.GetCurrentAnimatorStateInfo(0).IsName("EndPhase"))
-        {
-            if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
-            {
-                //Debug.Log("MobileApplication");
-                if (Input.touchCount > 0 && Input.touchCount <= 2)
-                {
-                    if (Input.GetTouch(0).phase == TouchPhase.Began)
-                    {
-                        Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
-                        CheckTouch(ray);
-                    }
-                }
-            }
-            else if (Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.OSXEditor)
-            {
-                //Debug.Log("WindowsApplication");
-                if (Input.GetMouseButtonDown(0))
-                {
-                    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                    CheckTouch(ray);
-                }
-            }
-        }
         CheckPower();
-    }
-
-    private void CheckTouch(Ray ray)
-    {
-        RaycastHit hit;
-
-        if (Physics.Raycast(ray, out hit))
-        {
-            GameObject cardHit = hit.collider.gameObject;
-            Card card = cardHit.GetComponent<Card>();
-            if (cardSelected != null && card == cardSelected) TryDeleteCard();
-            else
-            {
-                cardSelected = card;
-                StartCoroutine(CountDown());
-            }
-        }
     }
 
     private string CheckTouchUI(Ray ray)
@@ -100,13 +58,8 @@ public class GameManager : MonoBehaviour
         }
         return null;
     }
-    private IEnumerator CountDown()
-    {
-        yield return new WaitForSeconds(1f);
-        cardSelected = null;
-    }
 
-    private void TryDeleteCard()
+    public void TryDeleteCard(Card cardSelected)
     {
         if(cardSelected.owner == Card.Owner.Player)
         {
@@ -122,7 +75,7 @@ public class GameManager : MonoBehaviour
             else
             {
                 Debug.Log("wrong card deleted!");
-                //TODO pioche
+                //TODO draw
             }
         }
     }

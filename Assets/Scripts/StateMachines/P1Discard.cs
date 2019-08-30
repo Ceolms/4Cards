@@ -2,49 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class P1Discard : StateMachineBehaviour,IExecute
+public class P1Discard : CustomStateMachine
 {
-    bool cardSelected = false;
     Card card;
-    
+
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         TextViewer.Instance.SetText("Player 1 Discard");
         Discard.Instance.ShowParticles(false);
         Deck.Instance.ShowParticles(false);
-    }
-
-    override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    {
-        if (!cardSelected)
-        {
-            if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
-            {
-                //Debug.Log("MobileApplication");
-                if (Input.touchCount > 0 && Input.touchCount < 2)
-                {
-                    if (Input.GetTouch(0).phase == TouchPhase.Began)
-                    {
-                        Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
-                        CheckTouch(ray);
-                    }
-                }
-            }
-            else if (Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.OSXEditor)
-            {
-                //Debug.Log("WindowsApplication");
-                if (Input.GetMouseButtonDown(0))
-                {
-                    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                    CheckTouch(ray);
-                }
-            }
-        }
-    }
-
-    public void Execute()
-    {
-        DiscardCard();
+        GameManager.Instance.state = this;
     }
 
     public void DiscardCard()
@@ -76,27 +43,9 @@ public class P1Discard : StateMachineBehaviour,IExecute
         }
     }
 
-    private void CheckTouch(Ray ray)
+    public override void Execute(Card c)
     {
-        RaycastHit hit;
-
-        if (Physics.Raycast(ray, out hit))
-        {
-            GameObject cardHit = hit.collider.gameObject;
-            Card c = cardHit.GetComponent<Card>();
-
-            if (card.owner == Card.Owner.Player || card.position == Card.Position.PlayerChoice)
-            {
-                card = c;
-                // Double click Checking
-                if (GameManager.Instance.gameObject.GetComponent<DoubleClick>() == null)
-                {
-                    GameManager.Instance.gameObject.AddComponent<DoubleClick>();
-                    GameManager.Instance.gameObject.GetComponent<DoubleClick>().state = this;
-                }
-                GameManager.Instance.gameObject.GetComponent<DoubleClick>().CheckDoubleClick(c);
-
-            }
-        }
+        card = c;
+        DiscardCard();
     }
 }

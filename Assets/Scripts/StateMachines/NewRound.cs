@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NewRound : StateMachineBehaviour
+public class NewRound : CustomStateMachine
 {
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         //Debug.Log("New Round StateEnter");
-       // TextViewer.Instance.SetText("Distribute Phase");
-        GameManager.Instance.InitRound();  
+        TextViewer.Instance.SetText("Distribute Phase");
+        GameManager.Instance.state = this;
+        Deck.Instance.InitRound();
     }
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
@@ -18,7 +19,10 @@ public class NewRound : StateMachineBehaviour
 
     }
 
-
+    public override void Execute(Card c)
+    {
+     
+    }
 
 }
 
