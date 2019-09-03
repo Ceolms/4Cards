@@ -27,16 +27,18 @@ public class DoubleClick : MonoBehaviour // This class is used to check if a car
     {
         Debug.Log("DoubleClick Routine Started");
         isRunning = true;
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(0.6f);
         Debug.Log("Routine click count : " + count);
         if (count < 2)
         {
             Debug.Log("Routine ended , Execute()");
+            GameManager.Instance.selectedCard = null;
             GameManager.Instance.state.Execute(this.card);
         }
         else
         {
             Debug.Log("Routine ended , double click detected");
+            GameManager.Instance.selectedCard = null;
             GameManager.Instance.TryDeleteCard(this.card);
         }
         Destroy(this);

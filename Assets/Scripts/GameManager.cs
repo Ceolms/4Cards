@@ -11,9 +11,13 @@ public class GameManager : MonoBehaviour
     public GameObject powerPanel;
     public int firstToPlay = 1;
     public int endTurn = 0; // 0 false , 1 for P1 and 2 for P2
+    [HideInInspector]
     public CustomStateMachine state;
-    private char powerChar;
+    public Card selectedCard;
+    public char powerChar;
     private List<Card> cardsList = new List<Card>();
+    public List<Card> cardsJ1 = new List<Card>();
+    public List<Card> cardsJ2 = new List<Card>();
 
     // Start is called before the first frame update
     void Start()
@@ -29,7 +33,13 @@ public class GameManager : MonoBehaviour
         {
             cardsList.Add(o.GetComponent<Card>());
         }
+        for (int i = 0; i <= 5; i++)
+        {
+            cardsJ1.Add(null);
+            cardsJ2.Add(null);
+        }
         animatorSpeed = gameLogic.speed;
+        powerChar = 'N';
     }
 
     public void InitRound()
@@ -41,9 +51,68 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        CheckPower();
+        if (powerChar == 'N')
+        {
+            if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
+            {
+                if (Input.touchCount > 0 && Input.touchCount < 2)
+                {
+                    if (Input.GetTouch(0).phase == TouchPhase.Began)
+                    {
+                        Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
+                        if (powerChar == 'N') CheckTouch(ray);
+                    }
+                }
+            }
+            else if (Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.OSXEditor)
+            {
+                if (Input.GetMouseButtonDown(0))
+                {
+
+                    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                    CheckTouch(ray);
+                }
+            }
+        }
+        else CheckPower();
     }
 
+    private void CheckTouch(Ray ray)
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit))
+        {
+            GameObject cardHit = hit.collider.gameObject;
+            Card c = cardHit.GetComponent<Card>();
+            Debug.Log("Card Clicked : " + c.ToString());
+            if (selectedCard != null && selectedCard != c)
+            {
+                Destroy(selectedCard.GetComponent<DoubleClick>());
+                selectedCard = c;
+                if (c.gameObject.GetComponent<DoubleClick>() == null)
+                {
+                    DoubleClick dc = this.gameObject.AddComponent<DoubleClick>();
+                    dc.card = c;
+                    dc.CheckDoubleClick();
+                }
+            }
+            else if (selectedCard == null)
+            {
+                selectedCard = c;
+                if (c.gameObject.GetComponent<DoubleClick>() == null)
+                {
+                    DoubleClick dc = this.gameObject.AddComponent<DoubleClick>();
+                    dc.card = c;
+                    dc.CheckDoubleClick();
+                }
+            }
+            else
+            {
+                DoubleClick dc = this.gameObject.GetComponent<DoubleClick>();
+                if (dc != null) dc.count += 1;
+            }
+        }
+    }
     private string CheckTouchUI(Ray ray)
     {
         RaycastHit hit;
@@ -51,7 +120,7 @@ public class GameManager : MonoBehaviour
         if (Physics.Raycast(ray, out hit))
         {
             GameObject buttonHit = hit.collider.gameObject;
-            if(buttonHit.tag =="Button")
+            if (buttonHit.tag == "Button")
             {
                 return buttonHit.name;
             }
@@ -61,13 +130,15 @@ public class GameManager : MonoBehaviour
 
     public void TryDeleteCard(Card cardSelected)
     {
-        if(cardSelected.owner == Card.Owner.Player)
+        if (cardSelected.owner == Card.Owner.Player)
         {
             if (Discard.Instance.stack.Count > 0 && cardSelected.value == Discard.Instance.stack[0].GetComponent<Card>().value)
             {
                 cardSelected.owner = Card.Owner.Discard;
                 cardSelected.MoveTo(Card.Position.Discard);
                 Debug.Log("Card deleted:" + cardSelected);
+                int i = cardsJ1.IndexOf(cardSelected);
+                cardsJ1[i] = null;
 
                 if (cardSelected.value == "Q") UsePower('Q');
                 if (cardSelected.value == "J") UsePower('J');
@@ -75,14 +146,29 @@ public class GameManager : MonoBehaviour
             else
             {
                 Debug.Log("wrong card deleted!");
-                //TODO draw
+                for (int i = 0; i <= 5; i++)
+                {
+                    if (cardsJ1[i] == null)
+                    {
+                        Card c = Deck.Instance.Draw();
+                        cardsJ1[i] = c;
+                        // berk !
+                        if (i == 0) c.MoveTo(Card.Position.Player_Slot1);
+                        if (i == 1) c.MoveTo(Card.Position.Player_Slot2);
+                        if (i == 2) c.MoveTo(Card.Position.Player_Slot3);
+                        if (i == 3) c.MoveTo(Card.Position.Player_Slot4);
+                        if (i == 4) c.MoveTo(Card.Position.Player_Slot5);
+                        if (i == 5) c.MoveTo(Card.Position.Player_Slot6);
+                        break;
+                    }
+                }
             }
         }
     }
 
     public Card FindByPosition(Card.Position pos)
     {
-        foreach(Card c in cardsList)
+        foreach (Card c in cardsList)
         {
             if (c.position == pos)
                 return c;
@@ -91,42 +177,18 @@ public class GameManager : MonoBehaviour
     }
 
     public void CheckPower()
-    {   
-        if (powerChar != 'N')
+    {
+
+        if (!gameLogic.GetCurrentAnimatorStateInfo(0).IsName("NewRound") && !gameLogic.GetCurrentAnimatorStateInfo(0).IsName("LookPhase") && !gameLogic.GetCurrentAnimatorStateInfo(0).IsName("EndPhase"))
         {
-            if (!gameLogic.GetCurrentAnimatorStateInfo(0).IsName("NewRound") && !gameLogic.GetCurrentAnimatorStateInfo(0).IsName("LookPhase") && !gameLogic.GetCurrentAnimatorStateInfo(0).IsName("EndPhase"))
+            if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
             {
-                if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
+                //Debug.Log("MobileApplication");
+                if (Input.touchCount > 0 && Input.touchCount <= 2)
                 {
-                    //Debug.Log("MobileApplication");
-                    if (Input.touchCount > 0 && Input.touchCount <= 2)
+                    if (Input.GetTouch(0).phase == TouchPhase.Began)
                     {
-                        if (Input.GetTouch(0).phase == TouchPhase.Began)
-                        {
-                            Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
-                            string s = CheckTouchUI(ray);
-                            if (s == "YesButton")
-                            {
-                                powerPanel.SetActive(false);
-                                if (powerChar == 'J') StartCoroutine(UsePowerExchange());
-                                else if (powerChar == 'Q') StartCoroutine(UsePowerLook());
-                                powerChar = 'N';
-                            }
-                            else if (s == "NoButton")
-                            {
-                                powerPanel.SetActive(false);
-                                gameLogic.speed = animatorSpeed;
-                                powerChar = 'N';
-                            }
-                        }
-                    }
-                }
-                else if (Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.OSXEditor)
-                {
-                    //Debug.Log("WindowsApplication");
-                    if (Input.GetMouseButtonDown(0))
-                    {
-                        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                        Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
                         string s = CheckTouchUI(ray);
                         if (s == "YesButton")
                         {
@@ -144,35 +206,57 @@ public class GameManager : MonoBehaviour
                     }
                 }
             }
+            else if (Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.OSXEditor)
+            {
+                //Debug.Log("WindowsApplication");
+                if (Input.GetMouseButtonDown(0))
+                {
+                    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                    string s = CheckTouchUI(ray);
+                    if (s == "YesButton")
+                    {
+                        powerPanel.SetActive(false);
+                        if (powerChar == 'J') StartCoroutine(UsePowerExchange());
+                        else if (powerChar == 'Q') StartCoroutine(UsePowerLook());
+                        powerChar = 'N';
+                    }
+                    else if (s == "NoButton")
+                    {
+                        powerPanel.SetActive(false);
+                        gameLogic.speed = animatorSpeed;
+                        powerChar = 'N';
+                    }
+                }
+            }
         }
     }
 
     public void UsePower(char p)
     {
         Debug.Log("Power activated : " + p);
-        /*
+
         gameLogic.speed = 0;
         powerPanel.SetActive(true);
         powerChar = p;
         if (p == 'Q') GameObject.Find("TextPower").GetComponent<UnityEngine.UI.Text>().text = "Queen : Look at one of your cards";
-        else if (p == 'J') GameObject.Find("TextPower").GetComponent<UnityEngine.UI.Text>().text = "Jack : Exchange two cards";    
-        */
+        else if (p == 'J') GameObject.Find("TextPower").GetComponent<UnityEngine.UI.Text>().text = "Jack : Exchange two cards";
+
     }
 
 
     private IEnumerator UsePowerLook()
-    { 
+    {
         //GameManager.Instance.gameLogic.SetTrigger("Select one of your card to reveal");
         Debug.Log("LookPower Activated");
         gameLogic.speed = animatorSpeed;
         //TODO POWER
-        return null;
+        yield return null;
     }
     private IEnumerator UsePowerExchange()
     {
         Debug.Log("Exchange Activated");
         gameLogic.speed = animatorSpeed;
         //TODO POWER
-        return null;
+        yield return null;
     }
 }

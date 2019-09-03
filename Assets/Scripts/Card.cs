@@ -75,55 +75,8 @@ public class Card : MonoBehaviour
                // Debug.Log("Card Move completed");
             }
         }
-        else
-        {
-            if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
-            {
-                if (Input.touchCount > 0 && Input.touchCount < 2)
-                {
-                    if (Input.GetTouch(0).phase == TouchPhase.Began)
-                    {
-                        Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
-                        CheckTouch(ray);
-                    }
-                }
-            }
-            else if (Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.OSXEditor)
-            {
-                if (Input.GetMouseButtonDown(0))
-                {
-                    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                    CheckTouch(ray);
-                }
-            }
-        }
     }
-
-
-    private void CheckTouch(Ray ray)
-    {
-        RaycastHit hit;
-
-        if (Physics.Raycast(ray, out hit))
-        {
-            GameObject cardHit = hit.collider.gameObject;
-            Card c = cardHit.GetComponent<Card>();
-            if (c == this)
-            {
-                if(this.gameObject.GetComponent<DoubleClick>() == null)
-                {
-                    DoubleClick dc = this.gameObject.AddComponent<DoubleClick>();
-                    dc.card = this;
-                    dc.CheckDoubleClick();
-                }    
-                else
-                {
-                    DoubleClick dc = this.gameObject.GetComponent<DoubleClick>();
-                    dc.count += 1;
-                }
-            }    
-        }
-    }
+    
     public void SetHidden(bool h)
     {
         
@@ -175,6 +128,10 @@ public class Card : MonoBehaviour
         }
     }
 
+    public override string ToString()
+    {
+        return "Card: " + value + "," + color;
+    }
     public void MoveTo(Position p)
     {
        // Debug.Log("Card(" + value+ "," + color + ") MoveTo " + p);
@@ -196,61 +153,73 @@ public class Card : MonoBehaviour
                 break;
             case Position.Player_Slot1:
                 destination = GameObject.Find("PlayerHand_Slot1").transform;
+                GameManager.Instance.cardsJ1[0] = this;
                 owner = Owner.Player;
                 isMoving = true;
                 break;
             case Position.Player_Slot2:
                 destination = GameObject.Find("PlayerHand_Slot2").transform;
+                GameManager.Instance.cardsJ1[1] = this;
                 owner = Owner.Player;
                 isMoving = true;
                 break;
             case Position.Player_Slot3:
                 destination = GameObject.Find("PlayerHand_Slot3").transform;
+                GameManager.Instance.cardsJ1[2] = this;
                 owner = Owner.Player;
                 isMoving = true;
                 break;
             case Position.Player_Slot4:
                 destination = GameObject.Find("PlayerHand_Slot4").transform;
+                GameManager.Instance.cardsJ1[3] = this;
                 owner = Owner.Player;
                 isMoving = true;
                 break;
             case Position.Player_Slot5:
                 destination = GameObject.Find("PlayerHand_Slot5").transform;
+                GameManager.Instance.cardsJ1[4] = this;
                 owner = Owner.Player;
                 isMoving = true;
                 break;
             case Position.Player_Slot6:
                 destination = GameObject.Find("PlayerHand_Slot6").transform;
+                GameManager.Instance.cardsJ1[5] = this;
                 owner = Owner.Player;
                 isMoving = true;
                 break;
             case Position.Player2_Slot1:
                 destination = GameObject.Find("Player2Hand_Slot1").transform;
+                GameManager.Instance.cardsJ2[0] = this;
                 owner = Owner.Player2;
                 isMoving = true;
                 break;
             case Position.Player2_Slot2:
                 destination = GameObject.Find("Player2Hand_Slot2").transform;
+                GameManager.Instance.cardsJ2[1] = this;
                 owner = Owner.Player2;
                 isMoving = true;
                 break;
             case Position.Player2_Slot3:
                 destination = GameObject.Find("Player2Hand_Slot3").transform;
+                GameManager.Instance.cardsJ2[2] = this;
                 owner = Owner.Player2;
                 isMoving = true;
                 break;
             case Position.Player2_Slot4:
                 destination = GameObject.Find("Player2Hand_Slot4").transform;
+                GameManager.Instance.cardsJ2[3] = this;
                 owner = Owner.Player2;
                 isMoving = true;
                 break;
             case Position.Player2_Slot5:
                 destination = GameObject.Find("Player2Hand_Slot5").transform;
+                GameManager.Instance.cardsJ2[4] = this;
                 owner = Owner.Player2;
                 isMoving = true;
                 break;
             case Position.Player2_Slot6:
                 destination = GameObject.Find("Player2Hand_Slot6").transform;
+                GameManager.Instance.cardsJ2[5] = this;
                 owner = Owner.Player2;
                 isMoving = true;
                 break;
@@ -267,26 +236,4 @@ public class Card : MonoBehaviour
         }     
     }
 }
-/*
-  if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
-        {
-            //Debug.Log("MobileApplication");
-            if (Input.touchCount > 0 && Input.touchCount < 2)
-            {
-                if (Input.GetTouch(0).phase == TouchPhase.Began)
-                {
-                    Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
-                    CheckTouch(ray);
-                }
-            }
-        }
-        else if (Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.OSXEditor)
-        {
-            //Debug.Log("WindowsApplication");
-            if (Input.GetMouseButtonDown(0))
-            {
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                CheckTouch(ray);
-            }
-        }
- */
+

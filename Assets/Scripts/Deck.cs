@@ -32,7 +32,7 @@ public class Deck : MonoBehaviour
         }
     }
 
-    Card Draw()
+    public Card Draw()
     {
         GameObject obj = stack[0];
         stack.RemoveAt(0);
@@ -85,7 +85,7 @@ public class Deck : MonoBehaviour
     }
 
 
-    public void InitRound() // put all cards in deck, suffle and distribute
+    public void InitRound() // put all cards in deck, shuffle and distribute
     {
         
         //Debug.Log("Init Round");

@@ -31,7 +31,7 @@ public class Discard : MonoBehaviour
         }
     }
 
-    Card Draw()
+    public Card Draw()
     {
         GameObject obj = RemoveAndGet<GameObject>(this.stack, 0);
         return obj.GetComponent<Card>();
