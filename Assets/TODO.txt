@@ -1,9 +1,13 @@
-Corriger boucle pouvoir carte
+Faire pouvoir J
+Nettoyer Destroy()
+Verifier particles
+
 IA basique
 test sur mobile
-Multi
-Debug
+
 retour utilisateur mauvais carte jeté
 Meilleurs particules
 Animations cartes
+
+Multi
 Graphisme ?

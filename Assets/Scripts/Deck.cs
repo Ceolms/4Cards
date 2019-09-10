@@ -27,7 +27,7 @@ public class Deck : MonoBehaviour
 
             for (int i = 1; i < stack.Count; i++)
             {
-                stack[0].GetComponent<Card>().SetFront(false);
+               stack[0].GetComponent<Card>().SetFront(false);
             }
         }
     }
@@ -37,7 +37,7 @@ public class Deck : MonoBehaviour
         GameObject obj = stack[0];
         stack.RemoveAt(0);
         Card c = obj.GetComponent<Card>();
-        c.SetFront(true);
+        //c.SetFront(true);
         return c;
     }
 

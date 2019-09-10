@@ -40,7 +40,11 @@ public class P1Draw : CustomStateMachine
 
     public override void Execute(Card c)
     {
+
         card = c;
-        Draw();
+        if (GameManager.Instance.powerChar == 'N')
+        {
+            Draw();
+        }  
     }
 }

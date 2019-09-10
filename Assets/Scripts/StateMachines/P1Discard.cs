@@ -46,6 +46,10 @@ public class P1Discard : CustomStateMachine
     public override void Execute(Card c)
     {
         card = c;
-        DiscardCard();
+        if (GameManager.Instance.powerChar == 'N')
+        {
+            DiscardCard();
+        }
+
     }
 }

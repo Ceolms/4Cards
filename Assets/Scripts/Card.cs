@@ -119,12 +119,10 @@ public class Card : MonoBehaviour
         if(b)
         {
              this.transform.position = new Vector3(transform.position.x, transform.position.y, -0.5f);
-           // isVisible = true;
         }
         else
         {
-            this.transform.position = new Vector3(transform.position.x, transform.position.y, 0);
-           // isVisible = false;
+            this.transform.position = new Vector3(transform.position.x, transform.position.y, -0.4f);
         }
     }
 
