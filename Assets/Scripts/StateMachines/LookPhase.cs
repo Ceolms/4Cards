@@ -27,29 +27,28 @@ public class LookPhase : CustomStateMachine
             {
                 c.SetParticles(true);
             }
-        }   
-       cardsSelected = 0;
-       GameManager.Instance.state = this;
+        }
+        cardsSelected = 0;
+        GameManager.Instance.state = this;
+        if (GameManager.Instance.gameType == "IA")
+        {
+            IA.Instance.LookPhase();
+        }
     }
 
     override public void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if(selectedCard2 != null) // TODO WAIT otherPlayer
+        if (selectedCard2 != null)
         {
-            if(GameManager.Instance.firstToPlay == 1) GameManager.Instance.gameLogic.SetTrigger("LookCompleteP1");
+            GameManager.Instance.gameLogic.SetBool("LookCompleteP1", true);
             selectedCard1.SetHidden(true);
             selectedCard2.SetHidden(true);
-        }
-    }
-
-    // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
-    override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    {
-        foreach (Card c in cardsList)
-        {
-            if (c != null)
+            foreach (Card c in cardsList)
             {
-                c.SetParticles(false);
+                if (c != null)
+                {
+                    c.SetParticles(false);
+                }
             }
         }
     }

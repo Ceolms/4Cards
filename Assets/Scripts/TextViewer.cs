@@ -6,6 +6,7 @@ public class TextViewer : MonoBehaviour
 {
     [SerializeField]
     public static TextViewer Instance;
+    private string oldLine;
     private UnityEngine.UI.Text textLine;
     private Color defaultColor = Color.yellow;
 
@@ -19,6 +20,7 @@ public class TextViewer : MonoBehaviour
 
     public void SetText(string s)
     {
+        oldLine = textLine.text;
         textLine.enabled = true;
         textLine.text = s;
         textLine.color = defaultColor;
@@ -34,5 +36,20 @@ public class TextViewer : MonoBehaviour
     public void HideText()
     {
         textLine.enabled = false;
+    }
+
+    public void SetTextTemporary(string s)
+    {
+        oldLine = textLine.text;
+        textLine.enabled = true;
+        textLine.text = s;
+        textLine.color = defaultColor;
+        StartCoroutine(ResetOldText());
+    }
+
+    private IEnumerator ResetOldText()
+    {
+        yield return new WaitForSeconds(2f);
+        textLine.text = oldLine;
     }
 }

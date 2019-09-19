@@ -1,6 +1,14 @@
-Faire pouvoir J
-Nettoyer Destroy()
+
+Regler luminosité android
+texte pixelisé
+boutons plus au centre
+
 Verifier particles
+
+Unifier prefabs
+
+
+EndTurn : dans DrawPhase if Gamemanager.endturnPlayer = this player goto endPhase
 
 IA basique
 test sur mobile

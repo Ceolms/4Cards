@@ -60,6 +60,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\OutlineEffect\LinkedSet.cs" />
+    <Compile Include="Assets\OutlineEffect\Outline.cs" />
+    <Compile Include="Assets\OutlineEffect\OutlineEffect.cs" />
     <Compile Include="Assets\Particlecollection_Free samples\Plugins\Effect\Script\CameraTarget.cs" />
     <Compile Include="Assets\Particlecollection_Free samples\Plugins\Effect\Script\EffectController.cs" />
     <Compile Include="Assets\Particlecollection_Free samples\Plugins\Effect\Script\EffectDemo.cs" />
@@ -72,16 +75,20 @@
     <Compile Include="Assets\Scripts\Discard.cs" />
     <Compile Include="Assets\Scripts\DoubleClick.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
+    <Compile Include="Assets\Scripts\IA.cs" />
     <Compile Include="Assets\Scripts\MultiplayerManager.cs" />
     <Compile Include="Assets\Scripts\StateMachines\CustomStateMachine.cs" />
     <Compile Include="Assets\Scripts\StateMachines\LookPhase.cs" />
     <Compile Include="Assets\Scripts\StateMachines\NewRound.cs" />
     <Compile Include="Assets\Scripts\StateMachines\P1Discard.cs" />
     <Compile Include="Assets\Scripts\StateMachines\P1Draw.cs" />
+    <Compile Include="Assets\Scripts\StateMachines\P2Discard.cs" />
     <Compile Include="Assets\Scripts\StateMachines\P2Draw.cs" />
     <Compile Include="Assets\Scripts\TextViewer.cs" />
     <None Include="Assets\Textures\NewSurfaceShader.shader" />
+    <None Include="Assets\OutlineEffect\Resources\OutlineShader.shader" />
     <None Include="Assets\Shaders\DarkBackgroundSprite.shader" />
+    <None Include="Assets\OutlineEffect\Resources\OutlineBufferShader.shader" />
     <None Include="Assets\Shaders\BasicAura.shader" />
     <None Include="Assets\Shaders\DistortionSphere.shader" />
     <None Include="Assets\Shaders\BetterEmbers.shader" />
@@ -89,12 +96,12 @@
     <None Include="Assets\Textures\Silhouetted_Diffuse.shader" />
     <None Include="Assets\Particlecollection_Free samples\Plugins\Effect\Shader\Toon Additive.shader" />
     <None Include="Assets\Shaders\BasicAuraArray.shader" />
-    <None Include="Assets\Test\Sprites-NoAlpha.shader" />
     <None Include="Assets\Shaders\DarkeningAura.shader" />
     <None Include="Assets\Particlecollection_Free samples\READ ME.txt" />
     <None Include="Assets\Shaders\FresnelSphereOpaque.shader" />
     <None Include="Assets\Shaders\DarkeningAuraArray.shader" />
     <None Include="Assets\Shaders\DarkShellSphere.shader" />
+    <None Include="Assets\Shaders\self_illuminated_outlined_diffuse_113.shader" />
     <Reference Include="Unity.TextMeshPro.Editor">
       <HintPath>C:/Users/theo/OneDrive/4Cards/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>

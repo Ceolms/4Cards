@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using cakeslice;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,6 +10,7 @@ public class Card : MonoBehaviour
     public enum Owner {Deck ,Discard ,Player ,Player2 }
     public enum Position {Deck,Discard,Player_Slot1,Player_Slot2,Player_Slot3,Player_Slot4, Player_Slot5, Player_Slot6, Player2_Slot1,Player2_Slot2,Player2_Slot3,Player2_Slot4, Player2_Slot5,Player2_Slot6, PlayerChoice,Player2Choice} // to set position on the board
     private GameObject particleObject;
+    private Outline outline;
     private Vector3 poPosition;
     public string value; // A , 2 ,6 , K...
 
@@ -35,7 +37,8 @@ public class Card : MonoBehaviour
     {
         this.meshRenderer = this.GetComponent<MeshRenderer>();
         this.boxCollider = this.GetComponent<BoxCollider>();
-
+        this.outline = this.GetComponent<Outline>();
+        outline.enabled = false;
         Material mat = GetComponent<Renderer>().material;
         Material matNew = Instantiate(mat);
         GetComponent<Renderer>().material = matNew;
@@ -98,19 +101,21 @@ public class Card : MonoBehaviour
 
     public void SetParticles(bool b)
     {
-        
+        outline.enabled = b;
         if (b)
-        {
+        {   /*
             particleObject.transform.localPosition = poPosition;
             ParticleSystem ps = particleObject.GetComponent<ParticleSystem>();
             ps.Simulate(4f);
-            ps.Play();
+            ps.Play();*/
         }
         else
         {
+            
             ParticleSystem ps = particleObject.GetComponent<ParticleSystem>();
             ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
             particleObject.transform.localPosition = new Vector3(10000,10000,10000);   
+            
         }
     }
 
@@ -123,6 +128,23 @@ public class Card : MonoBehaviour
         else
         {
             this.transform.position = new Vector3(transform.position.x, transform.position.y, -0.4f);
+        }
+    }
+
+    public int ValueToInt()
+    {
+        if(!value.Equals("K") && !value.Equals("J") && !value.Equals("Q") && !value.Equals("A"))
+        {
+            return int.Parse(value);
+        }
+        else
+        {
+            if (value.Equals("K") && (color == Card.Color.Diamond || color == Card.Color.Heart)) return 0;
+            else if (value.Equals("K")) return 20;
+            else if (value.Equals("Q")) return 10;
+            else if (value.Equals("J")) return 10;
+            else return 1; // "A"
+            // the extra points from the position is not really important
         }
     }
 

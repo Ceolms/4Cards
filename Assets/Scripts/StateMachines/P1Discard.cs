@@ -19,14 +19,12 @@ public class P1Discard : CustomStateMachine
         if (card.owner == Card.Owner.Player && card.position != Card.Position.PlayerChoice) // If the player want to discard one of his cards
         {
             Card.Position p = card.position;
-            card.owner = Card.Owner.Discard;
             card.MoveTo(Card.Position.Discard); // move old card to discard
 
             Card c = GameManager.Instance.FindByPosition(Card.Position.PlayerChoice); // take the new one to slot
 
             c.SetHidden(true);
             c.MoveTo(p);
-            c.owner = Card.Owner.Player;
 
             if (card.value == "Q") GameManager.Instance.UsePower('Q');
             if (card.value == "J") GameManager.Instance.UsePower('J');
@@ -34,7 +32,6 @@ public class P1Discard : CustomStateMachine
         }
         else if (card.owner == Card.Owner.Player && card.position == Card.Position.PlayerChoice) // else if it's the one he drawn
         {
-            card.owner = Card.Owner.Discard;
             card.MoveTo(Card.Position.Discard);
 
             if (card.value == "Q") GameManager.Instance.UsePower('Q');

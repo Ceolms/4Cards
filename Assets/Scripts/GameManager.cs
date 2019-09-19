@@ -10,8 +10,11 @@ public class GameManager : MonoBehaviour
     private float animatorSpeed;
     public GameObject powerPanel; // panel with Yes/No question to use power
 
+    public string gameType = "IA";
+
     public int firstToPlay = 1;
     public int endTurn = 0; // 0 false , 1 for P1 and 2 for P2
+
     [HideInInspector]
     public CustomStateMachine state;
 
@@ -92,6 +95,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    // Player functions
     private void CheckTouch(Ray ray)
     {
         RaycastHit hit;
@@ -103,14 +107,13 @@ public class GameManager : MonoBehaviour
         {
             GameObject cardHit = hit.collider.gameObject;
             Card c = cardHit.GetComponent<Card>();
-            Debug.Log("Card Clicked : " + c.ToString());
+            //Debug.Log("Card Clicked : " + c.ToString());
 
 
             if (powerChar == 'N')
             {
                 if (selectedCard != null && selectedCard != c)
                 {
-                    //Destroy(selectedCard.GetComponent<DoubleClick>());
                     selectedCard = c;
                     if (c.gameObject.GetComponent<DoubleClick>() == null)
                     {
@@ -140,7 +143,6 @@ public class GameManager : MonoBehaviour
                 if (c.owner == Card.Owner.Player)
                 {
                     c.SetHidden(false);
-                    //Destroy(c.GetComponent<DoubleClick>());
                     foreach (Card card in cardsJ1)
                     {
                         if (card != null) card.SetParticles(false);
@@ -157,7 +159,6 @@ public class GameManager : MonoBehaviour
                     if (c.owner == Card.Owner.Player)
                     {
                         selectedCard = c;
-                        // Destroy(c.GetComponent<DoubleClick>());
                         foreach (Card card in cardsJ1)
                         {
                             if (card != null && card != c) card.SetParticles(false);
@@ -166,7 +167,6 @@ public class GameManager : MonoBehaviour
                     else if (c.owner == Card.Owner.Player2)
                     {
                         selectedOpponentCard = c;
-                        //  Destroy(c.GetComponent<DoubleClick>());
                         foreach (Card card in cardsJ2)
                         {
                             if (card != null && card != c) card.SetParticles(false);
@@ -325,4 +325,12 @@ public class GameManager : MonoBehaviour
         else if (p == 'J') GameObject.Find("TextPower").GetComponent<UnityEngine.UI.Text>().text = "Jack : Exchange two cards";
 
     }
+
+    //IA Functions
+
+    public Card  LookCard(int index)
+    {
+        return  cardsJ2[index];
+    }
+   // Multiplayer Functions
 }
