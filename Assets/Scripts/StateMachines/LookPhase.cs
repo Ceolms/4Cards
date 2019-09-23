@@ -64,4 +64,8 @@ public class LookPhase : CustomStateMachine
             c.SetParticles(false);
         }
     }
+
+    public override void ChangePhase()
+    {
+    }
 }

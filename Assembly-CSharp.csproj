@@ -78,6 +78,7 @@
     <Compile Include="Assets\Scripts\IA.cs" />
     <Compile Include="Assets\Scripts\MultiplayerManager.cs" />
     <Compile Include="Assets\Scripts\StateMachines\CustomStateMachine.cs" />
+    <Compile Include="Assets\Scripts\StateMachines\EndRound.cs" />
     <Compile Include="Assets\Scripts\StateMachines\LookPhase.cs" />
     <Compile Include="Assets\Scripts\StateMachines\NewRound.cs" />
     <Compile Include="Assets\Scripts\StateMachines\P1Discard.cs" />

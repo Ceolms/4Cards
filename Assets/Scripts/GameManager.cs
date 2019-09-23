@@ -9,22 +9,32 @@ public class GameManager : MonoBehaviour
     public Animator gameLogic;
     private float animatorSpeed;
     public GameObject powerPanel; // panel with Yes/No question to use power
+    private float phaseChangeTime = 0f;
+    private float phaseChangeTimeLong = 3f;
 
     public string gameType = "IA";
+    public int scoreP1 = 0;
+    public int scoreP2 = 0;
 
-    public int firstToPlay = 1;
-    public int endTurn = 0; // 0 false , 1 for P1 and 2 for P2
 
     [HideInInspector]
-    public CustomStateMachine state;
+    public int firstToPlay = 1;
+    [HideInInspector]
+    public string endRoundPlayer = "null"; // 0 false , 1 for P1 and 2 for P2
 
+
+    public CustomStateMachine state;
+    [HideInInspector]
     public Card selectedCard;
+    [HideInInspector]
     public Card selectedOpponentCard;
 
     //special power values
     private bool powerPanelVisible;
+    [HideInInspector]
     public char powerChar;
 
+    [HideInInspector]
     private List<Card> cardsList = new List<Card>();
     public List<Card> cardsJ1 = new List<Card>();
     public List<Card> cardsJ2 = new List<Card>();
@@ -93,17 +103,29 @@ public class GameManager : MonoBehaviour
             powerChar = 'N';
             gameLogic.speed = animatorSpeed;
         }
+        
     }
 
     // Player functions
     private void CheckTouch(Ray ray)
     {
         RaycastHit hit;
-        if (powerPanelVisible)
+        string s = CheckTouchUI(ray);
+        if(s!= null && s.Equals("ActionButton") && state is P1Discard) 
+        {
+            Debug.Log("EndRound Clicked! ");
+            SetEndTurn("Player1");
+        }
+        else if (s != null &&  s.Equals("ActionButton") && state is EndRound)
+        {
+            Debug.Log("New Round Clicked! ");
+            gameLogic.SetTrigger("NewRoundStart");
+        }
+        else if (powerPanelVisible)
         {
             CheckPower();
         }
-        else if (Physics.Raycast(ray, out hit))
+        else if (Physics.Raycast(ray, out hit) && s== null)
         {
             GameObject cardHit = hit.collider.gameObject;
             Card c = cardHit.GetComponent<Card>();
@@ -208,7 +230,7 @@ public class GameManager : MonoBehaviour
             }
             else
             {
-                Debug.Log("wrong card deleted!");
+                TextViewer.Instance.SetTextTemporary("Wrong card !", Color.red);
                 for (int i = 0; i <= 5; i++)
                 {
                     if (cardsJ1[i] == null)
@@ -229,6 +251,26 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    public void SetEndTurn(string s)
+    {
+        endRoundPlayer = s;
+        TextViewer.Instance.SetTextTemporary("END ROUND", Color.red);
+        //TODO texte EndTurn cliqué
+    }
+    public void ChangePhase()
+    {
+        StartCoroutine(WaitAndChange(phaseChangeTime));
+    }
+    public void ChangePhaseLong()
+    {
+        StartCoroutine(WaitAndChange(phaseChangeTimeLong));
+    }
+
+    private IEnumerator WaitAndChange(float t)
+    {
+        yield return new WaitForSeconds(t);
+        state.ChangePhase();
+    }
     public Card FindByPosition(Card.Position pos)
     {
         foreach (Card c in cardsList)
@@ -315,8 +357,6 @@ public class GameManager : MonoBehaviour
 
     public void UsePower(char p)
     {
-        Debug.Log("Power activated : " + p);
-
         gameLogic.speed = 0;
         powerPanel.SetActive(true);
         powerPanelVisible = true;

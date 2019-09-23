@@ -1,12 +1,7 @@
 IA basique : Jack power 
 			delete card 
-			end turn decision
 
 Unifier prefabs
-
-EndTurn : dans DrawPhase if Gamemanager.endturnPlayer = this player goto endPhase
-
-retour utilisateur mauvais carte jeté
 
 Animations cartes : retourner
 					vibration adverse regarde carte

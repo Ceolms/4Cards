@@ -20,6 +20,7 @@ public class TextViewer : MonoBehaviour
 
     public void SetText(string s)
     {
+        oldLine = s;
         oldLine = textLine.text;
         textLine.enabled = true;
         textLine.text = s;
@@ -28,6 +29,7 @@ public class TextViewer : MonoBehaviour
 
     public void  SetText(string s,Color c)
     {
+        oldLine = s;
         textLine.enabled = true;
         textLine.text = s;
         textLine.color = c;
@@ -47,9 +49,19 @@ public class TextViewer : MonoBehaviour
         StartCoroutine(ResetOldText());
     }
 
+    public void SetTextTemporary(string s , Color c)
+    {
+        oldLine = textLine.text;
+        textLine.enabled = true;
+        textLine.text = s;
+        textLine.color = c;
+        StartCoroutine(ResetOldText());
+    }
+
     private IEnumerator ResetOldText()
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1.8f);
         textLine.text = oldLine;
+        textLine.color = defaultColor;
     }
 }

@@ -35,39 +35,39 @@ public class IA : MonoBehaviour
             cardsString += c;
             cardsString += "    ";
         }
-        Debug.Log("IA Draw phase, cards infos : " + cardsString);
+        //Debug.Log("IA Draw phase, cards infos : " + cardsString);
         yield return new WaitForSeconds(1f); // to simulate the IA "thinking" and wait for the discarded card to finish moving
         Card discard = LookDiscard();
 
 
         if (discard.ValueToInt() <= 5 && HasUnknownCards()) // take the discard first card
         {
-            Debug.Log("IA take discard card because under 5 " + discard);
+            //Debug.Log("IA take discard card because under 5 " + discard);
             Card c = Discard.Instance.Draw();
             c.MoveTo(Card.Position.Player2Choice);
-            GameManager.Instance.gameLogic.SetTrigger("DrawComplete");
+            GameManager.Instance.ChangePhase();
             c.SetHidden(true);
         }
         else if (discard.ValueToInt() <= 8 && CheckBetterCard(discard))
         {
-            Debug.Log("IA take discard card because better than hand" + discard);
+            //Debug.Log("IA take discard card because better than hand" + discard);
             Card c = Discard.Instance.Draw();
             c.MoveTo(Card.Position.Player2Choice);
-            GameManager.Instance.gameLogic.SetTrigger("DrawComplete");
+            GameManager.Instance.ChangePhase();
             c.SetHidden(true);
         }
         else // take the deck first card
         {
-            Debug.Log("IA take deck card " + Deck.Instance.stack[0].GetComponent<Card>());
+            //Debug.Log("IA take deck card " + Deck.Instance.stack[0].GetComponent<Card>());
             Card c = Deck.Instance.Draw();
             c.MoveTo(Card.Position.Player2Choice);
-            GameManager.Instance.gameLogic.SetTrigger("DrawComplete");
+            GameManager.Instance.ChangePhase();
         }
     }
 
     public void DiscardPhase()
     {
-        Debug.Log("IA Discard phase");
+        //Debug.Log("IA Discard phase");
 
         Card chooseCard = GameManager.Instance.FindByPosition(Card.Position.Player2Choice);
         int chooseCardValue = chooseCard.ValueToInt();
@@ -90,7 +90,7 @@ public class IA : MonoBehaviour
                 if (card != null && !knownCards.Contains(card))
                 {
                     cardSelection = true;
-                    Debug.Log("IA discard an unknown card: " + card);
+                    //Debug.Log("IA discard an unknown card: " + card);
                     //  discard an unknown card and keep the new one
                     Card.Position pos = card.position;
 
@@ -105,20 +105,30 @@ public class IA : MonoBehaviour
             }
             if (!cardSelection) // if the IA already know all his cards and they are betters.
             {
-                Debug.Log("IA discard the drawn card because of a better hand" + chooseCard);
+                //Debug.Log("IA discard the drawn card because of a better hand" + chooseCard);
                 chooseCard.MoveTo(Card.Position.Discard);
             }
         }
         else // if the IA choose to discard one of his cards
         {
-            Debug.Log("IA discard a lesser card of his hand" + cardToDelete);
+            //Debug.Log("IA discard a lesser card of his hand" + cardToDelete);
             Card.Position p = cardToDelete.position;
             knownCards.Remove(cardToDelete);
             cardToDelete.MoveTo(Card.Position.Discard);
             chooseCard.MoveTo(p);
             knownCards.Add(chooseCard);
         }
-        GameManager.Instance.gameLogic.SetTrigger("DiscardComplete");
+        if(knownCards.Count >= 4)
+        {
+            int score = 0;
+            foreach(Card c in knownCards)
+            {
+                score += c.ValueToInt();
+
+            }
+            if (score < 6) GameManager.Instance.SetEndTurn("Opponent");
+        }
+        GameManager.Instance.ChangePhaseLong();  
     }
 
 

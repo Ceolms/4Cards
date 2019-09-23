@@ -22,4 +22,9 @@ public class P2Draw : CustomStateMachine
     {
 
     }
+
+    public override void ChangePhase()
+    {
+        GameManager.Instance.gameLogic.SetTrigger("DrawComplete");
+    }
 }

@@ -24,4 +24,10 @@ public class P2Discard : CustomStateMachine
     public override void Execute(Card c)
     {
     }
+
+    public override void ChangePhase()
+    {
+        if (GameManager.Instance.endRoundPlayer.Equals("Player1")) GameManager.Instance.gameLogic.SetTrigger("EndRound");
+        else GameManager.Instance.gameLogic.SetTrigger("DiscardComplete");
+    }
 }

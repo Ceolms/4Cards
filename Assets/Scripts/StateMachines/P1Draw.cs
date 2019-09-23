@@ -25,7 +25,7 @@ public class P1Draw : CustomStateMachine
             c.SetHidden(false);
             Deck.Instance.ShowParticles(false);
             Discard.Instance.ShowParticles(false);
-            GameManager.Instance.gameLogic.SetTrigger("DrawComplete");
+            GameManager.Instance.ChangePhase();
         }
         else if (card.position == Card.Position.Discard)
         {
@@ -35,8 +35,8 @@ public class P1Draw : CustomStateMachine
             Deck.Instance.ShowParticles(false);
             Discard.Instance.ShowParticles(false);
             if (GameManager.Instance.gameType.Equals("IA"))
-                IA.Instance.opponentKnownCards.Add(c);
-            GameManager.Instance.gameLogic.SetTrigger("DrawComplete");
+            { IA.Instance.opponentKnownCards.Add(c); }
+            GameManager.Instance.ChangePhase();
         }       
     }
 
@@ -48,5 +48,10 @@ public class P1Draw : CustomStateMachine
         {
             Draw();
         }  
+    }
+
+    public override void ChangePhase()
+    {
+        GameManager.Instance.gameLogic.SetTrigger("DrawComplete");
     }
 }

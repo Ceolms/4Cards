@@ -1,6 +1,8 @@
-﻿using System.Collections;
+﻿using cakeslice;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class NewRound : CustomStateMachine
 {
@@ -10,19 +12,23 @@ public class NewRound : CustomStateMachine
         //Debug.Log("New Round StateEnter");
         TextViewer.Instance.SetText("Distribute Phase");
         GameManager.Instance.state = this;
+
+        GameObject button = GameObject.Find("ActionButton");
+        button.GetComponentInChildren<Text>().text = "End Round";
+        //Debug.Log("comp: " + GameObject.Find("OutlineBox").GetComponent<cakeslice.Outline>());
+        GameObject.Find("OutlineBox").GetComponent<cakeslice.Outline>().enabled = false;
+
         Deck.Instance.InitRound();
-    }
-
-    // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
-    override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    {
-
     }
 
     public override void Execute(Card c)
     {
-     
+     // nothing to do here
     }
 
+    public override void ChangePhase()
+    {
+        // nothing to do here
+    }
 }
 
