@@ -28,6 +28,8 @@ public class P1Discard : CustomStateMachine
 
             if (card.value == "Q") GameManager.Instance.UsePower('Q');
             if (card.value == "J") GameManager.Instance.UsePower('J');
+            if (GameManager.Instance.gameType.Equals("IA") && IA.Instance.opponentKnownCards.Contains(card))
+                IA.Instance.opponentKnownCards.Remove(card);
             GameManager.Instance.gameLogic.SetTrigger("DiscardComplete");
         }
         else if (card.owner == Card.Owner.Player && card.position == Card.Position.PlayerChoice) // else if it's the one he drawn
@@ -36,6 +38,8 @@ public class P1Discard : CustomStateMachine
 
             if (card.value == "Q") GameManager.Instance.UsePower('Q');
             if (card.value == "J") GameManager.Instance.UsePower('J');
+            if (GameManager.Instance.gameType.Equals("IA") && IA.Instance.opponentKnownCards.Contains(card))
+                IA.Instance.opponentKnownCards.Remove(card);
             GameManager.Instance.gameLogic.SetTrigger("DiscardComplete");
         }
     }

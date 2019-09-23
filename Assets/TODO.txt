@@ -1,21 +1,21 @@
-
-Regler luminosité android
-texte pixelisé
-boutons plus au centre
-
-Verifier particles
+IA basique : Jack power 
+			delete card 
+			end turn decision
 
 Unifier prefabs
 
-
 EndTurn : dans DrawPhase if Gamemanager.endturnPlayer = this player goto endPhase
 
-IA basique
-test sur mobile
-
 retour utilisateur mauvais carte jeté
-Meilleurs particules
-Animations cartes
+
+Animations cartes : retourner
+					vibration adverse regarde carte
+
+Ecran accueil
+reglage temps carte visible
 
 Multi
-Graphisme ?
+
+Niveau IA
+
+Polish

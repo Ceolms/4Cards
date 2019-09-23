@@ -6,6 +6,7 @@ using UnityEngine;
 public class Card : MonoBehaviour
 {
     public static int speed = 8;
+    public static float timeToHide = 1.8f; 
     public enum Color {Spades ,Club ,Heart ,Diamond }
     public enum Owner {Deck ,Discard ,Player ,Player2 }
     public enum Position {Deck,Discard,Player_Slot1,Player_Slot2,Player_Slot3,Player_Slot4, Player_Slot5, Player_Slot6, Player2_Slot1,Player2_Slot2,Player2_Slot3,Player2_Slot4, Player2_Slot5,Player2_Slot6, PlayerChoice,Player2Choice} // to set position on the board
@@ -95,7 +96,7 @@ public class Card : MonoBehaviour
     }
     public IEnumerator Hide()
     {
-        yield return new WaitForSeconds(2.5f);
+        yield return new WaitForSeconds(timeToHide);
         isHidden = true;
     }
 

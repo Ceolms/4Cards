@@ -34,6 +34,8 @@ public class P1Draw : CustomStateMachine
             c.SetHidden(false);
             Deck.Instance.ShowParticles(false);
             Discard.Instance.ShowParticles(false);
+            if (GameManager.Instance.gameType.Equals("IA"))
+                IA.Instance.opponentKnownCards.Add(c);
             GameManager.Instance.gameLogic.SetTrigger("DrawComplete");
         }       
     }
