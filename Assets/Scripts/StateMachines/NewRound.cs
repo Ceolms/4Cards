@@ -12,7 +12,8 @@ public class NewRound : CustomStateMachine
         //Debug.Log("New Round StateEnter");
         TextViewer.Instance.SetText("Distribute Phase");
         GameManager.Instance.state = this;
-
+        GameManager.Instance.gameLogic.SetBool("LookCompleteP1", false);
+        GameManager.Instance.gameLogic.SetBool("LookCompleteP2", false);
         GameObject button = GameObject.Find("ActionButton");
         button.GetComponentInChildren<Text>().text = "End Round";
         //Debug.Log("comp: " + GameObject.Find("OutlineBox").GetComponent<cakeslice.Outline>());

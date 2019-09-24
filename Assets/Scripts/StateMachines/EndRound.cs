@@ -53,8 +53,7 @@ public class EndRound : CustomStateMachine
             GameManager.Instance.scoreP2 += 1;
         }
 
-        GameObject.Find("TextScoreP1").GetComponent<Text>().text = "Your Score : " + GameManager.Instance.scoreP1;
-        GameObject.Find("TextScoreP2").GetComponent<Text>().text = "Opponent Score : " + GameManager.Instance.scoreP2;
+        GameObject.Find("ScoreText").GetComponent<Text>().text = "Scores: Player "+ GameManager.Instance.scoreP1 + " - Opponent "+ GameManager.Instance.scoreP2;
 
         GameObject button = GameObject.Find("ActionButton");
         GameObject.Find("OutlineBox").GetComponent<cakeslice.Outline>().enabled = false;

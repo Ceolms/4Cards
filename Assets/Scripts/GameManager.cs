@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
     private float animatorSpeed;
     public GameObject powerPanel; // panel with Yes/No question to use power
     private float phaseChangeTime = 0f;
-    private float phaseChangeTimeLong = 3f;
+    private float phaseChangeTimeLong = 2f;
 
     public string gameType = "IA";
     public int scoreP1 = 0;
