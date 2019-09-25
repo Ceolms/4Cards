@@ -12,7 +12,6 @@ public class Card : MonoBehaviour
     public enum Position {Deck,Discard,Player_Slot1,Player_Slot2,Player_Slot3,Player_Slot4, Player_Slot5, Player_Slot6, Player2_Slot1,Player2_Slot2,Player2_Slot3,Player2_Slot4, Player2_Slot5,Player2_Slot6, PlayerChoice,Player2Choice} // to set position on the board
     private GameObject particleObject;
     private Outline outline;
-    private Vector3 poPosition;
     public string value; // A , 2 ,6 , K...
 
     public Color color;
@@ -22,6 +21,8 @@ public class Card : MonoBehaviour
     public bool isVisible = false; // to show only top card of deck / discard
 	public bool isHidden = true; // hidden card face
     public bool isMoving; 
+    private bool isShaking;
+    private bool shakeLeft;
     private Transform destination;
 	private MeshRenderer meshRenderer;
 	private BoxCollider boxCollider;
@@ -45,7 +46,6 @@ public class Card : MonoBehaviour
         GetComponent<Renderer>().material = matNew;
 
         foreach (Transform tr in this.transform)  { if (tr.tag == "ParticlesObject"){particleObject = tr.gameObject;} }
-        poPosition = particleObject.transform.localPosition;
         SetParticles(false);
     }
 
@@ -56,9 +56,14 @@ public class Card : MonoBehaviour
 		{
             meshRenderer.enabled = true;
             boxCollider.enabled = true;
-            if (isHidden) this.transform.eulerAngles = new Vector3(0,0,0);
-			else this.transform.eulerAngles = new Vector3(0,180,0);
-		}
+
+            float rotY = this.transform.eulerAngles.y;
+            if (isHidden &&  (-5 < rotY && rotY < 5)) this.transform.eulerAngles = new Vector3(0, 0, 0);
+            else if (!isHidden &&  (170 < rotY && rotY < 190)) this.transform.eulerAngles = new Vector3(0, 180, 0);
+
+            if (isHidden && this.transform.rotation.y != 0) this.transform.Rotate(0, 8, 0, Space.Self);
+            else if (!isHidden && this.transform.rotation.y != 180) this.transform.Rotate(0, 8, 0, Space.Self);
+        }
 		else
 		{
             meshRenderer.enabled = false;
@@ -78,6 +83,28 @@ public class Card : MonoBehaviour
                 isMoving = false;
                // Debug.Log("Card Move completed");
             }
+        }
+        if(isShaking)
+        {
+             float speed = 45f;
+             float maxRotation = 10f;
+             float rotY = this.transform.eulerAngles.y;
+            transform.rotation = Quaternion.Euler(0f,0f,maxRotation * Mathf.Sin(Time.time * speed));
+            
+                /*
+            if (shakeLeft)
+
+            {
+                transform.eulerAngles.Set(0,rotY, Mathf.Sin(Time.time * speed) * amount)
+                this.transform.Rotate(0, 0, -15, Space.Self);
+                if (this.transform.eulerAngles.z < -12f) shakeLeft = false;
+            }
+            else
+            {
+                this.transform.Rotate(0, 0, 15, Space.Self);
+                if (this.transform.eulerAngles.z > 12f) shakeLeft = true;
+            }*/
+
         }
     }
     
@@ -103,21 +130,6 @@ public class Card : MonoBehaviour
     public void SetParticles(bool b)
     {
         outline.enabled = b;
-        if (b)
-        {   /*
-            particleObject.transform.localPosition = poPosition;
-            ParticleSystem ps = particleObject.GetComponent<ParticleSystem>();
-            ps.Simulate(4f);
-            ps.Play();*/
-        }
-        else
-        {
-            
-            ParticleSystem ps = particleObject.GetComponent<ParticleSystem>();
-            ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
-            particleObject.transform.localPosition = new Vector3(10000,10000,10000);   
-            
-        }
     }
 
     public void SetFront(bool b)
@@ -130,6 +142,20 @@ public class Card : MonoBehaviour
         {
             this.transform.position = new Vector3(transform.position.x, transform.position.y, -0.4f);
         }
+    }
+
+    public void Shake()
+    {
+        isShaking = true;
+        StartCoroutine(ShakeRoutine());
+    }
+
+    private IEnumerator ShakeRoutine()
+    {
+        yield return new WaitForSeconds(0.5f);
+        isShaking = false;
+        float eulerY = this.transform.eulerAngles.y;
+        this.transform.eulerAngles.Set(0, eulerY, 0);
     }
 
     public int ValueToInt()

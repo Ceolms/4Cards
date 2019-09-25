@@ -1,21 +1,21 @@
-verifier endturn qui se reinit pas ?
 
 IA basique : Jack power 
 			delete card 
 
 Problème Outliner
-Unifier prefabs
 
-Animations cartes : retourner
-					vibration adverse regarde carte
+-Alpha-
 
 Ameliorer Texte et boutons
 
 Ecran accueil
-reglage temps carte visible & phase suivante
+Reglage temps carte visible & phase suivante
 
 Multi
-
+-Beta-
 Niveau IA
 
 Polish
+Features
+
+-Gold!-

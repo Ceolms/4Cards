@@ -16,6 +16,7 @@ public class NewRound : CustomStateMachine
         GameManager.Instance.gameLogic.SetBool("LookCompleteP2", false);
         GameObject button = GameObject.Find("ActionButton");
         button.GetComponentInChildren<Text>().text = "End Round";
+        GameManager.Instance.endRoundPlayer = "null";
         //Debug.Log("comp: " + GameObject.Find("OutlineBox").GetComponent<cakeslice.Outline>());
         GameObject.Find("OutlineBox").GetComponent<cakeslice.Outline>().enabled = false;
 

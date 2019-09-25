@@ -145,7 +145,9 @@ public class IA : MonoBehaviour
     }
     private void LookCard(int slot)
     {
-        knownCards.Add(GameManager.Instance.LookCard(slot));
+        Card c = GameManager.Instance.LookCard(slot);
+        knownCards.Add(c);
+        c.Shake();
     }
 
     private Card LookDiscard()
@@ -210,6 +212,7 @@ public class IA : MonoBehaviour
                 }
                 LookCard(slot);
                 Debug.Log("IA used Queen power to look the card " + knownCards[knownCards.Count - 1] + "at slot " + slot);
+                break;
             }
         }
         yield return null;
