@@ -107,6 +107,8 @@ public class IA : MonoBehaviour
             {
                 //Debug.Log("IA discard the drawn card because of a better hand" + chooseCard);
                 chooseCard.MoveTo(Card.Position.Discard);
+                if (chooseCard.value == "Q") StartCoroutine(UseQueenPower());
+                else if (chooseCard.value == "J") StartCoroutine(UseJackPower());
             }
         }
         else // if the IA choose to discard one of his cards
@@ -117,6 +119,8 @@ public class IA : MonoBehaviour
             cardToDelete.MoveTo(Card.Position.Discard);
             chooseCard.MoveTo(p);
             knownCards.Add(chooseCard);
+            if (cardToDelete.value == "Q") StartCoroutine(UseQueenPower());
+            else if (cardToDelete.value == "J") StartCoroutine(UseJackPower());
         }
         if(knownCards.Count >= 4)
         {
@@ -131,7 +135,23 @@ public class IA : MonoBehaviour
         GameManager.Instance.ChangePhaseLong();  
     }
 
+    public void CheckDeleteCard()
+    {
 
+        Card cardDiscard = Discard.Instance.stack[0].GetComponent<Card>();
+        if(cardDiscard != null)
+        {
+            foreach(Card c in knownCards)
+            {
+                if(c.value.Equals(cardDiscard.value))
+                {
+                    c.MoveTo(Card.Position.Discard);
+                    knownCards.Remove(c);
+                }
+            }
+        }
+        
+    }
     private bool CheckBetterCard(Card c)
     {
         foreach(Card card in knownCards)
@@ -167,21 +187,76 @@ public class IA : MonoBehaviour
     private IEnumerator UseJackPower()
     {
         Card largestIACard = knownCards[0];
-        Card smallestOpponentCard;
-        if (opponentKnownCards.Count > 0) 
-
-        foreach (Card c in knownCards)
+        if(largestIACard != null)
         {
-            if (c.ValueToInt() > largestIACard.ValueToInt()) largestIACard = c;
+            foreach (Card c in knownCards)
+            {
+                if (c.ValueToInt() >= 9 && c.ValueToInt() > largestIACard.ValueToInt()) largestIACard = c ;
+            }
         }
 
+        Card smallestOpponentCard = opponentKnownCards[0];
+        if (smallestOpponentCard != null)
+        {
+            foreach (Card c in opponentKnownCards)
+            {
+                if (c.ValueToInt() <= 5 && c.ValueToInt() > smallestOpponentCard.ValueToInt()) smallestOpponentCard = c;
+            }
+        }
 
-        // si  je connais qui soient plus petit je prend
-        // sinon si ma plus grosse >= 9 j'echange avec une inconnue
-        // sinon j'echange 2 inconnues pour gener
-
-            yield return null;
+        if (largestIACard == null && smallestOpponentCard == null) // if the IA known nothing
+        {
+            Card cardIA = null;
+            foreach(Card c in GameManager.Instance.cardsJ2)
+            {
+                if (c != null && !knownCards.Contains(c)) { cardIA = c; break; }
+            }
+            Card playerCard = null;
+            foreach (Card c in GameManager.Instance.cardsJ1)
+            {
+                if (c != null && !opponentKnownCards.Contains(c)) {cardIA = c; break;}
+            }
+            Exchange(cardIA, playerCard);
+        }
+        if(largestIACard == null)
+        {
+            Card cardIA = null;
+            foreach (Card c in GameManager.Instance.cardsJ2)
+            {
+                if (c != null && !knownCards.Contains(c)) { cardIA = c; break; }
+            }
+            Exchange(cardIA, smallestOpponentCard);
+        }
+        if (smallestOpponentCard == null)
+        {
+            Card playerCard = null;
+            foreach (Card c in GameManager.Instance.cardsJ1)
+            {
+                if (c != null && !opponentKnownCards.Contains(c)) { playerCard = c; break; }
+            }
+            Exchange(largestIACard, playerCard);
+        }
+        else
+        {
+            if (largestIACard.ValueToInt() > smallestOpponentCard.ValueToInt()) Exchange(largestIACard, smallestOpponentCard);
+        }
+        yield return null;
     }
+    private void Exchange(Card cardIA , Card cardPlayer)
+    {
+        Card.Position posIA = cardIA.position;
+        Card.Position posPlayer = cardPlayer.position;
+
+        cardIA.MoveTo(posPlayer);
+        cardPlayer.MoveTo(posIA);
+
+        knownCards.Remove(cardIA);
+        knownCards.Add(cardPlayer);
+
+        opponentKnownCards.Remove(cardPlayer);
+        opponentKnownCards.Add(cardIA);
+    }
+
     private IEnumerator UseQueenPower()
     {
         foreach(Card c in GameManager.Instance.cardsJ2)

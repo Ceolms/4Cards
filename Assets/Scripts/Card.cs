@@ -90,21 +90,6 @@ public class Card : MonoBehaviour
              float maxRotation = 10f;
              float rotY = this.transform.eulerAngles.y;
             transform.rotation = Quaternion.Euler(0f,0f,maxRotation * Mathf.Sin(Time.time * speed));
-            
-                /*
-            if (shakeLeft)
-
-            {
-                transform.eulerAngles.Set(0,rotY, Mathf.Sin(Time.time * speed) * amount)
-                this.transform.Rotate(0, 0, -15, Space.Self);
-                if (this.transform.eulerAngles.z < -12f) shakeLeft = false;
-            }
-            else
-            {
-                this.transform.Rotate(0, 0, 15, Space.Self);
-                if (this.transform.eulerAngles.z > 12f) shakeLeft = true;
-            }*/
-
         }
     }
     

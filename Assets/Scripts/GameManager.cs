@@ -66,6 +66,7 @@ public class GameManager : MonoBehaviour
     {
         Deck.Instance.InitRound();
         Discard.Instance.stack = new List<GameObject>();
+        
     }
 
     // Update is called once per frame
@@ -109,6 +110,7 @@ public class GameManager : MonoBehaviour
     // Player functions
     private void CheckTouch(Ray ray)
     {
+        Debug.Log("Hello there!");
         RaycastHit hit;
         string s = CheckTouchUI(ray);
         if(s!= null && s.Equals("ActionButton") && state is P1Discard) 
@@ -217,7 +219,7 @@ public class GameManager : MonoBehaviour
     {
         if (cardSelected.owner == Card.Owner.Player)
         {
-            if (Discard.Instance.stack.Count > 0 && cardSelected.value == Discard.Instance.stack[0].GetComponent<Card>().value)
+            if (Discard.Instance.stack.Count > 0 && cardSelected.value.Equals(Discard.Instance.stack[0].GetComponent<Card>().value))
             {
                 cardSelected.owner = Card.Owner.Discard;
                 cardSelected.MoveTo(Card.Position.Discard);
@@ -367,6 +369,8 @@ public class GameManager : MonoBehaviour
     }
 
     //IA Functions
+
+ 
 
     public Card  LookCard(int index)
     {
