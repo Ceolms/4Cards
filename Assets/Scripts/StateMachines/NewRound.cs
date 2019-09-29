@@ -1,4 +1,4 @@
-﻿using cakeslice;
+﻿
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -17,8 +17,6 @@ public class NewRound : CustomStateMachine
         GameObject button = GameObject.Find("ActionButton");
         button.GetComponentInChildren<Text>().text = "End Round";
         GameManager.Instance.endRoundPlayer = "null";
-        //Debug.Log("comp: " + GameObject.Find("OutlineBox").GetComponent<cakeslice.Outline>());
-        GameObject.Find("OutlineBox").GetComponent<cakeslice.Outline>().enabled = false;
 
         Deck.Instance.InitRound();
     }

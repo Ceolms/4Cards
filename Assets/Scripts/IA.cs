@@ -67,7 +67,7 @@ public class IA : MonoBehaviour
 
     public void DiscardPhase()
     {
-        //Debug.Log("IA Discard phase");
+        Debug.Log("IA Discard phase");
 
         Card chooseCard = GameManager.Instance.FindByPosition(Card.Position.Player2Choice);
         int chooseCardValue = chooseCard.ValueToInt();
@@ -87,15 +87,16 @@ public class IA : MonoBehaviour
             bool cardSelection = false;
             foreach (Card card in GameManager.Instance.cardsJ2)
             {
-                if (card != null && !knownCards.Contains(card))
+                if ( !knownCards.Contains(card))
                 {
                     cardSelection = true;
-                    //Debug.Log("IA discard an unknown card: " + card);
+                    Debug.Log("IA discard an unknown card: " + card);
                     //  discard an unknown card and keep the new one
                     Card.Position pos = card.position;
 
                     card.MoveTo(Card.Position.Discard);
                     knownCards.Remove(card);
+                    GameManager.Instance.cardsJ2.Remove(card);
                     chooseCard.MoveTo(pos);
                     knownCards.Add(chooseCard);
                     if (card.value == "Q") StartCoroutine(UseQueenPower());
@@ -105,7 +106,7 @@ public class IA : MonoBehaviour
             }
             if (!cardSelection) // if the IA already know all his cards and they are betters.
             {
-                //Debug.Log("IA discard the drawn card because of a better hand" + chooseCard);
+                Debug.Log("IA discard the drawn card because of a better hand: " + chooseCard);
                 chooseCard.MoveTo(Card.Position.Discard);
                 if (chooseCard.value == "Q") StartCoroutine(UseQueenPower());
                 else if (chooseCard.value == "J") StartCoroutine(UseJackPower());
@@ -113,9 +114,10 @@ public class IA : MonoBehaviour
         }
         else // if the IA choose to discard one of his cards
         {
-            //Debug.Log("IA discard a lesser card of his hand" + cardToDelete);
+            Debug.Log("IA discard a lesser card of his hand: " + cardToDelete);
             Card.Position p = cardToDelete.position;
             knownCards.Remove(cardToDelete);
+            GameManager.Instance.cardsJ2.Remove(cardToDelete);
             cardToDelete.MoveTo(Card.Position.Discard);
             chooseCard.MoveTo(p);
             knownCards.Add(chooseCard);
@@ -179,15 +181,17 @@ public class IA : MonoBehaviour
     {
         int knowCardsCount = knownCards.Count;
         int totalCardsCount = 0 ;
-        foreach (Card c in GameManager.Instance.cardsJ2) if (c != null) totalCardsCount += 1;
+        foreach (Card c in GameManager.Instance.cardsJ2) totalCardsCount += 1;
         if (knowCardsCount == totalCardsCount) return false;
         return true;
     }
 
     private IEnumerator UseJackPower()
     {
-        Card largestIACard = knownCards[0];
-        if(largestIACard != null)
+        yield return  new WaitForSeconds(1f);
+        Card largestIACard = null;
+        if (knownCards.Count > 0) largestIACard = knownCards[0];
+        if (largestIACard != null)
         {
             foreach (Card c in knownCards)
             {
@@ -195,7 +199,8 @@ public class IA : MonoBehaviour
             }
         }
 
-        Card smallestOpponentCard = opponentKnownCards[0];
+        Card smallestOpponentCard = null;
+        if(opponentKnownCards.Count > 0 ) smallestOpponentCard = opponentKnownCards[0];
         if (smallestOpponentCard != null)
         {
             foreach (Card c in opponentKnownCards)
@@ -240,7 +245,7 @@ public class IA : MonoBehaviour
         {
             if (largestIACard.ValueToInt() > smallestOpponentCard.ValueToInt()) Exchange(largestIACard, smallestOpponentCard);
         }
-        yield return null;
+        
     }
     private void Exchange(Card cardIA , Card cardPlayer)
     {
@@ -261,7 +266,7 @@ public class IA : MonoBehaviour
     {
         foreach(Card c in GameManager.Instance.cardsJ2)
         {
-            if(c != null && !knownCards.Contains(c))
+            if(!knownCards.Contains(c))
             {
                 int slot = 0;
                 switch(c.position)
@@ -286,7 +291,7 @@ public class IA : MonoBehaviour
                         break;
                 }
                 LookCard(slot);
-                Debug.Log("IA used Queen power to look the card " + knownCards[knownCards.Count - 1] + "at slot " + slot);
+                Debug.Log("IA used Queen power to look the card " + knownCards[knownCards.Count - 1] + " at slot " + slot);
                 break;
             }
         }

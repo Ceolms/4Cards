@@ -53,11 +53,6 @@ public class GameManager : MonoBehaviour
         {
             cardsList.Add(o.GetComponent<Card>());
         }
-        for (int i = 0; i <= 5; i++)
-        {
-            cardsJ1.Add(null);
-            cardsJ2.Add(null);
-        }
         animatorSpeed = gameLogic.speed;
         powerChar = 'N';
     }
@@ -110,7 +105,6 @@ public class GameManager : MonoBehaviour
     // Player functions
     private void CheckTouch(Ray ray)
     {
-        Debug.Log("Hello there!");
         RaycastHit hit;
         string s = CheckTouchUI(ray);
         if(s!= null && s.Equals("ActionButton") && state is P1Discard) 
@@ -224,8 +218,6 @@ public class GameManager : MonoBehaviour
                 cardSelected.owner = Card.Owner.Discard;
                 cardSelected.MoveTo(Card.Position.Discard);
                 Debug.Log("Card deleted:" + cardSelected);
-                int i = cardsJ1.IndexOf(cardSelected);
-                cardsJ1[i] = null;
 
                 if (cardSelected.value == "Q") UsePower('Q');
                 if (cardSelected.value == "J") UsePower('J');
@@ -233,20 +225,66 @@ public class GameManager : MonoBehaviour
             else
             {
                 TextViewer.Instance.SetTextTemporary("Wrong card !", Color.red);
-                for (int i = 0; i <= 5; i++)
+                int[] arrayPos = new int[] { 1, 2, 3, 4, 5,6 };
+                if (cardsJ1.Count < 6)
                 {
-                    if (cardsJ1[i] == null)
+                    foreach (Card c in cardsJ1)
                     {
-                        Card c = Deck.Instance.Draw();
-                        cardsJ1[i] = c;
-                        // berk !
-                        if (i == 0) c.MoveTo(Card.Position.Player_Slot1);
-                        if (i == 1) c.MoveTo(Card.Position.Player_Slot2);
-                        if (i == 2) c.MoveTo(Card.Position.Player_Slot3);
-                        if (i == 3) c.MoveTo(Card.Position.Player_Slot4);
-                        if (i == 4) c.MoveTo(Card.Position.Player_Slot5);
-                        if (i == 5) c.MoveTo(Card.Position.Player_Slot6);
-                        break;
+                        switch (c.position)
+                        {
+                            case Card.Position.Player_Slot1:
+                                arrayPos[0] = -1;
+                                break;
+                            case Card.Position.Player_Slot2:
+                                arrayPos[1] = -1;
+                                break;
+                            case Card.Position.Player_Slot3:
+                                arrayPos[2] = -1;
+                                break;
+                            case Card.Position.Player_Slot4:
+                                arrayPos[3] = -1;
+                                break;
+                            case Card.Position.Player_Slot5:
+                                arrayPos[4] = -1;
+                                break;
+                            case Card.Position.Player_Slot6:
+                                arrayPos[0] = -1;
+                                break;
+                        }
+                    }
+
+                    foreach (int i in arrayPos)
+                    {
+                        Card.Position p = Card.Position.Player_Slot6;
+                        if (i != -1)
+                        {
+
+                            switch (i)
+                            {
+                                case (1):
+                                    p = Card.Position.Player_Slot1;
+                                    break;
+                                case (2):
+                                    p = Card.Position.Player_Slot2;
+                                    break;
+                                case (3):
+                                    p = Card.Position.Player_Slot3;
+                                    break;
+                                case (4):
+                                    p = Card.Position.Player_Slot4;
+                                    break;
+                                case (5):
+                                    p = Card.Position.Player_Slot5;
+                                    break;
+                                case (6):
+                                    p = Card.Position.Player_Slot6;
+                                    break;
+                            }
+                            Card c = Deck.Instance.Draw();
+                            c.MoveTo(p);
+                            cardsJ1.Add(c);
+                            break;
+                        }
                     }
                 }
             }
@@ -257,7 +295,6 @@ public class GameManager : MonoBehaviour
     {
         endRoundPlayer = s;
         TextViewer.Instance.SetTextTemporary("END ROUND", Color.red);
-        //TODO texte EndTurn cliqué
     }
     public void ChangePhase()
     {
@@ -285,7 +322,6 @@ public class GameManager : MonoBehaviour
 
     public void CheckPower()
     {
-
         if (!gameLogic.GetCurrentAnimatorStateInfo(0).IsName("NewRound") && !gameLogic.GetCurrentAnimatorStateInfo(0).IsName("LookPhase") && !gameLogic.GetCurrentAnimatorStateInfo(0).IsName("EndPhase"))
         {
             if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
@@ -302,13 +338,13 @@ public class GameManager : MonoBehaviour
                             powerPanelVisible = false;
                             foreach (Card card in cardsJ1)
                             {
-                                if (card != null) card.SetParticles(true);
+                                 card.SetParticles(true);
                             }
                             if (powerChar == 'J')
                             {
                                 foreach (Card card in cardsJ2)
                                 {
-                                    if (card != null) card.SetParticles(true);
+                                     card.SetParticles(true);
                                 }
                             }
                         }
@@ -335,13 +371,13 @@ public class GameManager : MonoBehaviour
                         powerPanelVisible = false;
                         foreach (Card card in cardsJ1)
                         {
-                            if (card != null) card.SetParticles(true);
+                            card.SetParticles(true);
                         }
                         if (powerChar == 'J')
                         {
                             foreach (Card card in cardsJ2)
                             {
-                                if (card != null) card.SetParticles(true);
+                                card.SetParticles(true);
                             }
                         }
                     }

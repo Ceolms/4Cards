@@ -60,9 +60,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\OutlineEffect\LinkedSet.cs" />
-    <Compile Include="Assets\OutlineEffect\Outline.cs" />
-    <Compile Include="Assets\OutlineEffect\OutlineEffect.cs" />
     <Compile Include="Assets\Particlecollection_Free samples\Plugins\Effect\Script\CameraTarget.cs" />
     <Compile Include="Assets\Particlecollection_Free samples\Plugins\Effect\Script\EffectController.cs" />
     <Compile Include="Assets\Particlecollection_Free samples\Plugins\Effect\Script\EffectDemo.cs" />
@@ -77,6 +74,7 @@
     <Compile Include="Assets\Scripts\GameManager.cs" />
     <Compile Include="Assets\Scripts\IA.cs" />
     <Compile Include="Assets\Scripts\MultiplayerManager.cs" />
+    <Compile Include="Assets\Scripts\Outline.cs" />
     <Compile Include="Assets\Scripts\StateMachines\CustomStateMachine.cs" />
     <Compile Include="Assets\Scripts\StateMachines\EndRound.cs" />
     <Compile Include="Assets\Scripts\StateMachines\LookPhase.cs" />
@@ -87,9 +85,7 @@
     <Compile Include="Assets\Scripts\StateMachines\P2Draw.cs" />
     <Compile Include="Assets\Scripts\TextViewer.cs" />
     <None Include="Assets\Textures\NewSurfaceShader.shader" />
-    <None Include="Assets\OutlineEffect\Resources\OutlineShader.shader" />
     <None Include="Assets\Shaders\DarkBackgroundSprite.shader" />
-    <None Include="Assets\OutlineEffect\Resources\OutlineBufferShader.shader" />
     <None Include="Assets\Shaders\BasicAura.shader" />
     <None Include="Assets\Shaders\DistortionSphere.shader" />
     <None Include="Assets\Shaders\BetterEmbers.shader" />

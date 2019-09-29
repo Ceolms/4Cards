@@ -1,21 +1,15 @@
-
-IA basique : Jack power ( verifier fonctionnement)
-			delete card 
-
-Problème Outliner
-
--Alpha-
-
-Ameliorer Texte et boutons
+-Alpha- Fini !
 
 Ecran accueil
 Reglage temps carte visible & phase suivante
 
 Multi
+
 -Beta-
 Niveau IA
 
-Polish
+Ameliorer Texte et boutons
+Polish 
 Features
 
 -Gold!-

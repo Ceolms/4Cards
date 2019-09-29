@@ -1,5 +1,4 @@
-﻿using cakeslice;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -56,7 +55,6 @@ public class EndRound : CustomStateMachine
         GameObject.Find("ScoreText").GetComponent<Text>().text = "Scores: Player "+ GameManager.Instance.scoreP1 + " - Opponent "+ GameManager.Instance.scoreP2;
 
         GameObject button = GameObject.Find("ActionButton");
-        GameObject.Find("OutlineBox").GetComponent<cakeslice.Outline>().enabled = false;
         button.GetComponentInChildren<Text>().text = "New Round";
     }
 

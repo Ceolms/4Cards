@@ -1,4 +1,4 @@
-﻿using cakeslice;
+﻿
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -114,7 +114,7 @@ public class Card : MonoBehaviour
 
     public void SetParticles(bool b)
     {
-        outline.enabled = b;
+        outline.SetActive(b);
     }
 
     public void SetFront(bool b)
@@ -185,73 +185,73 @@ public class Card : MonoBehaviour
                 break;
             case Position.Player_Slot1:
                 destination = GameObject.Find("PlayerHand_Slot1").transform;
-                GameManager.Instance.cardsJ1[0] = this;
+                GameManager.Instance.cardsJ1.Add(this);
                 owner = Owner.Player;
                 isMoving = true;
                 break;
             case Position.Player_Slot2:
                 destination = GameObject.Find("PlayerHand_Slot2").transform;
-                GameManager.Instance.cardsJ1[1] = this;
+                GameManager.Instance.cardsJ1.Add(this);
                 owner = Owner.Player;
                 isMoving = true;
                 break;
             case Position.Player_Slot3:
                 destination = GameObject.Find("PlayerHand_Slot3").transform;
-                GameManager.Instance.cardsJ1[2] = this;
+                GameManager.Instance.cardsJ1.Add(this);
                 owner = Owner.Player;
                 isMoving = true;
                 break;
             case Position.Player_Slot4:
                 destination = GameObject.Find("PlayerHand_Slot4").transform;
-                GameManager.Instance.cardsJ1[3] = this;
+                GameManager.Instance.cardsJ1.Add(this);
                 owner = Owner.Player;
                 isMoving = true;
                 break;
             case Position.Player_Slot5:
                 destination = GameObject.Find("PlayerHand_Slot5").transform;
-                GameManager.Instance.cardsJ1[4] = this;
+                GameManager.Instance.cardsJ1.Add(this);
                 owner = Owner.Player;
                 isMoving = true;
                 break;
             case Position.Player_Slot6:
                 destination = GameObject.Find("PlayerHand_Slot6").transform;
-                GameManager.Instance.cardsJ1[5] = this;
+                GameManager.Instance.cardsJ1.Add(this);
                 owner = Owner.Player;
                 isMoving = true;
                 break;
             case Position.Player2_Slot1:
                 destination = GameObject.Find("Player2Hand_Slot1").transform;
-                GameManager.Instance.cardsJ2[0] = this;
+                GameManager.Instance.cardsJ2.Add(this);
                 owner = Owner.Player2;
                 isMoving = true;
                 break;
             case Position.Player2_Slot2:
                 destination = GameObject.Find("Player2Hand_Slot2").transform;
-                GameManager.Instance.cardsJ2[1] = this;
+                GameManager.Instance.cardsJ2.Add(this);
                 owner = Owner.Player2;
                 isMoving = true;
                 break;
             case Position.Player2_Slot3:
                 destination = GameObject.Find("Player2Hand_Slot3").transform;
-                GameManager.Instance.cardsJ2[2] = this;
+                GameManager.Instance.cardsJ2.Add(this);
                 owner = Owner.Player2;
                 isMoving = true;
                 break;
             case Position.Player2_Slot4:
                 destination = GameObject.Find("Player2Hand_Slot4").transform;
-                GameManager.Instance.cardsJ2[3] = this;
+                GameManager.Instance.cardsJ2.Add(this);
                 owner = Owner.Player2;
                 isMoving = true;
                 break;
             case Position.Player2_Slot5:
                 destination = GameObject.Find("Player2Hand_Slot5").transform;
-                GameManager.Instance.cardsJ2[4] = this;
+                GameManager.Instance.cardsJ2.Add(this);
                 owner = Owner.Player2;
                 isMoving = true;
                 break;
             case Position.Player2_Slot6:
                 destination = GameObject.Find("Player2Hand_Slot6").transform;
-                GameManager.Instance.cardsJ2[5] = this;
+                GameManager.Instance.cardsJ2.Add(this);
                 owner = Owner.Player2;
                 isMoving = true;
                 break;
