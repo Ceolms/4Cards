@@ -217,6 +217,7 @@ public class GameManager : MonoBehaviour
             {
                 cardSelected.owner = Card.Owner.Discard;
                 cardSelected.MoveTo(Card.Position.Discard);
+                cardsJ1.Remove(cardSelected);
                 Debug.Log("Card deleted:" + cardSelected);
 
                 if (cardSelected.value == "Q") UsePower('Q');

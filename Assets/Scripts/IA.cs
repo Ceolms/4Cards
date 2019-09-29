@@ -115,12 +115,13 @@ public class IA : MonoBehaviour
         else // if the IA choose to discard one of his cards
         {
             Debug.Log("IA discard a lesser card of his hand: " + cardToDelete);
-            Card.Position p = cardToDelete.position;
+            knownCards.Add(chooseCard);
             knownCards.Remove(cardToDelete);
+            Card.Position p = cardToDelete.position;
             GameManager.Instance.cardsJ2.Remove(cardToDelete);
             cardToDelete.MoveTo(Card.Position.Discard);
-            chooseCard.MoveTo(p);
-            knownCards.Add(chooseCard);
+            GameManager.Instance.cardsJ2.Remove(cardToDelete);
+            chooseCard.MoveTo(p);          
             if (cardToDelete.value == "Q") StartCoroutine(UseQueenPower());
             else if (cardToDelete.value == "J") StartCoroutine(UseJackPower());
         }
