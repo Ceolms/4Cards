@@ -1,5 +1,7 @@
 -Alpha- Fini !
 
+Fix : jack power empeche cliquer EndTurn
+
 Ecran accueil
 Reglage temps carte visible & phase suivante
 

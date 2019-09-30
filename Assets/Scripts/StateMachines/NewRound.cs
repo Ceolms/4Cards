@@ -10,6 +10,8 @@ public class NewRound : CustomStateMachine
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         //Debug.Log("New Round StateEnter");
+        GameManager.Instance.cardsJ1 = new List<Card>();
+        GameManager.Instance.cardsJ2 = new List<Card>();
         TextViewer.Instance.SetText("Distribute Phase");
         GameManager.Instance.state = this;
         GameManager.Instance.gameLogic.SetBool("LookCompleteP1", false);
@@ -17,6 +19,13 @@ public class NewRound : CustomStateMachine
         GameObject button = GameObject.Find("ActionButton");
         button.GetComponentInChildren<Text>().text = "End Round";
         GameManager.Instance.endRoundPlayer = "null";
+
+        if (GameManager.Instance.lastWinner == -1)
+        {
+            int i = Random.Range(0, 2);
+            GameManager.Instance.gameLogic.SetInteger("FirstToPlay", i);
+        }
+        else GameManager.Instance.gameLogic.SetInteger("FirstToPlay", GameManager.Instance.lastWinner);
 
         Deck.Instance.InitRound();
     }

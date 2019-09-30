@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour
     public string gameType = "IA";
     public int scoreP1 = 0;
     public int scoreP2 = 0;
-
+    public int lastWinner = -1;
 
     [HideInInspector]
     public int firstToPlay = 1;
@@ -215,13 +215,20 @@ public class GameManager : MonoBehaviour
         {
             if (Discard.Instance.stack.Count > 0 && cardSelected.value.Equals(Discard.Instance.stack[0].GetComponent<Card>().value))
             {
+                cardsJ1.Remove(cardSelected);
                 cardSelected.owner = Card.Owner.Discard;
                 cardSelected.MoveTo(Card.Position.Discard);
-                cardsJ1.Remove(cardSelected);
+                
                 Debug.Log("Card deleted:" + cardSelected);
 
                 if (cardSelected.value == "Q") UsePower('Q');
                 if (cardSelected.value == "J") UsePower('J');
+
+                if(cardsJ1.Count == 0)
+                {
+                    endRoundPlayer = "Player1";
+                    GameManager.Instance.gameLogic.SetTrigger("EndRound");
+                }
             }
             else
             {
@@ -249,7 +256,7 @@ public class GameManager : MonoBehaviour
                                 arrayPos[4] = -1;
                                 break;
                             case Card.Position.Player_Slot6:
-                                arrayPos[0] = -1;
+                                arrayPos[5] = -1;
                                 break;
                         }
                     }
@@ -259,7 +266,6 @@ public class GameManager : MonoBehaviour
                         Card.Position p = Card.Position.Player_Slot6;
                         if (i != -1)
                         {
-
                             switch (i)
                             {
                                 case (1):

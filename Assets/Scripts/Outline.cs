@@ -5,26 +5,20 @@ using UnityEngine;
 public class Outline : MonoBehaviour
 {
     Transform outlineObjectTransform;
-    void Start()
+    public void StartOutline()
     {
-        foreach (Transform tr in this.transform)
-        {
-            if (tr.tag == "OutlineObject")
-            {
-                outlineObjectTransform = tr;
-            }
-        }
+        outlineObjectTransform = this.transform.GetChild(0);
+        SetActive(false);
     }
 
     public void SetActive(bool b)
     {
-            foreach (Transform tr in outlineObjectTransform)
+        foreach (Transform tr in outlineObjectTransform)
+        {
+            if (tr.tag.Equals("OutlineMesh"))
             {
-                if (tr.tag == "OutlineMesh")
-                {
-                    tr.GetComponent<MeshRenderer>().enabled = b;
-                }
+                tr.GetComponent<MeshRenderer>().enabled = b;
             }
-        
+        }
     }
 }

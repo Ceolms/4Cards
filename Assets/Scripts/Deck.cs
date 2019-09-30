@@ -43,42 +43,32 @@ public class Deck : MonoBehaviour
 
     private IEnumerator Distribute()
     {
-        //berk !
-        //Debug.Log("Distribute");
+        yield return new WaitForSeconds(0.5f);
         Card card = Draw();
-        card.owner = Card.Owner.Player;
         card.MoveTo(Card.Position.Player_Slot1);
         yield return new WaitUntil(() => card.isMoving == false);
         card = Draw();
-        card.owner = Card.Owner.Player2;
         card.MoveTo(Card.Position.Player2_Slot1);
         yield return new WaitUntil(() => card.isMoving == false);
         card = Draw();
-        card.owner = Card.Owner.Player;
         card.MoveTo(Card.Position.Player_Slot2);
         yield return new WaitUntil(() => card.isMoving == false);
         card = Draw();
-        card.owner = Card.Owner.Player2;
         card.MoveTo(Card.Position.Player2_Slot2);
         yield return new WaitUntil(() => card.isMoving == false);
         card = Draw();
-        card.owner = Card.Owner.Player;
         card.MoveTo(Card.Position.Player_Slot3);
         yield return new WaitUntil(() => card.isMoving == false);
         card = Draw();
-        card.owner = Card.Owner.Player2;
         card.MoveTo(Card.Position.Player2_Slot3);
         yield return new WaitUntil(() => card.isMoving == false);
         card = Draw();
-        card.owner = Card.Owner.Player;
         card.MoveTo(Card.Position.Player_Slot4);
         yield return new WaitUntil(() => card.isMoving == false);
         card = Draw();
-        card.owner = Card.Owner.Player2;
         card.MoveTo(Card.Position.Player2_Slot4);
         yield return new WaitUntil(() => card.isMoving == false);
         card = Draw();
-        card.owner = Card.Owner.Discard;
         card.MoveTo(Card.Position.Discard);
         yield return new WaitUntil(() => card.isMoving == false);
         GameManager.Instance.gameLogic.SetTrigger("DistributeComplete"); // Draw Phase Complete, proceed to next phase

@@ -34,27 +34,32 @@ public class EndRound : CustomStateMachine
             {
                 TextViewer.Instance.SetText("You Lose !");
                 GameManager.Instance.scoreP2 += 1;
+                GameManager.Instance.firstToPlay = 1;
             }
             else
             {
                 TextViewer.Instance.SetText("You Won !");
                 GameManager.Instance.scoreP1 += 1;
+                GameManager.Instance.firstToPlay = 0;
             }
         }
         else if(scoreP1 < scoreOpponent)
         {
             TextViewer.Instance.SetText("You Won !");
             GameManager.Instance.scoreP1 += 1;
+            GameManager.Instance.firstToPlay = 0;
         }
         else
         {
             TextViewer.Instance.SetText("You Lose !");
             GameManager.Instance.scoreP2 += 1;
+            GameManager.Instance.firstToPlay = 1;
         }
 
         GameObject.Find("ScoreText").GetComponent<Text>().text = "Scores: Player "+ GameManager.Instance.scoreP1 + " - Opponent "+ GameManager.Instance.scoreP2;
 
         GameObject button = GameObject.Find("ActionButton");
+        
         button.GetComponentInChildren<Text>().text = "New Round";
     }
 

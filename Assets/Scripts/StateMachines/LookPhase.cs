@@ -30,13 +30,16 @@ public class LookPhase : CustomStateMachine
     {
         if (selectedCard2 != null)
         {
-            GameManager.Instance.gameLogic.SetBool("LookCompleteP1", true);
+           
             selectedCard1.SetHidden(true);
             selectedCard2.SetHidden(true);
+            selectedCard1 = null;
+            selectedCard2 = null;
             foreach (Card c in GameManager.Instance.cardsJ1)
             {
                 c.SetParticles(false);
             }
+            GameManager.Instance.gameLogic.SetBool("LookCompleteP1", true);
         }
     }
 

@@ -135,6 +135,7 @@ public class IA : MonoBehaviour
             }
             if (score < 6) GameManager.Instance.SetEndTurn("Opponent");
         }
+        CheckDeleteCard();
         GameManager.Instance.ChangePhaseLong();  
     }
 
@@ -150,6 +151,12 @@ public class IA : MonoBehaviour
                 {
                     c.MoveTo(Card.Position.Discard);
                     knownCards.Remove(c);
+                    GameManager.Instance.cardsJ2.Remove(c);
+                    if (GameManager.Instance.cardsJ2.Count == 0)
+                    {
+                        GameManager.Instance.endRoundPlayer = "Opponent";
+                        GameManager.Instance.gameLogic.SetTrigger("EndRound");
+                    }
                 }
             }
         }
@@ -171,6 +178,7 @@ public class IA : MonoBehaviour
         Card c = GameManager.Instance.LookCard(slot);
         knownCards.Add(c);
         c.Shake();
+        CheckDeleteCard();
     }
 
     private Card LookDiscard()
@@ -245,13 +253,15 @@ public class IA : MonoBehaviour
         else
         {
             if (largestIACard.ValueToInt() > smallestOpponentCard.ValueToInt()) Exchange(largestIACard, smallestOpponentCard);
-        }
-        
+        } 
     }
     private void Exchange(Card cardIA , Card cardPlayer)
     {
         Card.Position posIA = cardIA.position;
         Card.Position posPlayer = cardPlayer.position;
+
+        GameManager.Instance.cardsJ1.Remove(cardPlayer);
+        GameManager.Instance.cardsJ2.Remove(cardIA);
 
         cardIA.MoveTo(posPlayer);
         cardPlayer.MoveTo(posIA);
@@ -261,6 +271,7 @@ public class IA : MonoBehaviour
 
         opponentKnownCards.Remove(cardPlayer);
         opponentKnownCards.Add(cardIA);
+        CheckDeleteCard();
     }
 
     private IEnumerator UseQueenPower()
