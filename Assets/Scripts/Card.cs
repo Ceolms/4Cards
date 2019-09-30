@@ -77,6 +77,7 @@ public class Card : MonoBehaviour
                 Deck.Instance.UpdatePosition();
                 Discard.Instance.UpdatePosition();
                 isMoving = false;
+                transform.position = new Vector3(destination.position.x, destination.position.y, transform.position.z);
                // Debug.Log("Card Move completed");
             }
         }

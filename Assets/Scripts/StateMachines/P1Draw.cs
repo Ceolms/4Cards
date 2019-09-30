@@ -9,6 +9,7 @@ public class P1Draw : CustomStateMachine
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        GameManager.Instance.CleanHand();
         TextViewer.Instance.SetText("Player 1 Draw");
         Discard.Instance.ShowParticles(true);
         Deck.Instance.ShowParticles(true);

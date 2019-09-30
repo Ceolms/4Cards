@@ -209,6 +209,24 @@ public class GameManager : MonoBehaviour
         return null;
     }
 
+    public void CleanHand()
+    {
+        Card cardError = null;
+        foreach(Card c in cardsJ1.ToArray())
+        {
+            if (c.position == Card.Position.Deck || c.position == Card.Position.Discard)
+                cardError = c;
+        }
+        if (cardError != null) cardsJ1.Remove(cardError);
+
+        cardError = null;
+        foreach (Card c in cardsJ2.ToArray())
+        {
+            if (c.position == Card.Position.Deck || c.position == Card.Position.Discard)
+                cardError = c;
+        }
+        if (cardError != null) cardsJ2.Remove(cardError);
+    }
     public void TryDeleteCard(Card cardSelected)
     {
         if (cardSelected.owner == Card.Owner.Player)

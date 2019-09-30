@@ -11,8 +11,8 @@ public class LookPhase : CustomStateMachine
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         TextViewer.Instance.SetText("Look Phase");
-
-        
+        selectedCard1 = null;
+        selectedCard2 = null;
 
         foreach (Card c in GameManager.Instance.cardsJ1)
         {
@@ -30,11 +30,9 @@ public class LookPhase : CustomStateMachine
     {
         if (selectedCard2 != null)
         {
-           
             selectedCard1.SetHidden(true);
             selectedCard2.SetHidden(true);
-            selectedCard1 = null;
-            selectedCard2 = null;
+            
             foreach (Card c in GameManager.Instance.cardsJ1)
             {
                 c.SetParticles(false);

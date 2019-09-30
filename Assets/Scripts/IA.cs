@@ -29,6 +29,7 @@ public class IA : MonoBehaviour
 
     private IEnumerator DrawCoroutine() 
     {
+        CheckDeleteCard();
         string cardsString = "";
         foreach(Card c in knownCards)
         {
@@ -68,7 +69,6 @@ public class IA : MonoBehaviour
     public void DiscardPhase()
     {
         Debug.Log("IA Discard phase");
-
         Card chooseCard = GameManager.Instance.FindByPosition(Card.Position.Player2Choice);
         int chooseCardValue = chooseCard.ValueToInt();
         Card cardToDelete = chooseCard;
@@ -89,6 +89,7 @@ public class IA : MonoBehaviour
             {
                 if ( !knownCards.Contains(card))
                 {
+                    knownCards.Add(chooseCard);
                     cardSelection = true;
                     Debug.Log("IA discard an unknown card: " + card);
                     //  discard an unknown card and keep the new one
@@ -98,7 +99,7 @@ public class IA : MonoBehaviour
                     knownCards.Remove(card);
                     GameManager.Instance.cardsJ2.Remove(card);
                     chooseCard.MoveTo(pos);
-                    knownCards.Add(chooseCard);
+                    
                     if (card.value == "Q") StartCoroutine(UseQueenPower());
                     else if (card.value == "J") StartCoroutine(UseJackPower());
                     break;
@@ -140,8 +141,7 @@ public class IA : MonoBehaviour
     }
 
     public void CheckDeleteCard()
-    {
-
+    { 
         Card cardDiscard = Discard.Instance.stack[0].GetComponent<Card>();
         if(cardDiscard != null)
         {
@@ -157,10 +157,11 @@ public class IA : MonoBehaviour
                         GameManager.Instance.endRoundPlayer = "Opponent";
                         GameManager.Instance.gameLogic.SetTrigger("EndRound");
                     }
+                    if (c.value == "Q") StartCoroutine(UseQueenPower());
+                    else if (c.value == "J") StartCoroutine(UseJackPower());
                 }
             }
         }
-        
     }
     private bool CheckBetterCard(Card c)
     {
@@ -178,7 +179,6 @@ public class IA : MonoBehaviour
         Card c = GameManager.Instance.LookCard(slot);
         knownCards.Add(c);
         c.Shake();
-        CheckDeleteCard();
     }
 
     private Card LookDiscard()
@@ -253,7 +253,7 @@ public class IA : MonoBehaviour
         else
         {
             if (largestIACard.ValueToInt() > smallestOpponentCard.ValueToInt()) Exchange(largestIACard, smallestOpponentCard);
-        } 
+        }
     }
     private void Exchange(Card cardIA , Card cardPlayer)
     {
