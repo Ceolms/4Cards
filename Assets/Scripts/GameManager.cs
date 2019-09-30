@@ -90,8 +90,13 @@ public class GameManager : MonoBehaviour
         {
             Card.Position p1 = selectedCard.position;
             Card.Position p2 = selectedOpponentCard.position;
+
+            cardsJ1.Remove(selectedCard);
+            cardsJ2.Remove(selectedOpponentCard);
+
             selectedCard.MoveTo(p2);
             selectedOpponentCard.MoveTo(p1);
+
             selectedCard.SetParticles(false);
             selectedOpponentCard.SetParticles(false);
             selectedCard = null;
@@ -207,25 +212,6 @@ public class GameManager : MonoBehaviour
             }
         }
         return null;
-    }
-
-    public void CleanHand()
-    {
-        Card cardError = null;
-        foreach(Card c in cardsJ1.ToArray())
-        {
-            if (c.position == Card.Position.Deck || c.position == Card.Position.Discard)
-                cardError = c;
-        }
-        if (cardError != null) cardsJ1.Remove(cardError);
-
-        cardError = null;
-        foreach (Card c in cardsJ2.ToArray())
-        {
-            if (c.position == Card.Position.Deck || c.position == Card.Position.Discard)
-                cardError = c;
-        }
-        if (cardError != null) cardsJ2.Remove(cardError);
     }
     public void TryDeleteCard(Card cardSelected)
     {

@@ -68,6 +68,7 @@ public class IA : MonoBehaviour
 
     public void DiscardPhase()
     {
+        bool usePower = false;
         Debug.Log("IA Discard phase");
         Card chooseCard = GameManager.Instance.FindByPosition(Card.Position.Player2Choice);
         int chooseCardValue = chooseCard.ValueToInt();
@@ -87,7 +88,7 @@ public class IA : MonoBehaviour
             bool cardSelection = false;
             foreach (Card card in GameManager.Instance.cardsJ2)
             {
-                if ( !knownCards.Contains(card))
+                if (!knownCards.Contains(card))
                 {
                     knownCards.Add(chooseCard);
                     cardSelection = true;
@@ -99,7 +100,7 @@ public class IA : MonoBehaviour
                     knownCards.Remove(card);
                     GameManager.Instance.cardsJ2.Remove(card);
                     chooseCard.MoveTo(pos);
-                    
+
                     if (card.value == "Q") StartCoroutine(UseQueenPower());
                     else if (card.value == "J") StartCoroutine(UseJackPower());
                     break;
@@ -109,8 +110,8 @@ public class IA : MonoBehaviour
             {
                 Debug.Log("IA discard the drawn card because of a better hand: " + chooseCard);
                 chooseCard.MoveTo(Card.Position.Discard);
-                if (chooseCard.value == "Q") StartCoroutine(UseQueenPower());
-                else if (chooseCard.value == "J") StartCoroutine(UseJackPower());
+                if (chooseCard.value == "Q") { usePower = true; StartCoroutine(UseQueenPower()); }
+                else if (chooseCard.value == "J") { usePower = true; StartCoroutine(UseJackPower()); }
             }
         }
         else // if the IA choose to discard one of his cards
@@ -122,9 +123,9 @@ public class IA : MonoBehaviour
             GameManager.Instance.cardsJ2.Remove(cardToDelete);
             cardToDelete.MoveTo(Card.Position.Discard);
             GameManager.Instance.cardsJ2.Remove(cardToDelete);
-            chooseCard.MoveTo(p);          
-            if (cardToDelete.value == "Q") StartCoroutine(UseQueenPower());
-            else if (cardToDelete.value == "J") StartCoroutine(UseJackPower());
+            chooseCard.MoveTo(p);
+            if (cardToDelete.value == "Q") { usePower = true; StartCoroutine(UseQueenPower()); }
+            else if (cardToDelete.value == "J") { usePower = true; StartCoroutine(UseJackPower()); }
         }
         if(knownCards.Count >= 4)
         {
@@ -136,8 +137,7 @@ public class IA : MonoBehaviour
             }
             if (score < 6) GameManager.Instance.SetEndTurn("Opponent");
         }
-        CheckDeleteCard();
-        GameManager.Instance.ChangePhaseLong();  
+        if(!usePower) GameManager.Instance.ChangePhaseLong();  
     }
 
     public void CheckDeleteCard()
@@ -145,21 +145,26 @@ public class IA : MonoBehaviour
         Card cardDiscard = Discard.Instance.stack[0].GetComponent<Card>();
         if(cardDiscard != null)
         {
+            Card card = null;
             foreach(Card c in knownCards)
             {
                 if(c.value.Equals(cardDiscard.value))
                 {
-                    c.MoveTo(Card.Position.Discard);
-                    knownCards.Remove(c);
-                    GameManager.Instance.cardsJ2.Remove(c);
-                    if (GameManager.Instance.cardsJ2.Count == 0)
-                    {
-                        GameManager.Instance.endRoundPlayer = "Opponent";
-                        GameManager.Instance.gameLogic.SetTrigger("EndRound");
-                    }
-                    if (c.value == "Q") StartCoroutine(UseQueenPower());
-                    else if (c.value == "J") StartCoroutine(UseJackPower());
+                    card = c;
                 }
+            }
+            if(card != null)
+            {
+                card.MoveTo(Card.Position.Discard);
+                knownCards.Remove(card);
+                GameManager.Instance.cardsJ2.Remove(card);
+                if (GameManager.Instance.cardsJ2.Count == 0)
+                {
+                    GameManager.Instance.endRoundPlayer = "Opponent";
+                    GameManager.Instance.gameLogic.SetTrigger("EndRound");
+                }
+                if (card.value == "Q") StartCoroutine(UseQueenPower());
+                else if (card.value == "J") StartCoroutine(UseJackPower());
             }
         }
     }
@@ -254,6 +259,10 @@ public class IA : MonoBehaviour
         {
             if (largestIACard.ValueToInt() > smallestOpponentCard.ValueToInt()) Exchange(largestIACard, smallestOpponentCard);
         }
+        yield return new WaitForSeconds(1f);
+        CheckDeleteCard();
+        GameManager.Instance.ChangePhaseLong();
+
     }
     private void Exchange(Card cardIA , Card cardPlayer)
     {
@@ -271,7 +280,6 @@ public class IA : MonoBehaviour
 
         opponentKnownCards.Remove(cardPlayer);
         opponentKnownCards.Add(cardIA);
-        CheckDeleteCard();
     }
 
     private IEnumerator UseQueenPower()
