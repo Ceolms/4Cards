@@ -1,6 +1,7 @@
 -Alpha- Fini !
 
-Fix : jack power empeche cliquer EndTurn
+Fix : Axe Z se décale
+	 IA se bloque quand utilise Queen sur la carte piochée
 
 Ecran accueil
 Reglage temps carte visible & phase suivante

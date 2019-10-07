@@ -60,12 +60,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Particlecollection_Free samples\Plugins\Effect\Script\CameraTarget.cs" />
-    <Compile Include="Assets\Particlecollection_Free samples\Plugins\Effect\Script\EffectController.cs" />
-    <Compile Include="Assets\Particlecollection_Free samples\Plugins\Effect\Script\EffectDemo.cs" />
-    <Compile Include="Assets\Particlecollection_Free samples\Plugins\Effect\Script\EffectShaderPropertyStr.cs" />
-    <Compile Include="Assets\Particlecollection_Free samples\Plugins\Effect\Script\RenderEffect.cs" />
-    <Compile Include="Assets\Particlecollection_Free samples\Plugins\Effect\Script\TransformExtension.cs" />
     <Compile Include="Assets\Scripts\Card.cs" />
     <Compile Include="Assets\Scripts\CardStack.cs" />
     <Compile Include="Assets\Scripts\Deck.cs" />
@@ -84,6 +78,7 @@
     <Compile Include="Assets\Scripts\StateMachines\P2Discard.cs" />
     <Compile Include="Assets\Scripts\StateMachines\P2Draw.cs" />
     <Compile Include="Assets\Scripts\TextViewer.cs" />
+    <Compile Include="Assets\Scripts\UIManager.cs" />
     <None Include="Assets\Textures\NewSurfaceShader.shader" />
     <None Include="Assets\Shaders\DarkBackgroundSprite.shader" />
     <None Include="Assets\Shaders\BasicAura.shader" />
@@ -91,7 +86,6 @@
     <None Include="Assets\Shaders\BetterEmbers.shader" />
     <None Include="Assets\TODO.txt" />
     <None Include="Assets\Textures\Silhouetted_Diffuse.shader" />
-    <None Include="Assets\Particlecollection_Free samples\Plugins\Effect\Shader\Toon Additive.shader" />
     <None Include="Assets\Shaders\BasicAuraArray.shader" />
     <None Include="Assets\Shaders\DarkeningAura.shader" />
     <None Include="Assets\Particlecollection_Free samples\READ ME.txt" />

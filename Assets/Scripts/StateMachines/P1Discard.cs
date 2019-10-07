@@ -20,7 +20,7 @@ public class P1Discard : CustomStateMachine
         {
             Card.Position p = card.position;
             card.MoveTo(Card.Position.Discard); // move old card to discard
-            GameManager.Instance.cardsJ1.Remove(card);
+            //GameManager.Instance.cardsJ1.Remove(card);
 
             Card c = GameManager.Instance.FindByPosition(Card.Position.PlayerChoice); // take the new one to slot
 

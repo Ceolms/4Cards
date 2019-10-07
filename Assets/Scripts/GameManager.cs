@@ -91,8 +91,8 @@ public class GameManager : MonoBehaviour
             Card.Position p1 = selectedCard.position;
             Card.Position p2 = selectedOpponentCard.position;
 
-            cardsJ1.Remove(selectedCard);
-            cardsJ2.Remove(selectedOpponentCard);
+            //cardsJ1.Remove(selectedCard);
+            //cardsJ2.Remove(selectedOpponentCard);
 
             selectedCard.MoveTo(p2);
             selectedOpponentCard.MoveTo(p1);
@@ -132,7 +132,6 @@ public class GameManager : MonoBehaviour
             Card c = cardHit.GetComponent<Card>();
             //Debug.Log("Card Clicked : " + c.ToString());
 
-
             if (powerChar == 'N')
             {
                 if (selectedCard != null && selectedCard != c)
@@ -147,8 +146,9 @@ public class GameManager : MonoBehaviour
                 }
                 else if (selectedCard == null)
                 {
+
                     selectedCard = c;
-                    if (c.gameObject.GetComponent<DoubleClick>() == null)
+                    if (c!= null && c.gameObject.GetComponent<DoubleClick>() == null)
                     {
                         DoubleClick dc = this.gameObject.AddComponent<DoubleClick>();
                         dc.card = c;
@@ -219,7 +219,7 @@ public class GameManager : MonoBehaviour
         {
             if (Discard.Instance.stack.Count > 0 && cardSelected.value.Equals(Discard.Instance.stack[0].GetComponent<Card>().value))
             {
-                cardsJ1.Remove(cardSelected);
+                //cardsJ1.Remove(cardSelected);
                 cardSelected.owner = Card.Owner.Discard;
                 cardSelected.MoveTo(Card.Position.Discard);
                 

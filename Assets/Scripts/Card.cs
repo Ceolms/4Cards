@@ -164,8 +164,22 @@ public class Card : MonoBehaviour
     public void MoveTo(Position p)
     {
        // Debug.Log("Card(" + value+ "," + color + ") MoveTo " + p);
+        
+
+        if (this.position == Card.Position.Player_Slot1 || this.position == Card.Position.Player_Slot2 || this.position == Card.Position.Player_Slot3
+            || this.position == Card.Position.Player_Slot4 || this.position == Card.Position.Player_Slot5 || this.position == Card.Position.Player_Slot6)
+        {
+            Debug.Log("Remove" + this + " from cardsJ1");
+            GameManager.Instance.cardsJ1.Remove(this);
+        }
+        else if (this.position == Card.Position.Player2_Slot1 || this.position == Card.Position.Player2_Slot2 || this.position == Card.Position.Player2_Slot3
+           || this.position == Card.Position.Player2_Slot4 || this.position == Card.Position.Player2_Slot5 || this.position == Card.Position.Player2_Slot6)
+        {
+            Debug.Log("Remove" + this + " from cardsJ2");
+            GameManager.Instance.cardsJ2.Remove(this);
+        }
         this.position = p;
-        switch(p)
+        switch (p)
         {
             case Position.Deck:
                 destination = GameObject.Find("DeckPosition").transform;
