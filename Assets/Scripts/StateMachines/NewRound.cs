@@ -16,8 +16,8 @@ public class NewRound : CustomStateMachine
         GameManager.Instance.state = this;
         GameManager.Instance.gameLogic.SetBool("LookCompleteP1", false);
         GameManager.Instance.gameLogic.SetBool("LookCompleteP2", false);
-        GameObject button = GameObject.Find("ActionButton");
-        button.GetComponentInChildren<Text>().text = "End Round";
+
+        TextViewer.Instance.SetEndTurn();
         GameManager.Instance.endRoundPlayer = "null";
 
         if (GameManager.Instance.lastWinner == -1)

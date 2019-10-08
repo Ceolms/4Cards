@@ -1,9 +1,5 @@
 -Alpha- Fini !
 
-Fix : Axe Z se décale
-	 IA se bloque quand utilise Queen sur la carte piochée
-
-Ecran accueil
 Reglage temps carte visible & phase suivante
 
 Multi
@@ -11,7 +7,7 @@ Multi
 -Beta-
 Niveau IA
 
-Ameliorer Texte et boutons
+Sons
 Polish 
 Features
 

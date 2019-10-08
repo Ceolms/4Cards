@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [System.Serializable]
 public class GameManager : MonoBehaviour
@@ -46,6 +47,12 @@ public class GameManager : MonoBehaviour
         gameLogic = GetComponent<Animator>();
         powerPanel = GameObject.Find("PowerPanel");
         powerPanel.SetActive(false);
+
+        if(gameType.Equals("IA"))
+        {
+            string difficulty = PlayerPrefs.GetString("difficulty");
+            Debug.Log("IA level: " + difficulty);
+        }
 
         List<GameObject> listObj = new List<GameObject>();
         listObj.AddRange(GameObject.FindGameObjectsWithTag("Card"));
@@ -107,6 +114,18 @@ public class GameManager : MonoBehaviour
         
     }
 
+    private void Exit()
+    {
+        if(gameType.Equals("IA"))
+        {
+            SceneManager.LoadScene("Main Menu");
+        }
+        else
+        {
+            SceneManager.LoadScene("Main Menu");
+        }
+    }
+
     // Player functions
     private void CheckTouch(Ray ray)
     {
@@ -121,6 +140,10 @@ public class GameManager : MonoBehaviour
         {
             Debug.Log("New Round Clicked! ");
             gameLogic.SetTrigger("NewRoundStart");
+        }
+        else if(s.Equals("ExitButton"))
+        {
+            Exit();
         }
         else if (powerPanelVisible)
         {
@@ -417,7 +440,6 @@ public class GameManager : MonoBehaviour
 
     //IA Functions
 
- 
 
     public Card  LookCard(int index)
     {

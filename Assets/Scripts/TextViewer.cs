@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TextViewer : MonoBehaviour
 {
@@ -10,12 +11,28 @@ public class TextViewer : MonoBehaviour
     private UnityEngine.UI.Text textLine;
     private Color defaultColor = Color.yellow;
 
+    public Button btn;
+    public Sprite imageEndTurn;
+    public Sprite imageEndTurn_Push;
+    public Sprite imageNewRound;
+    public Sprite imageNewRound_Push;
+
     // Start is called before the first frame update
     void Start()
     {
         Instance = this;
         textLine = GameObject.Find("TextLine").GetComponent<UnityEngine.UI.Text>();
         textLine.color = defaultColor;
+
+    }
+
+    public void SetNewRound()
+    {
+        btn.GetComponent<Image>().sprite = imageNewRound;
+    }
+    public void SetEndTurn()
+    {
+        btn.GetComponent<Image>().sprite = imageEndTurn;
     }
 
     public void SetText(string s)
