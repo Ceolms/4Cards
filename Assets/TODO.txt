@@ -1,5 +1,10 @@
 -Alpha- Fini !
 
+
+BoxCollider trop haut
+
+Plus de clique possible partie lancée
+
 Reglage temps carte visible & phase suivante
 
 Multi

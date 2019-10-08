@@ -604,7 +604,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 92.35, y: 16.58, z: 1.95}
+  m_Size: {x: 138.5, y: 25.9, z: 1.95}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &278623125
 GameObject:
@@ -1110,7 +1110,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 92.35, y: 16.58, z: 1.95}
+  m_Size: {x: 138.5, y: 25.9, z: 1.95}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &789696280
 GameObject:
@@ -1241,7 +1241,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 92.35, y: 16.58, z: 1.95}
+  m_Size: {x: 142.7, y: 28, z: 1.95}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &853110047
 GameObject:
@@ -1372,7 +1372,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 92.35, y: 16.58, z: 1.95}
+  m_Size: {x: 142.7, y: 28, z: 1.95}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &860553568
 GameObject:
@@ -1503,7 +1503,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 92.35, y: 16.58, z: 1.95}
+  m_Size: {x: 138.5, y: 25.9, z: 1.95}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &891304138
 GameObject:
@@ -1600,7 +1600,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1224262252
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2067,7 +2067,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 92.35, y: 16.58, z: 1.95}
+  m_Size: {x: 142.7, y: 28, z: 1.95}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1379406236
 GameObject:
@@ -2320,7 +2320,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1563579374
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2509,7 +2509,7 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 92.35, y: 16.58, z: 1.95}
+  m_Size: {x: 156.5, y: 27.1, z: 1.95}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &1642701399 stripped
 GameObject:

@@ -141,7 +141,7 @@ public class GameManager : MonoBehaviour
             Debug.Log("New Round Clicked! ");
             gameLogic.SetTrigger("NewRoundStart");
         }
-        else if(s.Equals("ExitButton"))
+        else if(s != null && s.Equals("ExitButton"))
         {
             Exit();
         }
