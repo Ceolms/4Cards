@@ -11,7 +11,7 @@ public class P2Discard : CustomStateMachine
         Deck.Instance.ShowParticles(false);
         GameManager.Instance.state = this;
 
-        if (GameManager.Instance.gameType.Equals("IA"))
+        if (GameManager.Instance.gamemode.Equals("IA"))
         {
             IA.Instance.DiscardPhase();
         }
@@ -27,7 +27,7 @@ public class P2Discard : CustomStateMachine
 
     public override void ChangePhase()
     {
-        if (GameManager.Instance.endRoundPlayer.Equals("Player1")) GameManager.Instance.gameLogic.SetTrigger("EndRound");
+        if (GameManager.Instance.endRoundPlayer == Card.Owner.Player1) GameManager.Instance.gameLogic.SetTrigger("EndRound");
         else GameManager.Instance.gameLogic.SetTrigger("DiscardComplete");
     }
 }

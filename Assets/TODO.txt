@@ -1,15 +1,23 @@
 -Alpha- Fini !
 
+Multi
 
-BoxCollider trop haut
+	Creation Salle
+	Choix nom
+	attente connexion J2
+	ajout nom au textView
 
-Plus de clique possible partie lancée
+	Recherche Salle
+	Join
+
+	Start
+
+	Synchro Carte et Manager
+
+-Beta-
 
 Reglage temps carte visible & phase suivante
 
-Multi
-
--Beta-
 Niveau IA
 
 Sons

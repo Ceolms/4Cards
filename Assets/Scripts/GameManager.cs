@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 [System.Serializable]
 public class GameManager : MonoBehaviour
@@ -9,20 +11,24 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance;
     public Animator gameLogic;
     private float animatorSpeed;
+    [HideInInspector]
     public GameObject powerPanel; // panel with Yes/No question to use power
     private float phaseChangeTime = 0f;
     private float phaseChangeTimeLong = 2f;
-
-    public string gameType = "IA";
-    public int scoreP1 = 0;
-    public int scoreP2 = 0;
-    public int lastWinner = -1;
-
+    public GameObject prefabPlayer;
+    public string gamemode = "IA";
+ 
+    public bool gameBegin;
     [HideInInspector]
     public int firstToPlay = 1;
     [HideInInspector]
-    public string endRoundPlayer = "null"; // 0 false , 1 for P1 and 2 for P2
+    public Card.Owner endRoundPlayer; // 0 false , 1 for P1 and 2 for P2
 
+    public string namePlayer1;
+    public string namePlayer2;
+    public int scoreP1 = 0;
+    public int scoreP2 = 0;
+    public int lastWinner = -1;
 
     public CustomStateMachine state;
     [HideInInspector]
@@ -48,12 +54,6 @@ public class GameManager : MonoBehaviour
         powerPanel = GameObject.Find("PowerPanel");
         powerPanel.SetActive(false);
 
-        if(gameType.Equals("IA"))
-        {
-            string difficulty = PlayerPrefs.GetString("difficulty");
-            Debug.Log("IA level: " + difficulty);
-        }
-
         List<GameObject> listObj = new List<GameObject>();
         listObj.AddRange(GameObject.FindGameObjectsWithTag("Card"));
         foreach (GameObject o in listObj)
@@ -62,44 +62,42 @@ public class GameManager : MonoBehaviour
         }
         animatorSpeed = gameLogic.speed;
         powerChar = 'N';
-    }
 
-    public void InitRound()
-    {
-        Deck.Instance.InitRound();
-        Discard.Instance.stack = new List<GameObject>();
+        gamemode = PlayerPrefs.GetString("gamemode");
         
+        if (gamemode.Equals("IA"))
+        {
+            gameBegin = true;
+            GameObject pp = Instantiate(prefabPlayer);
+        }
+        else
+        {
+            PhotonNetwork.Instantiate(prefabPlayer.name, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
+           // manager = GameObject.Find("MultiplayerManager").GetComponent<NetworkManager>();
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
+        if (gameBegin && gamemode.Equals("multiplayer") && state is NewRound)
         {
-            if (Input.touchCount > 0 && Input.touchCount < 2)
+            /*
+            Debug.Log(manager.numPlayers);
+            if(manager.numPlayers >=2)
             {
-                if (Input.GetTouch(0).phase == TouchPhase.Began)
-                {
-                    Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
-                    CheckTouch(ray);
-                }
+                state.Execute(null);
             }
+            */
         }
-        else if (Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.OSXEditor)
+        else if(gameBegin && gamemode.Equals("IA") && state is NewRound)
         {
-            if (Input.GetMouseButtonDown(0))
-            {
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                CheckTouch(ray);
-            }
+            state.Execute(null);
         }
         if (powerChar == 'J' && selectedCard != null && selectedOpponentCard != null)
         {
             Card.Position p1 = selectedCard.position;
             Card.Position p2 = selectedOpponentCard.position;
-
-            //cardsJ1.Remove(selectedCard);
-            //cardsJ2.Remove(selectedOpponentCard);
 
             selectedCard.MoveTo(p2);
             selectedOpponentCard.MoveTo(p1);
@@ -111,14 +109,19 @@ public class GameManager : MonoBehaviour
             powerChar = 'N';
             gameLogic.speed = animatorSpeed;
         }
-        
     }
 
+
+
+    public void UpdateScoreText()
+    {
+        GameObject.Find("ScoreText").GetComponent<Text>().text = "Scores: " +namePlayer1 +" "+ GameManager.Instance.scoreP1 + " - "+ namePlayer2+" " + GameManager.Instance.scoreP2;
+    }
     private void Exit()
     {
-        if(gameType.Equals("IA"))
+        if (gamemode.Equals("IA"))
         {
-            SceneManager.LoadScene("Main Menu");
+            
         }
         else
         {
@@ -127,21 +130,21 @@ public class GameManager : MonoBehaviour
     }
 
     // Player functions
-    private void CheckTouch(Ray ray)
+    public void CheckTouch(Ray ray, Card.Owner player)
     {
         RaycastHit hit;
         string s = CheckTouchUI(ray);
-        if(s!= null && s.Equals("ActionButton") && state is P1Discard) 
+        if (s != null && s.Equals("ActionButton") && state is P1Discard)
         {
             Debug.Log("EndRound Clicked! ");
-            SetEndTurn("Player1");
+            SetEndTurn(player);
         }
-        else if (s != null &&  s.Equals("ActionButton") && state is EndRound)
+        else if (s != null && s.Equals("ActionButton") && state is EndRound)
         {
             Debug.Log("New Round Clicked! ");
             gameLogic.SetTrigger("NewRoundStart");
         }
-        else if(s != null && s.Equals("ExitButton"))
+        else if (s != null && s.Equals("ExitButton"))
         {
             Exit();
         }
@@ -149,13 +152,11 @@ public class GameManager : MonoBehaviour
         {
             CheckPower();
         }
-        else if (Physics.Raycast(ray, out hit) && s== null)
+        else if (Physics.Raycast(ray, out hit) && s == null)
         {
             GameObject cardHit = hit.collider.gameObject;
             Card c = cardHit.GetComponent<Card>();
-            //Debug.Log("Card Clicked : " + c.ToString());
-
-            if (powerChar == 'N')
+            if (powerChar == 'N' && (c.owner == player || c.owner == Card.Owner.Deck || c.owner == Card.Owner.Discard))
             {
                 if (selectedCard != null && selectedCard != c)
                 {
@@ -164,18 +165,18 @@ public class GameManager : MonoBehaviour
                     {
                         DoubleClick dc = this.gameObject.AddComponent<DoubleClick>();
                         dc.card = c;
-                        dc.CheckDoubleClick();
+                        dc.CheckDoubleClick(player);
                     }
                 }
                 else if (selectedCard == null)
                 {
 
                     selectedCard = c;
-                    if (c!= null && c.gameObject.GetComponent<DoubleClick>() == null)
+                    if (c != null && c.gameObject.GetComponent<DoubleClick>() == null)
                     {
                         DoubleClick dc = this.gameObject.AddComponent<DoubleClick>();
                         dc.card = c;
-                        dc.CheckDoubleClick();
+                        dc.CheckDoubleClick(player);
                     }
                 }
                 else
@@ -186,7 +187,7 @@ public class GameManager : MonoBehaviour
             }
             else if (powerChar == 'Q')
             {
-                if (c.owner == Card.Owner.Player)
+                if (c.owner == player)
                 {
                     c.SetHidden(false);
                     foreach (Card card in cardsJ1)
@@ -202,20 +203,40 @@ public class GameManager : MonoBehaviour
             {
                 if (selectedCard == null || selectedOpponentCard == null)
                 {
-                    if (c.owner == Card.Owner.Player)
+                    if (c.owner == player)
                     {
                         selectedCard = c;
-                        foreach (Card card in cardsJ1)
+                        if (player == Card.Owner.Player1)
                         {
-                            if (card != null && card != c) card.SetParticles(false);
+                            foreach (Card card in cardsJ1)
+                            {
+                                if (card != null && card != c) card.SetParticles(false);
+                            }
+                        }
+                        else
+                        {
+                            foreach (Card card in cardsJ2)
+                            {
+                                if (card != null && card != c) card.SetParticles(false);
+                            }
                         }
                     }
-                    else if (c.owner == Card.Owner.Player2)
+                    else if (c.owner != player)
                     {
                         selectedOpponentCard = c;
-                        foreach (Card card in cardsJ2)
+                        if (player == Card.Owner.Player1)
                         {
-                            if (card != null && card != c) card.SetParticles(false);
+                            foreach (Card card in cardsJ2)
+                            {
+                                if (card != null && card != c) card.SetParticles(false);
+                            }
+                        }
+                        else
+                        {
+                            foreach (Card card in cardsJ1)
+                            {
+                                if (card != null && card != c) card.SetParticles(false);
+                            }
                         }
                     }
                 }
@@ -236,88 +257,154 @@ public class GameManager : MonoBehaviour
         }
         return null;
     }
-    public void TryDeleteCard(Card cardSelected)
+    public void TryDeleteCard(Card cardSelected, Card.Owner player)
     {
-        if (cardSelected.owner == Card.Owner.Player)
+        Debug.Log("Try Delete Card: " + player);
+        if (cardSelected.owner == player)
         {
             if (Discard.Instance.stack.Count > 0 && cardSelected.value.Equals(Discard.Instance.stack[0].GetComponent<Card>().value))
             {
-                //cardsJ1.Remove(cardSelected);
-                cardSelected.owner = Card.Owner.Discard;
                 cardSelected.MoveTo(Card.Position.Discard);
-                
-                Debug.Log("Card deleted:" + cardSelected);
 
                 if (cardSelected.value == "Q") UsePower('Q');
                 if (cardSelected.value == "J") UsePower('J');
 
-                if(cardsJ1.Count == 0)
+                if (player == Card.Owner.Player1 && cardsJ1.Count == 0)
                 {
-                    endRoundPlayer = "Player1";
+                    endRoundPlayer = player;
+                    GameManager.Instance.gameLogic.SetTrigger("EndRound");
+                }
+                else if (player == Card.Owner.Player2 && cardsJ2.Count == 0)
+                {
+                    endRoundPlayer = player;
                     GameManager.Instance.gameLogic.SetTrigger("EndRound");
                 }
             }
             else
             {
                 TextViewer.Instance.SetTextTemporary("Wrong card !", Color.red);
-                int[] arrayPos = new int[] { 1, 2, 3, 4, 5,6 };
-                if (cardsJ1.Count < 6)
+                int[] arrayPos = new int[] { 1, 2, 3, 4, 5, 6 };
+                if (player == Card.Owner.Player1)
                 {
-                    foreach (Card c in cardsJ1)
+                    if (cardsJ1.Count < 6)
                     {
-                        switch (c.position)
+                        foreach (Card c in cardsJ1)
                         {
-                            case Card.Position.Player_Slot1:
-                                arrayPos[0] = -1;
-                                break;
-                            case Card.Position.Player_Slot2:
-                                arrayPos[1] = -1;
-                                break;
-                            case Card.Position.Player_Slot3:
-                                arrayPos[2] = -1;
-                                break;
-                            case Card.Position.Player_Slot4:
-                                arrayPos[3] = -1;
-                                break;
-                            case Card.Position.Player_Slot5:
-                                arrayPos[4] = -1;
-                                break;
-                            case Card.Position.Player_Slot6:
-                                arrayPos[5] = -1;
-                                break;
-                        }
-                    }
-
-                    foreach (int i in arrayPos)
-                    {
-                        Card.Position p = Card.Position.Player_Slot6;
-                        if (i != -1)
-                        {
-                            switch (i)
+                            switch (c.position)
                             {
-                                case (1):
-                                    p = Card.Position.Player_Slot1;
+                                case Card.Position.Player1_Slot1:
+                                    arrayPos[0] = -1;
                                     break;
-                                case (2):
-                                    p = Card.Position.Player_Slot2;
+                                case Card.Position.Player1_Slot2:
+                                    arrayPos[1] = -1;
                                     break;
-                                case (3):
-                                    p = Card.Position.Player_Slot3;
+                                case Card.Position.Player1_Slot3:
+                                    arrayPos[2] = -1;
                                     break;
-                                case (4):
-                                    p = Card.Position.Player_Slot4;
+                                case Card.Position.Player1_Slot4:
+                                    arrayPos[3] = -1;
                                     break;
-                                case (5):
-                                    p = Card.Position.Player_Slot5;
+                                case Card.Position.Player1_Slot5:
+                                    arrayPos[4] = -1;
                                     break;
-                                case (6):
-                                    p = Card.Position.Player_Slot6;
+                                case Card.Position.Player1_Slot6:
+                                    arrayPos[5] = -1;
                                     break;
                             }
-                            Card c = Deck.Instance.Draw();
-                            c.MoveTo(p);
-                            cardsJ1.Add(c);
-                            break;
+                        }
+
+                        foreach (int i in arrayPos)
+                        {
+                            Card.Position p = Card.Position.Player1_Slot6;
+                            if (i != -1)
+                            {
+                                switch (i)
+                                {
+                                    case (1):
+                                        p = Card.Position.Player1_Slot1;
+                                        break;
+                                    case (2):
+                                        p = Card.Position.Player1_Slot2;
+                                        break;
+                                    case (3):
+                                        p = Card.Position.Player1_Slot3;
+                                        break;
+                                    case (4):
+                                        p = Card.Position.Player1_Slot4;
+                                        break;
+                                    case (5):
+                                        p = Card.Position.Player1_Slot5;
+                                        break;
+                                    case (6):
+                                        p = Card.Position.Player1_Slot6;
+                                        break;
+                                }
+                                Card c = Deck.Instance.Draw();
+                                c.MoveTo(p);
+                                break;
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    if (cardsJ2.Count < 6)
+                    {
+                        foreach (Card c in cardsJ2)
+                        {
+                            switch (c.position)
+                            {
+                                case Card.Position.Player2_Slot1:
+                                    arrayPos[0] = -1;
+                                    break;
+                                case Card.Position.Player2_Slot2:
+                                    arrayPos[1] = -1;
+                                    break;
+                                case Card.Position.Player2_Slot3:
+                                    arrayPos[2] = -1;
+                                    break;
+                                case Card.Position.Player2_Slot4:
+                                    arrayPos[3] = -1;
+                                    break;
+                                case Card.Position.Player2_Slot5:
+                                    arrayPos[4] = -1;
+                                    break;
+                                case Card.Position.Player2_Slot6:
+                                    arrayPos[5] = -1;
+                                    break;
+                            }
+                        }
+
+                        foreach (int i in arrayPos)
+                        {
+                            Card.Position p = Card.Position.Player2_Slot6;
+                            if (i != -1)
+                            {
+                                switch (i)
+                                {
+                                    case (1):
+                                        p = Card.Position.Player2_Slot1;
+                                        break;
+                                    case (2):
+                                        p = Card.Position.Player2_Slot2;
+                                        break;
+                                    case (3):
+                                        p = Card.Position.Player2_Slot3;
+                                        break;
+                                    case (4):
+                                        p = Card.Position.Player2_Slot4;
+                                        break;
+                                    case (5):
+                                        p = Card.Position.Player2_Slot5;
+                                        break;
+                                    case (6):
+                                        p = Card.Position.Player2_Slot6;
+                                        break;
+                                }
+                                Card c = Deck.Instance.Draw();
+                                c.MoveTo(p);
+                                break;
+                            }
                         }
                     }
                 }
@@ -325,9 +412,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void SetEndTurn(string s)
+    public void SetEndTurn(Card.Owner player)
     {
-        endRoundPlayer = s;
+        endRoundPlayer = player;
         TextViewer.Instance.SetTextTemporary("END ROUND", Color.red);
     }
     public void ChangePhase()
@@ -372,13 +459,13 @@ public class GameManager : MonoBehaviour
                             powerPanelVisible = false;
                             foreach (Card card in cardsJ1)
                             {
-                                 card.SetParticles(true);
+                                card.SetParticles(true);
                             }
                             if (powerChar == 'J')
                             {
                                 foreach (Card card in cardsJ2)
                                 {
-                                     card.SetParticles(true);
+                                    card.SetParticles(true);
                                 }
                             }
                         }
@@ -392,7 +479,7 @@ public class GameManager : MonoBehaviour
                     }
                 }
             }
-            else if (Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.OSXEditor)
+            else
             {
                 //Debug.Log("WindowsApplication");
                 if (Input.GetMouseButtonDown(0))
@@ -440,10 +527,9 @@ public class GameManager : MonoBehaviour
 
     //IA Functions
 
-
-    public Card  LookCard(int index)
+    public Card LookCard(int index)
     {
-        return  cardsJ2[index];
+        return cardsJ2[index];
     }
-   // Multiplayer Functions
+    // Multi player Functions
 }

@@ -7,17 +7,20 @@ public class DoubleClick : MonoBehaviour // This class is used to check if a car
     public Card card;
     private bool isRunning = false;
     public int count = 0;
+    public Card.Owner playerID;
 
     public DoubleClick(Card c)
     {
         this.card = c;
     }
 
-    public void CheckDoubleClick()
+    public void CheckDoubleClick(Card.Owner p)
     {
+       
         if(!isRunning)
         {
-           // Debug.Log("Click First");
+            playerID = p;
+            // Debug.Log("Click First");
             count += 1;
             StartCoroutine(CheckDoubleClick_Routine());
         } 
@@ -39,7 +42,7 @@ public class DoubleClick : MonoBehaviour // This class is used to check if a car
         {
             //Debug.Log("Routine ended , double click detected");
             GameManager.Instance.selectedCard = null;
-            GameManager.Instance.TryDeleteCard(this.card);
+            GameManager.Instance.TryDeleteCard(this.card, playerID);
         }
         Destroy(this);
     }

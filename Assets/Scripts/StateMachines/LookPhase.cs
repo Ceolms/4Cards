@@ -20,7 +20,7 @@ public class LookPhase : CustomStateMachine
         }
         cardsSelected = 0;
         GameManager.Instance.state = this;
-        if (GameManager.Instance.gameType == "IA")
+        if (GameManager.Instance.gamemode == "IA")
         {
             IA.Instance.LookPhase();
         }
@@ -43,7 +43,7 @@ public class LookPhase : CustomStateMachine
 
     public override void Execute(Card c)
     {
-        if (c.owner == Card.Owner.Player)
+        if (c.owner == Card.Owner.Player1)
         {
             cardsSelected += 1;
             if (cardsSelected == 1) selectedCard1 = c;

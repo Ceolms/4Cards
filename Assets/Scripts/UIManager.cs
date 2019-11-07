@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
@@ -12,8 +13,11 @@ public class UIManager : MonoBehaviour
     public GameObject settingsPanel;
     public GameObject searchingPanel;
     public GameObject loadingCard;
-
+    //public NetworkManager manager;
+    public GameObject buttonMatchPrefab;
+    private bool isHost;
     private bool searching;
+    private bool cooldownSearch;
     void Start()
     {
         Instance = this;
@@ -37,7 +41,7 @@ public class UIManager : MonoBehaviour
                 }
             }
         }
-        else if (Application.platform == RuntimePlatform.WindowsEditor || Application.platform == RuntimePlatform.OSXEditor)
+        else
         {
             if (Input.GetMouseButtonDown(0))
             { 
@@ -50,12 +54,19 @@ public class UIManager : MonoBehaviour
             loadingCard.transform.Rotate(new Vector3(0, 10, 0));
         }
 
-        if(searching)
+        if(searching && !cooldownSearch)
         {
-
+            cooldownSearch = true;
+            StartCoroutine(CoolDownResearch());
         }
     }
 
+    private IEnumerator CoolDownResearch()
+    {
+        Search();
+        yield return new WaitForSeconds(6);
+        cooldownSearch = false;
+    }
 
     private void CheckTouchUI(Ray ray)
     {
@@ -88,12 +99,14 @@ public class UIManager : MonoBehaviour
                 case ("ButtonOverkill"):
                     StartSolo("Overkill");
                     break;
-                case ("ButtonSearch"):
-                    Search();
+                case ("ButtonCreate"):
+                    Create();
+                    break;
+                case ("ButtonJoin"):
+                    Join();
                     break;
                 case ("ButtonAbort"):
-                    searching = false;
-                    searchingPanel.SetActive(false);
+                    Abort();
                     break;
             }
         }
@@ -107,11 +120,8 @@ public class UIManager : MonoBehaviour
         settingsPanel.SetActive(false);
     }
     private void Multi(GameObject button)
-    {
-        multiPanel.SetActive(true);
-        mainPanel.SetActive(false);
-        soloPanel.SetActive(false); 
-        settingsPanel.SetActive(false);
+    {   
+        PhotonNetwork.ConnectUsingSettings("1.0");
     }
     private void Settings(GameObject button)
     {
@@ -122,6 +132,7 @@ public class UIManager : MonoBehaviour
     }
     private void Return(GameObject button)
     {
+        if(multiPanel.activeSelf) PhotonNetwork.Disconnect();
         mainPanel.SetActive(true);
         soloPanel.SetActive(false);
         multiPanel.SetActive(false);
@@ -131,12 +142,103 @@ public class UIManager : MonoBehaviour
     private void StartSolo(string difficulty)
     {
         PlayerPrefs.SetString("difficulty", difficulty);
+        PlayerPrefs.SetString("gamemode", "IA");
+
+        GameObject go = GameObject.Find("MultiplayerManager");
+        Destroy(go);
         SceneManager.LoadScene("Game");
     }
+    private void Abort()
+    {
+        searching = false;
+        
+        GameObject listPanel = GameObject.Find("ListMatchsPanel");
+        foreach (Transform child in listPanel.transform)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
+        searchingPanel.SetActive(false);
+    }
 
-    private void Search()
+    // Create Button -Create a Match and wait for it to be created
+    private void Create()
+    {
+        string nom = GameObject.Find("InputField").GetComponent<InputField>().text;
+        if(!string.IsNullOrEmpty(nom))
+        {
+            isHost = true;
+            PhotonNetwork.CreateRoom(nom, new RoomOptions() { MaxPlayers = 2 },null);
+        }
+    }
+    //Join Button - List alls matches available
+    private void Join()
     {
         searchingPanel.SetActive(true);
         searching = true;
+    }
+    private void Search()
+    {
+        float offsetX = -2.4f;
+        float offsetY = 3.4f;
+
+        GameObject listPanel = GameObject.Find("ListMatchsPanel");
+        foreach (Transform child in listPanel.transform)
+        {
+            GameObject.Destroy(child.gameObject);
+        }
+
+        List<RoomInfo> rooms = new List<RoomInfo>(PhotonNetwork.GetRoomList());
+        foreach (RoomInfo room in rooms)
+        {
+            GameObject btnMatch = Instantiate(buttonMatchPrefab);
+            btnMatch.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
+            btnMatch.transform.SetParent(listPanel.transform);
+            btnMatch.transform.localPosition = new Vector3(offsetX, offsetY, btnMatch.transform.position.x);
+            offsetY -= 1;
+            btnMatch.GetComponent<OnClickMatchJoin>().SetButtonMatch(room.Name);
+        }
+        if(rooms.Count == 0) Debug.Log("0 rooms founds");
+    }
+
+    public void JoinMatch(string nom)
+    {
+        PhotonNetwork.JoinRoom(nom);
+    }
+
+
+    //call backs ---
+
+    private void OnConnectedToMaster()
+    {
+        PhotonNetwork.JoinLobby(TypedLobby.Default);
+        Debug.Log("Connected to Master");
+    }
+    private void OnJoinedLobby()
+    {
+        multiPanel.SetActive(true);
+        mainPanel.SetActive(false);
+        soloPanel.SetActive(false);
+        settingsPanel.SetActive(false);
+        Debug.Log("Lobby Joined");
+    }
+
+    private void OnJoinedRoom()
+    {
+        string nom = GameObject.Find("InputField").GetComponent<InputField>().text;
+        PlayerPrefs.SetString("gamemode", "multiplayer");
+        PlayerPrefs.SetString("PlayerName", nom);
+        if(isHost) PlayerPrefs.SetString("playerID", "player1");
+        else PlayerPrefs.SetString("playerID", "player2");
+        PhotonNetwork.LoadLevel("Game");
+    }
+
+    private void OnDisconnectedFromPhoton()
+    {
+        Debug.Log("Disconnected from Photon");
+    }
+
+    private void OnFailedToConnectToPhoton()
+    {
+        Debug.Log("Error connecting to Photon");
     }
 }

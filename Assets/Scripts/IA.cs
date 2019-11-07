@@ -134,7 +134,7 @@ public class IA : MonoBehaviour
                 score += c.ValueToInt();
 
             }
-            if (score <=6) GameManager.Instance.SetEndTurn("Opponent");
+            if (score <=6) GameManager.Instance.SetEndTurn(Card.Owner.Player2);
         }
         if(!usePower) GameManager.Instance.ChangePhaseLong();  
     }
@@ -159,7 +159,7 @@ public class IA : MonoBehaviour
                // GameManager.Instance.cardsJ2.Remove(card);
                 if (GameManager.Instance.cardsJ2.Count == 0)
                 {
-                    GameManager.Instance.endRoundPlayer = "Opponent";
+                    GameManager.Instance.endRoundPlayer = Card.Owner.Player2;
                     GameManager.Instance.gameLogic.SetTrigger("EndRound");
                 }
                 if (card.value == "Q") StartCoroutine(UseQueenPower());

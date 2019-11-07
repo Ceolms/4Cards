@@ -9,7 +9,7 @@ public class P1Draw : CustomStateMachine
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (GameManager.Instance.gameType.Equals("IA"))
+        if (GameManager.Instance.gamemode.Equals("IA"))
         {
             IA.Instance.CheckDeleteCard();
         }
@@ -38,7 +38,7 @@ public class P1Draw : CustomStateMachine
             c.SetHidden(false);
             Deck.Instance.ShowParticles(false);
             Discard.Instance.ShowParticles(false);
-            if (GameManager.Instance.gameType.Equals("IA"))
+            if (GameManager.Instance.gamemode.Equals("IA"))
             { IA.Instance.opponentKnownCards.Add(c); }
             GameManager.Instance.ChangePhase();
         }       

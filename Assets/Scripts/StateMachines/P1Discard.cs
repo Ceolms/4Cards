@@ -16,7 +16,7 @@ public class P1Discard : CustomStateMachine
 
     public void DiscardCard()
     {
-        if (card.owner == Card.Owner.Player && card.position != Card.Position.PlayerChoice) // If the player want to discard one of his cards
+        if (card.owner == Card.Owner.Player1 && card.position != Card.Position.PlayerChoice) // If the player want to discard one of his cards
         {
             Card.Position p = card.position;
             card.MoveTo(Card.Position.Discard); // move old card to discard
@@ -30,17 +30,17 @@ public class P1Discard : CustomStateMachine
 
             if (card.value == "Q") GameManager.Instance.UsePower('Q');
             if (card.value == "J") GameManager.Instance.UsePower('J');
-            if (GameManager.Instance.gameType.Equals("IA") && IA.Instance.opponentKnownCards.Contains(card))
+            if (GameManager.Instance.gamemode.Equals("IA") && IA.Instance.opponentKnownCards.Contains(card))
             { IA.Instance.opponentKnownCards.Remove(card); }
             GameManager.Instance.ChangePhaseLong();
         }
-        else if (card.owner == Card.Owner.Player && card.position == Card.Position.PlayerChoice) // else if it's the one he drawn
+        else if (card.owner == Card.Owner.Player1 && card.position == Card.Position.PlayerChoice) // else if it's the one he drawn
         {
             card.MoveTo(Card.Position.Discard);
 
             if (card.value == "Q") GameManager.Instance.UsePower('Q');
             if (card.value == "J") GameManager.Instance.UsePower('J');
-            if (GameManager.Instance.gameType.Equals("IA") && IA.Instance.opponentKnownCards.Contains(card))
+            if (GameManager.Instance.gamemode.Equals("IA") && IA.Instance.opponentKnownCards.Contains(card))
             { IA.Instance.opponentKnownCards.Remove(card); }
             GameManager.Instance.ChangePhaseLong();
         }
@@ -53,12 +53,11 @@ public class P1Discard : CustomStateMachine
         {
             DiscardCard();
         }
-
     }
 
     public override void ChangePhase()
     {
-        if (GameManager.Instance.endRoundPlayer.Equals("Opponent")) GameManager.Instance.gameLogic.SetTrigger("EndRound");
+        if (GameManager.Instance.endRoundPlayer == Card.Owner.Player2) GameManager.Instance.gameLogic.SetTrigger("EndRound");
         else GameManager.Instance.gameLogic.SetTrigger("DiscardComplete");
     }
 }

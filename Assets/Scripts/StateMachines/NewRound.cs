@@ -12,13 +12,14 @@ public class NewRound : CustomStateMachine
         //Debug.Log("New Round StateEnter");
         GameManager.Instance.cardsJ1 = new List<Card>();
         GameManager.Instance.cardsJ2 = new List<Card>();
+        Discard.Instance.stack = new List<GameObject>();
         TextViewer.Instance.SetText("Distribute Phase");
         GameManager.Instance.state = this;
         GameManager.Instance.gameLogic.SetBool("LookCompleteP1", false);
         GameManager.Instance.gameLogic.SetBool("LookCompleteP2", false);
 
         TextViewer.Instance.SetEndTurn();
-        GameManager.Instance.endRoundPlayer = "null";
+        GameManager.Instance.endRoundPlayer = Card.Owner.Deck;
 
         if (GameManager.Instance.lastWinner == -1)
         {
@@ -26,13 +27,14 @@ public class NewRound : CustomStateMachine
             GameManager.Instance.gameLogic.SetInteger("FirstToPlay", i);
         }
         else GameManager.Instance.gameLogic.SetInteger("FirstToPlay", GameManager.Instance.lastWinner);
-
-        Deck.Instance.InitRound();
+        GameManager.Instance.gameBegin = true;
     }
+
 
     public override void Execute(Card c)
     {
-     // nothing to do here
+        GameManager.Instance.gameBegin = false;
+        Deck.Instance.InitRound();
     }
 
     public override void ChangePhase()

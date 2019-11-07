@@ -8,8 +8,8 @@ public class Card : MonoBehaviour
     public static int speed = 8;
     public static float timeToHide = 1.8f; 
     public enum Color {Spades ,Club ,Heart ,Diamond }
-    public enum Owner {Deck ,Discard ,Player ,Player2 }
-    public enum Position {Deck,Discard,Player_Slot1,Player_Slot2,Player_Slot3,Player_Slot4, Player_Slot5, Player_Slot6, Player2_Slot1,Player2_Slot2,Player2_Slot3,Player2_Slot4, Player2_Slot5,Player2_Slot6, PlayerChoice,Player2Choice} // to set position on the board
+    public enum Owner {Deck ,Discard ,Player1 ,Player2 }
+    public enum Position {Deck,Discard,Player1_Slot1,Player1_Slot2,Player1_Slot3,Player1_Slot4, Player1_Slot5, Player1_Slot6, Player2_Slot1,Player2_Slot2,Player2_Slot3,Player2_Slot4, Player2_Slot5,Player2_Slot6, PlayerChoice,Player2Choice} // to set position on the board
     private Outline outline;
     public string value; // A , 2 ,6 , K...
 
@@ -163,19 +163,14 @@ public class Card : MonoBehaviour
     }
     public void MoveTo(Position p)
     {
-       // Debug.Log("Card(" + value+ "," + color + ") MoveTo " + p);
-        
-
-        if (this.position == Card.Position.Player_Slot1 || this.position == Card.Position.Player_Slot2 || this.position == Card.Position.Player_Slot3
-            || this.position == Card.Position.Player_Slot4 || this.position == Card.Position.Player_Slot5 || this.position == Card.Position.Player_Slot6)
+        if (this.position == Card.Position.Player1_Slot1 || this.position == Card.Position.Player1_Slot2 || this.position == Card.Position.Player1_Slot3
+            || this.position == Card.Position.Player1_Slot4 || this.position == Card.Position.Player1_Slot5 || this.position == Card.Position.Player1_Slot6)
         {
-            Debug.Log("Remove" + this + " from cardsJ1");
             GameManager.Instance.cardsJ1.Remove(this);
         }
         else if (this.position == Card.Position.Player2_Slot1 || this.position == Card.Position.Player2_Slot2 || this.position == Card.Position.Player2_Slot3
            || this.position == Card.Position.Player2_Slot4 || this.position == Card.Position.Player2_Slot5 || this.position == Card.Position.Player2_Slot6)
         {
-            Debug.Log("Remove" + this + " from cardsJ2");
             GameManager.Instance.cardsJ2.Remove(this);
         }
         this.position = p;
@@ -194,40 +189,40 @@ public class Card : MonoBehaviour
                 isMoving = true;
                 Discard.Instance.stack.Insert(0, this.gameObject);      
                 break;
-            case Position.Player_Slot1:
+            case Position.Player1_Slot1:
                 destination = GameObject.Find("PlayerHand_Slot1").transform;
                 GameManager.Instance.cardsJ1.Add(this);
-                owner = Owner.Player;
+                owner = Owner.Player1;
                 isMoving = true;
                 break;
-            case Position.Player_Slot2:
+            case Position.Player1_Slot2:
                 destination = GameObject.Find("PlayerHand_Slot2").transform;
                 GameManager.Instance.cardsJ1.Add(this);
-                owner = Owner.Player;
+                owner = Owner.Player1;
                 isMoving = true;
                 break;
-            case Position.Player_Slot3:
+            case Position.Player1_Slot3:
                 destination = GameObject.Find("PlayerHand_Slot3").transform;
                 GameManager.Instance.cardsJ1.Add(this);
-                owner = Owner.Player;
+                owner = Owner.Player1;
                 isMoving = true;
                 break;
-            case Position.Player_Slot4:
+            case Position.Player1_Slot4:
                 destination = GameObject.Find("PlayerHand_Slot4").transform;
                 GameManager.Instance.cardsJ1.Add(this);
-                owner = Owner.Player;
+                owner = Owner.Player1;
                 isMoving = true;
                 break;
-            case Position.Player_Slot5:
+            case Position.Player1_Slot5:
                 destination = GameObject.Find("PlayerHand_Slot5").transform;
                 GameManager.Instance.cardsJ1.Add(this);
-                owner = Owner.Player;
+                owner = Owner.Player1;
                 isMoving = true;
                 break;
-            case Position.Player_Slot6:
+            case Position.Player1_Slot6:
                 destination = GameObject.Find("PlayerHand_Slot6").transform;
                 GameManager.Instance.cardsJ1.Add(this);
-                owner = Owner.Player;
+                owner = Owner.Player1;
                 isMoving = true;
                 break;
             case Position.Player2_Slot1:
@@ -268,7 +263,7 @@ public class Card : MonoBehaviour
                 break;
             case Position.PlayerChoice:
                 destination = GameObject.Find("PlayerChoicePosition").transform;
-                owner = Owner.Player;
+                owner = Owner.Player1;
                 isMoving = true;
                 break;
             case Position.Player2Choice:
