@@ -12,6 +12,7 @@ public class NewRound : CustomStateMachine
         //Debug.Log("New Round StateEnter");
         GameManager.Instance.cardsJ1 = new List<Card>();
         GameManager.Instance.cardsJ2 = new List<Card>();
+        if (GameManager.Instance.gamemode.Equals("IA")) IA.Instance.NewRound();
         Discard.Instance.stack = new List<GameObject>();
         TextViewer.Instance.SetText("Distribute Phase");
         GameManager.Instance.state = this;

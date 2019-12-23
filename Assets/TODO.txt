@@ -1,18 +1,12 @@
 -Alpha- Fini !
 
-Multi
+	Bugs : IA Queen et joueur DiscardPhase sans avoir pioché
 
-	Creation Salle
-	Choix nom
-	attente connexion J2
-	ajout nom au textView
+	Multi
 
-	Recherche Salle
-	Join
-
-	Start
-
+	comprendre RPC
 	Synchro Carte et Manager
+	Types Messages
 
 -Beta-
 

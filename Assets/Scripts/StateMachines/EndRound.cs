@@ -8,9 +8,11 @@ public class EndRound : CustomStateMachine
     int scoreP1 = 0 ;
     int scoreP2 = 0 ;
 
-    // Start is called before the first frame update
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        scoreP1 = 0;
+        scoreP2 = 0;
+
         GameManager.Instance.state = this;
         foreach(Card c in GameManager.Instance.cardsJ1)
         {
@@ -28,6 +30,7 @@ public class EndRound : CustomStateMachine
                 scoreP2 += c.ValueToInt();
             }
         }
+        Debug.Log("Scores : " + scoreP1 + " : " + scoreP2);
         if(scoreP1 == scoreP2)
         {
             if(GameManager.Instance.endRoundPlayer == Card.Owner.Player1)
@@ -65,6 +68,6 @@ public class EndRound : CustomStateMachine
 
     public override void ChangePhase()
     {
-        throw new System.NotImplementedException();
+        
     }
 }

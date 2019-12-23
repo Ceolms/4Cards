@@ -8,11 +8,24 @@ public class IA : MonoBehaviour
 
     [SerializeField]
     private List<Card> knownCards = new List<Card>();
-    public  List<Card> opponentKnownCards = new List<Card>();
+    public List<Card> opponentKnownCards = new List<Card>();
     // Start is called before the first frame update
     void Start()
     {
         Instance = this;
+    }
+
+
+    public void NewRound()
+    {
+        knownCards = new List<Card>();
+        opponentKnownCards = new List<Card>();
+    }
+
+
+    public void RemoveKnown(Card c)
+    {
+        knownCards.Remove(c);
     }
 
     public void LookPhase()
@@ -27,11 +40,11 @@ public class IA : MonoBehaviour
         StartCoroutine(DrawCoroutine());
     }
 
-    private IEnumerator DrawCoroutine() 
+    private IEnumerator DrawCoroutine()
     {
         CheckDeleteCard();
         string cardsString = "";
-        foreach(Card c in knownCards)
+        foreach (Card c in knownCards)
         {
             cardsString += c;
             cardsString += "    ";
@@ -126,37 +139,40 @@ public class IA : MonoBehaviour
             if (cardToDelete.value == "Q") { usePower = true; StartCoroutine(UseQueenPower()); }
             else if (cardToDelete.value == "J") { usePower = true; StartCoroutine(UseJackPower()); }
         }
-        if(knownCards.Count == GameManager.Instance.cardsJ2.Count)
+        if (knownCards.Count == GameManager.Instance.cardsJ2.Count)
         {
             int score = 0;
-            foreach(Card c in knownCards)
+            foreach (Card c in knownCards)
             {
                 score += c.ValueToInt();
-
             }
-            if (score <=6) GameManager.Instance.SetEndTurn(Card.Owner.Player2);
+            if (score <= 6)
+            {
+                Debug.Log("IA decided to end the round !");
+                GameManager.Instance.SetEndTurn(Card.Owner.Player2);
+            }
         }
-        if(!usePower) GameManager.Instance.ChangePhaseLong();  
+        if (!usePower) GameManager.Instance.ChangePhaseLong();
     }
 
     public void CheckDeleteCard()
-    { 
+    {
         Card cardDiscard = Discard.Instance.stack[0].GetComponent<Card>();
-        if(cardDiscard != null)
+        if (cardDiscard != null)
         {
             Card card = null;
-            foreach(Card c in knownCards)
+            foreach (Card c in knownCards)
             {
-                if(c.value.Equals(cardDiscard.value))
+                if (c.value.Equals(cardDiscard.value))
                 {
                     card = c;
                 }
             }
-            if(card != null)
+            if (card != null)
             {
                 card.MoveTo(Card.Position.Discard);
                 knownCards.Remove(card);
-               // GameManager.Instance.cardsJ2.Remove(card);
+                // GameManager.Instance.cardsJ2.Remove(card);
                 if (GameManager.Instance.cardsJ2.Count == 0)
                 {
                     GameManager.Instance.endRoundPlayer = Card.Owner.Player2;
@@ -169,9 +185,9 @@ public class IA : MonoBehaviour
     }
     private bool CheckBetterCard(Card c)
     {
-        foreach(Card card in knownCards)
+        foreach (Card card in knownCards)
         {
-            if(c.ValueToInt() < card.ValueToInt())
+            if (c.ValueToInt() < card.ValueToInt())
             {
                 return true;
             }
@@ -192,30 +208,28 @@ public class IA : MonoBehaviour
 
     private bool HasUnknownCards()
     {
-        int knowCardsCount = knownCards.Count;
-        int totalCardsCount = 0 ;
-        foreach (Card c in GameManager.Instance.cardsJ2) totalCardsCount += 1;
-        if (knowCardsCount == totalCardsCount) return false;
-        return true;
+        return (knownCards.Count < GameManager.Instance.cardsJ2.Count);
     }
 
     private IEnumerator UseJackPower()
     {
-        yield return  new WaitForSeconds(1f);
+        yield return new WaitForSeconds(1f);
         Card largestIACard = null;
-        if (knownCards.Count > 0) largestIACard = knownCards[0];
-        if (largestIACard != null)
+        // IA check is her highest card
+        if (knownCards.Count > 0)
         {
+            largestIACard = knownCards[0];
             foreach (Card c in knownCards)
             {
-                if (c.ValueToInt() >= 9 && c.ValueToInt() > largestIACard.ValueToInt()) largestIACard = c ;
+                if (c.ValueToInt() >= 7 && c.ValueToInt() > largestIACard.ValueToInt()) largestIACard = c;
             }
         }
 
+        //IA Check player highest card
         Card smallestOpponentCard = null;
-        if(opponentKnownCards.Count > 0 ) smallestOpponentCard = opponentKnownCards[0];
-        if (smallestOpponentCard != null)
+        if (opponentKnownCards.Count > 0)
         {
+            smallestOpponentCard = opponentKnownCards[0];
             foreach (Card c in opponentKnownCards)
             {
                 if (c.ValueToInt() <= 5 && c.ValueToInt() > smallestOpponentCard.ValueToInt()) smallestOpponentCard = c;
@@ -225,32 +239,33 @@ public class IA : MonoBehaviour
         if (largestIACard == null && smallestOpponentCard == null) // if the IA known nothing
         {
             Card cardIA = null;
-            foreach(Card c in GameManager.Instance.cardsJ2)
+            // choose a the fist unknown card of the IA and the player
+            foreach (Card c in GameManager.Instance.cardsJ2)
             {
-                if (c != null && !knownCards.Contains(c)) { cardIA = c; break; }
+                if (!knownCards.Contains(c)) { cardIA = c; break; }
             }
             Card playerCard = null;
             foreach (Card c in GameManager.Instance.cardsJ1)
             {
-                if (c != null && !opponentKnownCards.Contains(c)) {cardIA = c; break;}
+                if ( !opponentKnownCards.Contains(c)) { cardIA = c; break; }
             }
             Exchange(cardIA, playerCard);
         }
-        if(largestIACard == null)
+        else if (largestIACard == null)
         {
             Card cardIA = null;
             foreach (Card c in GameManager.Instance.cardsJ2)
             {
-                if (c != null && !knownCards.Contains(c)) { cardIA = c; break; }
+                if (!knownCards.Contains(c)) { cardIA = c; break; }
             }
             Exchange(cardIA, smallestOpponentCard);
         }
-        if (smallestOpponentCard == null)
+        else if (smallestOpponentCard == null)
         {
             Card playerCard = null;
             foreach (Card c in GameManager.Instance.cardsJ1)
             {
-                if (c != null && !opponentKnownCards.Contains(c)) { playerCard = c; break; }
+                if (!opponentKnownCards.Contains(c)) { playerCard = c; break; }
             }
             Exchange(largestIACard, playerCard);
         }
@@ -263,43 +278,33 @@ public class IA : MonoBehaviour
         GameManager.Instance.ChangePhaseLong();
 
     }
-    private void Exchange(Card cardIA , Card cardPlayer)
+    private void Exchange(Card cardIA, Card cardPlayer)
     {
         Card.Position posIA = cardIA.position;
         Card.Position posPlayer = cardPlayer.position;
 
-        //GameManager.Instance.cardsJ1.Remove(cardPlayer);
-        //GameManager.Instance.cardsJ2.Remove(cardIA);
-
         cardIA.MoveTo(posPlayer);
         cardPlayer.MoveTo(posIA);
 
-        knownCards.Remove(cardIA);
-        knownCards.Add(cardPlayer);
-
-        opponentKnownCards.Remove(cardPlayer);
+        if(opponentKnownCards.Contains(cardPlayer) ) knownCards.Add(cardPlayer);
         opponentKnownCards.Add(cardIA);
+
+        knownCards.Remove(cardIA);
+        opponentKnownCards.Remove(cardPlayer);
+        
     }
 
     private IEnumerator UseQueenPower()
     {
-        foreach (Card c in GameManager.Instance.cardsJ2)
-        {
-            Debug.Log("Cards in Hand:" + c);
-        }
-        foreach (Card c in knownCards)
-        {
-            Debug.Log("Cards knowns :" + c);
-        }
         yield return new WaitForSeconds(1f);
-        
+
         foreach (Card c in GameManager.Instance.cardsJ2)
         {
-            if(!knownCards.Contains(c))
+            if (!knownCards.Contains(c))
             {
                 int slot = 0;
                 Debug.Log("Look card" + c);
-                switch(c.position)
+                switch (c.position)
                 {
                     case Card.Position.Player2_Slot1:
                         slot = 0;

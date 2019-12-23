@@ -16,8 +16,9 @@ public class GameManager : MonoBehaviour
     private float phaseChangeTime = 0f;
     private float phaseChangeTimeLong = 2f;
     public GameObject prefabPlayer;
+    public GameObject prefabPlayerSolo;
     public string gamemode = "IA";
- 
+
     public bool gameBegin;
     [HideInInspector]
     public int firstToPlay = 1;
@@ -64,17 +65,18 @@ public class GameManager : MonoBehaviour
         powerChar = 'N';
 
         gamemode = PlayerPrefs.GetString("gamemode");
-        
+
         if (gamemode.Equals("IA"))
         {
             gameBegin = true;
-            GameObject pp = Instantiate(prefabPlayer);
+            GameObject pp = Instantiate(prefabPlayerSolo);
         }
-        else
+        else if (gamemode.Equals("multiplayer"))
         {
             PhotonNetwork.Instantiate(prefabPlayer.name, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
-           // manager = GameObject.Find("MultiplayerManager").GetComponent<NetworkManager>();
+            // manager = GameObject.Find("MultiplayerManager").GetComponent<NetworkManager>();
         }
+        else Debug.LogError("Error, Gamemode not set");
     }
 
     // Update is called once per frame
@@ -82,15 +84,16 @@ public class GameManager : MonoBehaviour
     {
         if (gameBegin && gamemode.Equals("multiplayer") && state is NewRound)
         {
-            /*
-            Debug.Log(manager.numPlayers);
-            if(manager.numPlayers >=2)
+            if (PhotonNetwork.playerList.Length >= 2)
             {
+                Debug.Log("Two Players ready!");
+                PlayerController.LocalPlayerInstance.photonView.RPC("SetPlayerNameText", PhotonTargets.All, PlayerController.LocalPlayerInstance.namePlayer, PlayerController.LocalPlayerInstance.playerID);
                 state.Execute(null);
             }
-            */
+            else Debug.Log("Wait for other player...");
+
         }
-        else if(gameBegin && gamemode.Equals("IA") && state is NewRound)
+        else if (gameBegin && gamemode.Equals("IA") && state is NewRound)
         {
             state.Execute(null);
         }
@@ -115,13 +118,14 @@ public class GameManager : MonoBehaviour
 
     public void UpdateScoreText()
     {
-        GameObject.Find("ScoreText").GetComponent<Text>().text = "Scores: " +namePlayer1 +" "+ GameManager.Instance.scoreP1 + " - "+ namePlayer2+" " + GameManager.Instance.scoreP2;
+        GameObject.Find("ScoreText").GetComponent<Text>().color = Color.white;
+        GameObject.Find("ScoreText").GetComponent<Text>().text = "Scores: " + namePlayer1 + " " + GameManager.Instance.scoreP1 + " - " + namePlayer2 + " " + GameManager.Instance.scoreP2;
     }
     private void Exit()
     {
         if (gamemode.Equals("IA"))
         {
-            
+            SceneManager.LoadScene("Main Menu");
         }
         else
         {
@@ -156,6 +160,7 @@ public class GameManager : MonoBehaviour
         {
             GameObject cardHit = hit.collider.gameObject;
             Card c = cardHit.GetComponent<Card>();
+            if (c == null) return;
             if (powerChar == 'N' && (c.owner == player || c.owner == Card.Owner.Deck || c.owner == Card.Owner.Discard))
             {
                 if (selectedCard != null && selectedCard != c)
@@ -220,6 +225,12 @@ public class GameManager : MonoBehaviour
                                 if (card != null && card != c) card.SetParticles(false);
                             }
                         }
+                        // change IA knowledge about the two cards 
+                        if (gamemode.Equals("IA"))
+                        {
+                            IA.Instance.opponentKnownCards.Remove(selectedCard);
+                        }
+
                     }
                     else if (c.owner != player)
                     {
@@ -237,6 +248,12 @@ public class GameManager : MonoBehaviour
                             {
                                 if (card != null && card != c) card.SetParticles(false);
                             }
+                        }
+                        // change IA knowledge about the two cards 
+                        if (gamemode.Equals("IA"))
+                        {
+                            IA.Instance.RemoveKnown(selectedOpponentCard);
+                            IA.Instance.opponentKnownCards.Add(selectedOpponentCard);
                         }
                     }
                 }
@@ -258,9 +275,8 @@ public class GameManager : MonoBehaviour
         return null;
     }
     public void TryDeleteCard(Card cardSelected, Card.Owner player)
-    {
-        Debug.Log("Try Delete Card: " + player);
-        if (cardSelected.owner == player)
+    { 
+        if (cardSelected.owner == player && cardSelected.position != Card.Position.Discard && cardSelected.position != Card.Position.Deck)
         {
             if (Discard.Instance.stack.Count > 0 && cardSelected.value.Equals(Discard.Instance.stack[0].GetComponent<Card>().value))
             {
@@ -529,6 +545,7 @@ public class GameManager : MonoBehaviour
 
     public Card LookCard(int index)
     {
+        if (index > cardsJ2.Count) Debug.LogError("Error LookCard index : " + index);
         return cardsJ2[index];
     }
     // Multi player Functions

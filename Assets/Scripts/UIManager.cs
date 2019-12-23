@@ -229,6 +229,7 @@ public class UIManager : MonoBehaviour
         PlayerPrefs.SetString("PlayerName", nom);
         if(isHost) PlayerPrefs.SetString("playerID", "player1");
         else PlayerPrefs.SetString("playerID", "player2");
+        Debug.Log(PlayerPrefs.GetString("playerID"));
         PhotonNetwork.LoadLevel("Game");
     }
 

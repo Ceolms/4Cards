@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
-public class PlayerController : MonoBehaviour
+public class PlayerControllerSolo : MonoBehaviour
 {
-    public static PlayerController LocalPlayerInstance;
-    public PhotonView photonView;
     public Card.Owner playerID;
     public string namePlayer;
-    // Start is called before the first frame update
+
     void Start()
     {
         string gamemode = PlayerPrefs.GetString("gamemode");
@@ -20,19 +18,6 @@ public class PlayerController : MonoBehaviour
             GameManager.Instance.namePlayer1 = "Player";
             GameManager.Instance.namePlayer2 = "IA";
             GameManager.Instance.UpdateScoreText();
-        }
-        else
-        {
-            photonView = this.GetComponent<PhotonView>();
-            
-            if (photonView.isMine)
-            {
-                LocalPlayerInstance = this;
-                string id = PlayerPrefs.GetString("playerID");
-                if (id.Equals("player1")) playerID = Card.Owner.Player1;
-                else playerID = Card.Owner.Player2;
-                namePlayer = PlayerPrefs.GetString("PlayerName");
-            }     
         }
     }
 
@@ -57,14 +42,5 @@ public class PlayerController : MonoBehaviour
                 GameManager.Instance.CheckTouch(ray, playerID);
             }
         }
-    }
-
-    [PunRPC]
-    void SetPlayerNameText(string name, Card.Owner id )
-    {
-        if (id == Card.Owner.Player1)
-            GameManager.Instance.namePlayer1 = name;
-        else GameManager.Instance.namePlayer2 = name;
-        GameManager.Instance.UpdateScoreText();
     }
 }
