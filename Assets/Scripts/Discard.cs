@@ -34,6 +34,7 @@ public class Discard : MonoBehaviour
     public Card Draw()
     {
         GameObject obj = RemoveAndGet<GameObject>(this.stack, 0);
+        stack[0].GetComponent<Card>().SetFront(true);
         return obj.GetComponent<Card>();
     }
 

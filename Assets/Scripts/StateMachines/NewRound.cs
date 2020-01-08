@@ -22,19 +22,12 @@ public class NewRound : CustomStateMachine
         TextViewer.Instance.SetEndTurn();
         GameManager.Instance.endRoundPlayer = Card.Owner.Deck;
 
-        if (GameManager.Instance.lastWinner == -1)
-        {
-            int i = Random.Range(0, 2);
-            GameManager.Instance.gameLogic.SetInteger("FirstToPlay", i);
-        }
-        else GameManager.Instance.gameLogic.SetInteger("FirstToPlay", GameManager.Instance.lastWinner);
+        GameManager.Instance.gameLogic.SetInteger("FirstToPlay", GameManager.Instance.firstToPlay);
         GameManager.Instance.gameBegin = true;
     }
 
-
     public override void Execute(Card c)
     {
-        GameManager.Instance.gameBegin = false;
         Deck.Instance.InitRound();
     }
 

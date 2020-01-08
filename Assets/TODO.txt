@@ -2,11 +2,9 @@
 
 	Bugs : IA Queen et joueur DiscardPhase sans avoir pioché
 
-	Multi
-
-	comprendre RPC
-	Synchro Carte et Manager
-	Types Messages
+	Synchro Deck et stateMachine
+	Ui Wait for P2
+	RPC
 
 -Beta-
 

@@ -32,6 +32,7 @@ public class PlayerController : MonoBehaviour
                 if (id.Equals("player1")) playerID = Card.Owner.Player1;
                 else playerID = Card.Owner.Player2;
                 namePlayer = PlayerPrefs.GetString("PlayerName");
+                Debug.Log("I am "+  id);
             }     
         }
     }
@@ -63,8 +64,31 @@ public class PlayerController : MonoBehaviour
     void SetPlayerNameText(string name, Card.Owner id )
     {
         if (id == Card.Owner.Player1)
+        {
             GameManager.Instance.namePlayer1 = name;
-        else GameManager.Instance.namePlayer2 = name;
+        }
+        else
+        {
+            GameManager.Instance.namePlayer2 = name;
+        }
         GameManager.Instance.UpdateScoreText();
     }
+
+    [PunRPC]
+    void DeckShuffleData(string data)
+    {
+        Debug.Log("I received the deck : " + data);
+
+        string[] dataSplit = data.Split(',');
+
+        Deck.Instance.stack = new List<GameObject>();
+        for (int i = 0; i < dataSplit.Length-1; i++)
+        {
+            GameObject o = GameObject.Find(dataSplit[i]);
+            if(o != null)
+            Deck.Instance.stack.Add(o);
+        }
+        Deck.Instance.receivedDeckEvent = true;
+    }
+
 }

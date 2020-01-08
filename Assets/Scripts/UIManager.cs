@@ -211,7 +211,7 @@ public class UIManager : MonoBehaviour
     private void OnConnectedToMaster()
     {
         PhotonNetwork.JoinLobby(TypedLobby.Default);
-        Debug.Log("Connected to Master");
+      //  Debug.Log("Connected to Master");
     }
     private void OnJoinedLobby()
     {
@@ -219,7 +219,7 @@ public class UIManager : MonoBehaviour
         mainPanel.SetActive(false);
         soloPanel.SetActive(false);
         settingsPanel.SetActive(false);
-        Debug.Log("Lobby Joined");
+       // Debug.Log("Lobby Joined");
     }
 
     private void OnJoinedRoom()
@@ -229,7 +229,6 @@ public class UIManager : MonoBehaviour
         PlayerPrefs.SetString("PlayerName", nom);
         if(isHost) PlayerPrefs.SetString("playerID", "player1");
         else PlayerPrefs.SetString("playerID", "player2");
-        Debug.Log(PlayerPrefs.GetString("playerID"));
         PhotonNetwork.LoadLevel("Game");
     }
 

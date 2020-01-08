@@ -19,17 +19,19 @@ public class GameManager : MonoBehaviour
     public GameObject prefabPlayerSolo;
     public string gamemode = "IA";
 
+    public bool debugMode;
+    [HideInInspector]
     public bool gameBegin;
     [HideInInspector]
     public int firstToPlay = 1;
     [HideInInspector]
+
     public Card.Owner endRoundPlayer; // 0 false , 1 for P1 and 2 for P2
 
     public string namePlayer1;
     public string namePlayer2;
     public int scoreP1 = 0;
     public int scoreP2 = 0;
-    public int lastWinner = -1;
 
     public CustomStateMachine state;
     [HideInInspector]
@@ -86,15 +88,13 @@ public class GameManager : MonoBehaviour
         {
             if (PhotonNetwork.playerList.Length >= 2)
             {
-                Debug.Log("Two Players ready!");
-                PlayerController.LocalPlayerInstance.photonView.RPC("SetPlayerNameText", PhotonTargets.All, PlayerController.LocalPlayerInstance.namePlayer, PlayerController.LocalPlayerInstance.playerID);
-                state.Execute(null);
+                gameBegin = false;
+                StartCoroutine(PrepareMultiplayer());
             }
-            else Debug.Log("Wait for other player...");
-
         }
         else if (gameBegin && gamemode.Equals("IA") && state is NewRound)
         {
+            gameBegin = false;
             state.Execute(null);
         }
         if (powerChar == 'J' && selectedCard != null && selectedOpponentCard != null)
@@ -275,7 +275,7 @@ public class GameManager : MonoBehaviour
         return null;
     }
     public void TryDeleteCard(Card cardSelected, Card.Owner player)
-    { 
+    {
         if (cardSelected.owner == player && cardSelected.position != Card.Position.Discard && cardSelected.position != Card.Position.Deck)
         {
             if (Discard.Instance.stack.Count > 0 && cardSelected.value.Equals(Discard.Instance.stack[0].GetComponent<Card>().value))
@@ -549,4 +549,39 @@ public class GameManager : MonoBehaviour
         return cardsJ2[index];
     }
     // Multi player Functions
+
+    //swap the hands positions so the player 2 is still a the bottom of the screen
+    public void SwapHandsPosition()
+    {
+        SwapPosition(GameObject.Find("DeckPosition"), GameObject.Find("DiscardPosition"));
+
+        SwapPosition(GameObject.Find("PlayerHand_Slot1"), GameObject.Find("Player2Hand_Slot1"));
+        SwapPosition(GameObject.Find("PlayerHand_Slot2"), GameObject.Find("Player2Hand_Slot2"));
+        SwapPosition(GameObject.Find("PlayerHand_Slot3"), GameObject.Find("Player2Hand_Slot3"));
+        SwapPosition(GameObject.Find("PlayerHand_Slot4"), GameObject.Find("Player2Hand_Slot4"));
+        SwapPosition(GameObject.Find("PlayerHand_Slot5"), GameObject.Find("Player2Hand_Slot5"));
+        SwapPosition(GameObject.Find("PlayerHand_Slot6"), GameObject.Find("Player2Hand_Slot6"));
+
+        SwapPosition(GameObject.Find("PlayerChoicePosition"), GameObject.Find("Player2ChoicePosition"));
+    }
+
+    public void SwapPosition(GameObject obj1, GameObject obj2)
+    {
+        Vector3 tmp = obj1.transform.position;
+        obj1.transform.position = obj2.transform.position;
+        obj2.transform.position = tmp;
+    }
+
+    public IEnumerator PrepareMultiplayer()
+    {
+        yield return new WaitForSeconds(0.5f);
+
+        Debug.Log("Two Players ready!");
+        PlayerController.LocalPlayerInstance.photonView.RPC("SetPlayerNameText", PhotonTargets.Others, PlayerController.LocalPlayerInstance.namePlayer, PlayerController.LocalPlayerInstance.playerID);
+        if (PlayerController.LocalPlayerInstance.playerID == Card.Owner.Player2)
+        {
+            SwapHandsPosition();
+        }
+        state.Execute(null);
+    }
 }

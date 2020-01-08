@@ -17,8 +17,10 @@ public class Card : MonoBehaviour
     public Owner owner;
     public Position position;
 
-    public bool isVisible = false; // to show only top card of deck / discard
+    [SerializeField]
+    private bool isRendered = true; // to show only top card of deck / discard
 	public bool isHidden = true; // hidden card face
+    [HideInInspector]
     public bool isMoving; 
     private bool isShaking;
     private bool shakeLeft;
@@ -43,14 +45,15 @@ public class Card : MonoBehaviour
         Material matNew = Instantiate(mat);
         GetComponent<Renderer>().material = matNew;
         outline.StartOutline();
+
     }
 
     // Update is called once per frame
     void Update()
     {
-		if(isVisible)
+        if (!isShaking && this.transform.eulerAngles.z != 0) this.transform.eulerAngles.Set(0, this.transform.eulerAngles.y, 0);
+		if(isRendered)
 		{
-            meshRenderer.enabled = true;
             boxCollider.enabled = true;
 
             float rotY = this.transform.eulerAngles.y;
@@ -62,7 +65,6 @@ public class Card : MonoBehaviour
         }
 		else
 		{
-            meshRenderer.enabled = false;
             boxCollider.enabled = false;
 		}	
         if(isMoving)
@@ -88,11 +90,15 @@ public class Card : MonoBehaviour
              float rotY = this.transform.eulerAngles.y;
             transform.rotation = Quaternion.Euler(0f,0f,maxRotation * Mathf.Sin(Time.time * speed));
         }
+
+        if (GameManager.Instance.debugMode)
+        {
+            isHidden = false;
+        }
     }
     
     public void SetHidden(bool h)
     {
-        
         if(h)
         {
             StartCoroutine(Hide());
@@ -118,10 +124,12 @@ public class Card : MonoBehaviour
     {
         if(b)
         {
+            isRendered = true;
              this.transform.position = new Vector3(transform.position.x, transform.position.y, -0.5f);
         }
         else
         {
+            isRendered = false;
             this.transform.position = new Vector3(transform.position.x, transform.position.y, -0.4f);
         }
     }
@@ -180,6 +188,7 @@ public class Card : MonoBehaviour
                 destination = GameObject.Find("DeckPosition").transform;
                 owner = Owner.Deck;
                 isMoving = true;
+                isHidden = true;
                 Deck.Instance.stack.Insert(0, this.gameObject);               
                 break;
             case Position.Discard:
