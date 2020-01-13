@@ -9,7 +9,7 @@ public class P2Draw : CustomStateMachine
         TextViewer.Instance.SetText("Player 2 Draw");
         GameManager.Instance.state = this;
         
-        if (GameManager.Instance.gamemode.Equals("IA"))
+        if (!GameManager.Instance.multiplayer)
         {
             IA.Instance.CheckDeleteCard();
             IA.Instance.DrawPhase();

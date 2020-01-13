@@ -6,7 +6,8 @@ public class DoubleClick : MonoBehaviour // This class is used to check if a car
 {
     public Card card;
     private bool isRunning = false;
-    public int count = 0;
+    [SerializeField]
+    private int count = 0;
     public Card.Owner playerID;
 
     public DoubleClick(Card c)
@@ -14,33 +15,33 @@ public class DoubleClick : MonoBehaviour // This class is used to check if a car
         this.card = c;
     }
 
-    public void CheckDoubleClick(Card.Owner p)
+    public void Click(Card.Owner p)
     {
-       
-        if(!isRunning)
+        if (!isRunning)
         {
             playerID = p;
-            // Debug.Log("Click First");
             count += 1;
             StartCoroutine(CheckDoubleClick_Routine());
-        } 
+        }
+        else count += 1;
     }
 
     public IEnumerator CheckDoubleClick_Routine() // is the card is clicked only once , we can execute the action
     {
-        //Debug.Log("DoubleClick Routine Started");
         isRunning = true;
         yield return new WaitForSeconds(0.6f);
-        //Debug.Log("Routine click count : " + count);
         if (count < 2)
         {
-            //Debug.Log("Routine ended , Execute()");
             GameManager.Instance.selectedCard = null;
             GameManager.Instance.state.Execute(this.card);
         }
-        else
+        else if(GameManager.Instance.multiplayer && GameManager.Instance.selectedCard.owner == MultiPlayerController.LocalPlayerInstance.playerID)
         {
-            //Debug.Log("Routine ended , double click detected");
+            GameManager.Instance.selectedCard = null;
+            GameManager.Instance.TryDeleteCard(this.card, playerID);
+        }
+        else if(!GameManager.Instance.multiplayer)
+        {
             GameManager.Instance.selectedCard = null;
             GameManager.Instance.TryDeleteCard(this.card, playerID);
         }

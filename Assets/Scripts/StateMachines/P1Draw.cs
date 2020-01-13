@@ -8,7 +8,7 @@ public class P1Draw : CustomStateMachine
 
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        if (GameManager.Instance.gamemode.Equals("IA"))
+        if (!GameManager.Instance.multiplayer)
         {
             IA.Instance.CheckDeleteCard();
         }
@@ -37,7 +37,7 @@ public class P1Draw : CustomStateMachine
             c.SetHidden(false);
             Deck.Instance.ShowParticles(false);
             Discard.Instance.ShowParticles(false);
-            if (GameManager.Instance.gamemode.Equals("IA"))
+            if (!GameManager.Instance.multiplayer)
             { IA.Instance.opponentKnownCards.Add(c); }
             GameManager.Instance.ChangePhase();
         }

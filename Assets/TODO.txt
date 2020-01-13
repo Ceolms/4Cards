@@ -1,6 +1,7 @@
 -Alpha- Fini !
 
-	Bugs : IA Queen et joueur DiscardPhase sans avoir pioché
+	Bugs : IA Queen
+		   Fix Card MoveToward
 
 	Synchro Deck et stateMachine
 	Ui Wait for P2

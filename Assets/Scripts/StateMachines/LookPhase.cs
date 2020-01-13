@@ -14,13 +14,24 @@ public class LookPhase : CustomStateMachine
         selectedCard1 = null;
         selectedCard2 = null;
 
-        foreach (Card c in GameManager.Instance.cardsJ1)
+        if(GameManager.Instance.multiplayer && MultiPlayerController.LocalPlayerInstance.playerID == Card.Owner.Player2)
         {
-            c.SetParticles(true);
+            foreach (Card c in GameManager.Instance.cardsJ2)
+            {
+                c.SetParticles(true);
+            }
         }
+        else
+        {
+            foreach (Card c in GameManager.Instance.cardsJ1)
+            {
+                c.SetParticles(true);
+            }
+        }
+        
         cardsSelected = 0;
         GameManager.Instance.state = this;
-        if (GameManager.Instance.gamemode == "IA")
+        if (!GameManager.Instance.multiplayer)
         {
             IA.Instance.LookPhase();
         }
@@ -32,25 +43,57 @@ public class LookPhase : CustomStateMachine
         {
             selectedCard1.SetHidden(true);
             selectedCard2.SetHidden(true);
-            
-            foreach (Card c in GameManager.Instance.cardsJ1)
+
+            if (GameManager.Instance.multiplayer && MultiPlayerController.LocalPlayerInstance.playerID == Card.Owner.Player2)
             {
-                c.SetParticles(false);
+                GameManager.Instance.gameLogic.SetBool("LookCompleteP2", true);
+                MultiPlayerController.LocalPlayerInstance.photonView.RPC("SetAnimatorBool", PhotonTargets.Others, "LookCompleteP2",true);
+                foreach (Card c in GameManager.Instance.cardsJ2)
+                {
+                    c.SetParticles(false);
+                }
             }
-            GameManager.Instance.gameLogic.SetBool("LookCompleteP1", true);
+            else
+            {
+                if (GameManager.Instance.multiplayer) MultiPlayerController.LocalPlayerInstance.photonView.RPC("SetAnimatorBool", PhotonTargets.Others, "LookCompleteP1", true);
+                GameManager.Instance.gameLogic.SetBool("LookCompleteP1", true);
+                foreach (Card c in GameManager.Instance.cardsJ1)
+                {
+                    c.SetParticles(false);
+                }
+            }
+            
         }
     }
 
     public override void Execute(Card c)
     {
-        if (c.owner == Card.Owner.Player1)
+
+        if (GameManager.Instance.multiplayer && MultiPlayerController.LocalPlayerInstance.playerID == Card.Owner.Player2)
         {
-            cardsSelected += 1;
-            if (cardsSelected == 1) selectedCard1 = c;
-            else if (cardsSelected == 2) selectedCard2 = c;
-            c.SetHidden(false);
-            c.SetParticles(false);
+            if (c.owner == Card.Owner.Player2)
+            {
+                cardsSelected += 1;
+                if (cardsSelected == 1) selectedCard1 = c;
+                else if (cardsSelected == 2) selectedCard2 = c;
+                c.SetHidden(false);
+                c.SetParticles(false);
+                if (GameManager.Instance.multiplayer) MultiPlayerController.LocalPlayerInstance.photonView.RPC("ShakeCard", PhotonTargets.Others, c.name);
+            }
         }
+        else
+        {
+            if (c.owner == Card.Owner.Player1)
+            {
+                cardsSelected += 1;
+                if (cardsSelected == 1) selectedCard1 = c;
+                else if (cardsSelected == 2) selectedCard2 = c;
+                c.SetHidden(false);
+                c.SetParticles(false);
+                if (GameManager.Instance.multiplayer) MultiPlayerController.LocalPlayerInstance.photonView.RPC("ShakeCard", PhotonTargets.Others, c.name);
+            }
+        }
+       
     }
 
     public override void ChangePhase()

@@ -39,4 +39,8 @@ MonoBehaviour:
   - RequestForPickupTimes
   - SetPlayerNameText
   - DeckShuffleData
+  - SetAnimatorBool
+  - SetAnimatorTrigger
+  - MoveTo
+  - ShakeCard
   DisableAutoOpenWizard: 1

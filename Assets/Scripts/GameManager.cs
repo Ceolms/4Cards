@@ -17,8 +17,9 @@ public class GameManager : MonoBehaviour
     private float phaseChangeTimeLong = 2f;
     public GameObject prefabPlayer;
     public GameObject prefabPlayerSolo;
-    public string gamemode = "IA";
-
+    [HideInInspector]
+    public bool multiplayer = false;
+    private DoubleClick db;
     public bool debugMode;
     [HideInInspector]
     public bool gameBegin;
@@ -66,15 +67,14 @@ public class GameManager : MonoBehaviour
         animatorSpeed = gameLogic.speed;
         powerChar = 'N';
 
-        gamemode = PlayerPrefs.GetString("gamemode");
-
-        if (gamemode.Equals("IA"))
+        if (PlayerPrefs.GetString("gamemode").Equals("IA"))
         {
             gameBegin = true;
             GameObject pp = Instantiate(prefabPlayerSolo);
         }
-        else if (gamemode.Equals("multiplayer"))
+        else if (PlayerPrefs.GetString("gamemode").Equals("multiplayer"))
         {
+            multiplayer = true;
             PhotonNetwork.Instantiate(prefabPlayer.name, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
             // manager = GameObject.Find("MultiplayerManager").GetComponent<NetworkManager>();
         }
@@ -84,7 +84,13 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (gameBegin && gamemode.Equals("multiplayer") && state is NewRound)
+        if (selectedCard != null)
+        {
+            CustomDebug.Instance.SetText(selectedCard.name);
+            CustomDebug.Instance.Log(selectedCard.owner.ToString());
+        }
+        else CustomDebug.Instance.SetText("null");
+        if (gameBegin && multiplayer && state is NewRound)
         {
             if (PhotonNetwork.playerList.Length >= 2)
             {
@@ -92,7 +98,7 @@ public class GameManager : MonoBehaviour
                 StartCoroutine(PrepareMultiplayer());
             }
         }
-        else if (gameBegin && gamemode.Equals("IA") && state is NewRound)
+        else if (gameBegin && !multiplayer && state is NewRound)
         {
             gameBegin = false;
             state.Execute(null);
@@ -123,7 +129,7 @@ public class GameManager : MonoBehaviour
     }
     private void Exit()
     {
-        if (gamemode.Equals("IA"))
+        if (!multiplayer)
         {
             SceneManager.LoadScene("Main Menu");
         }
@@ -160,35 +166,32 @@ public class GameManager : MonoBehaviour
         {
             GameObject cardHit = hit.collider.gameObject;
             Card c = cardHit.GetComponent<Card>();
-            if (c == null) return;
-            if (powerChar == 'N' && (c.owner == player || c.owner == Card.Owner.Deck || c.owner == Card.Owner.Discard))
-            {
-                if (selectedCard != null && selectedCard != c)
-                {
-                    selectedCard = c;
-                    if (c.gameObject.GetComponent<DoubleClick>() == null)
-                    {
-                        DoubleClick dc = this.gameObject.AddComponent<DoubleClick>();
-                        dc.card = c;
-                        dc.CheckDoubleClick(player);
-                    }
-                }
-                else if (selectedCard == null)
-                {
 
-                    selectedCard = c;
-                    if (c != null && c.gameObject.GetComponent<DoubleClick>() == null)
-                    {
-                        DoubleClick dc = this.gameObject.AddComponent<DoubleClick>();
-                        dc.card = c;
-                        dc.CheckDoubleClick(player);
-                    }
+            if (c == null) return;
+            if (powerChar == 'N' && c.owner == player )
+            {
+                if (db != null && db.card == c)
+                {
+                    db.Click(player);
+                }
+                else if(db != null && db.card != c)
+                {
+                    Destroy(db);
+                    this.db  = this.gameObject.AddComponent(typeof(DoubleClick)) as DoubleClick;
+                    this.db.card = c;
+                    this.db.Click(player);
                 }
                 else
                 {
-                    DoubleClick dc = this.gameObject.GetComponent<DoubleClick>();
-                    if (dc != null) dc.count += 1;
+                    this.db = this.gameObject.AddComponent(typeof(DoubleClick)) as DoubleClick;
+                    this.db.card = c;
+                    this.db.Click(player);
                 }
+            }
+            else if (c.owner == Card.Owner.Deck || c.owner == Card.Owner.Discard)
+            {
+                if (db != null) Destroy(db);
+                state.Execute(c);
             }
             else if (powerChar == 'Q')
             {
@@ -226,7 +229,7 @@ public class GameManager : MonoBehaviour
                             }
                         }
                         // change IA knowledge about the two cards 
-                        if (gamemode.Equals("IA"))
+                        if (!multiplayer)
                         {
                             IA.Instance.opponentKnownCards.Remove(selectedCard);
                         }
@@ -250,7 +253,7 @@ public class GameManager : MonoBehaviour
                             }
                         }
                         // change IA knowledge about the two cards 
-                        if (gamemode.Equals("IA"))
+                        if (!multiplayer)
                         {
                             IA.Instance.RemoveKnown(selectedOpponentCard);
                             IA.Instance.opponentKnownCards.Add(selectedOpponentCard);
@@ -576,9 +579,12 @@ public class GameManager : MonoBehaviour
     {
         yield return new WaitForSeconds(0.5f);
 
-        Debug.Log("Two Players ready!");
-        PlayerController.LocalPlayerInstance.photonView.RPC("SetPlayerNameText", PhotonTargets.Others, PlayerController.LocalPlayerInstance.namePlayer, PlayerController.LocalPlayerInstance.playerID);
-        if (PlayerController.LocalPlayerInstance.playerID == Card.Owner.Player2)
+        if (MultiPlayerController.LocalPlayerInstance.playerID == Card.Owner.Player1) GameManager.Instance.namePlayer1 = MultiPlayerController.LocalPlayerInstance.namePlayer;
+        else GameManager.Instance.namePlayer2 = MultiPlayerController.LocalPlayerInstance.namePlayer;
+        GameManager.Instance.UpdateScoreText();
+
+        MultiPlayerController.LocalPlayerInstance.photonView.RPC("SetPlayerNameText", PhotonTargets.Others, MultiPlayerController.LocalPlayerInstance.namePlayer, MultiPlayerController.LocalPlayerInstance.playerID);
+        if (MultiPlayerController.LocalPlayerInstance.playerID == Card.Owner.Player2)
         {
             SwapHandsPosition();
         }

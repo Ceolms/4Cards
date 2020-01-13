@@ -12,7 +12,7 @@ public class NewRound : CustomStateMachine
         //Debug.Log("New Round StateEnter");
         GameManager.Instance.cardsJ1 = new List<Card>();
         GameManager.Instance.cardsJ2 = new List<Card>();
-        if (GameManager.Instance.gamemode.Equals("IA")) IA.Instance.NewRound();
+        if (!GameManager.Instance.multiplayer) IA.Instance.NewRound();
         Discard.Instance.stack = new List<GameObject>();
         TextViewer.Instance.SetText("Distribute Phase");
         GameManager.Instance.state = this;
@@ -28,7 +28,7 @@ public class NewRound : CustomStateMachine
 
     public override void Execute(Card c)
     {
-        Deck.Instance.InitRound();
+        if (!(GameManager.Instance.multiplayer && MultiPlayerController.LocalPlayerInstance.playerID == Card.Owner.Player2)) Deck.Instance.InitRound();
     }
 
     public override void ChangePhase()

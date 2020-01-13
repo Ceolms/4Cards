@@ -660,7 +660,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 180}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 191, y: -973}
+  m_AnchoredPosition: {x: -456, y: -973}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &70321094
@@ -690,13 +690,14 @@ MonoBehaviour:
     m_BestFit: 0
     m_MinSize: 0
     m_MaxSize: 300
-    m_Alignment: 0
+    m_Alignment: 2
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: 'Debug :
+  m_Text: 'Debug
+
 
 '
 --- !u!222 &70321095
@@ -2256,7 +2257,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 426, y: -142}
+  m_AnchoredPosition: {x: 515, y: -142}
   m_SizeDelta: {x: 1080, y: 2160}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &263109934
@@ -2271,7 +2272,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e11e78e89952fe14a8305a9410528603, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  text: {fileID: 70321094}
 --- !u!114 &263109935
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6754,6 +6754,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stack: []
   receivedDeckEvent: 0
+  deckData: 
 --- !u!1 &969118520 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8597897733025396726, guid: d769bab7421f6f9489e0c344dff0de05,

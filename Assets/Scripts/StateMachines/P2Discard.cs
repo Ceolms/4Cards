@@ -11,7 +11,7 @@ public class P2Discard : CustomStateMachine
         Deck.Instance.ShowParticles(false);
         GameManager.Instance.state = this;
 
-        if (GameManager.Instance.gamemode.Equals("IA"))
+        if (!GameManager.Instance.multiplayer)
         {
             IA.Instance.DiscardPhase();
         }

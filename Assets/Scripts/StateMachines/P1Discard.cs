@@ -30,7 +30,7 @@ public class P1Discard : CustomStateMachine
 
             if (card.value == "Q") GameManager.Instance.UsePower('Q');
             if (card.value == "J") GameManager.Instance.UsePower('J');
-            if (GameManager.Instance.gamemode.Equals("IA") && IA.Instance.opponentKnownCards.Contains(card))
+            if (!GameManager.Instance.multiplayer && IA.Instance.opponentKnownCards.Contains(card))
             { IA.Instance.opponentKnownCards.Remove(card); }
             GameManager.Instance.ChangePhaseLong();
         }
@@ -40,7 +40,7 @@ public class P1Discard : CustomStateMachine
 
             if (card.value == "Q") GameManager.Instance.UsePower('Q');
             if (card.value == "J") GameManager.Instance.UsePower('J');
-            if (GameManager.Instance.gamemode.Equals("IA") && IA.Instance.opponentKnownCards.Contains(card))
+            if (!GameManager.Instance.multiplayer && IA.Instance.opponentKnownCards.Contains(card))
             { IA.Instance.opponentKnownCards.Remove(card); }
             GameManager.Instance.ChangePhaseLong();
         }

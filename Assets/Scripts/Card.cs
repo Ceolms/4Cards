@@ -5,10 +5,10 @@ using UnityEngine;
 
 public class Card : MonoBehaviour
 {
-    public static int speed = 8;
+    public static int speed = 9;
     public static float timeToHide = 1.8f; 
     public enum Color {Spades ,Club ,Heart ,Diamond }
-    public enum Owner {Deck ,Discard ,Player1 ,Player2 }
+    public enum Owner {Deck = 3 ,Discard  = 4 ,Player1  = 1 ,Player2  = 2 }
     public enum Position {Deck,Discard,Player1_Slot1,Player1_Slot2,Player1_Slot3,Player1_Slot4, Player1_Slot5, Player1_Slot6, Player2_Slot1,Player2_Slot2,Player2_Slot3,Player2_Slot4, Player2_Slot5,Player2_Slot6, PlayerChoice,Player2Choice} // to set position on the board
     private Outline outline;
     public string value; // A , 2 ,6 , K...
@@ -20,7 +20,7 @@ public class Card : MonoBehaviour
     [SerializeField]
     private bool isRendered = true; // to show only top card of deck / discard
 	public bool isHidden = true; // hidden card face
-    [HideInInspector]
+    
     public bool isMoving; 
     private bool isShaking;
     private bool shakeLeft;
@@ -51,11 +51,15 @@ public class Card : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!isShaking && this.transform.eulerAngles.z != 0) this.transform.eulerAngles.Set(0, this.transform.eulerAngles.y, 0);
+        if (!isShaking && this.transform.eulerAngles.z != 0)
+        {
+            this.transform.rotation = new Quaternion(0, this.transform.rotation.y, 0, this.transform.rotation.w);
+        }
+
 		if(isRendered)
 		{
             boxCollider.enabled = true;
-
+            this.transform.position = new Vector3(transform.position.x, transform.position.y, -0.5f);
             float rotY = this.transform.eulerAngles.y;
             if (isHidden &&  (-5 < rotY && rotY < 5)) this.transform.eulerAngles = new Vector3(0, 0, 0);
             else if (!isHidden &&  (170 < rotY && rotY < 190)) this.transform.eulerAngles = new Vector3(0, 180, 0);
@@ -65,24 +69,29 @@ public class Card : MonoBehaviour
         }
 		else
 		{
+            this.transform.position = new Vector3(transform.position.x, transform.position.y, -0.4f);
             boxCollider.enabled = false;
 		}	
+
         if(isMoving)
         {
-            if (Vector3.Distance(transform.position, destination.position) > 0.001f)
+            if (Vector2.Distance(transform.position, destination.position) > 0.000001f)
             {
                 float step = speed * Time.deltaTime; // calculate distance to move
                 transform.position = Vector3.MoveTowards(transform.position, destination.position, step);
             }
             else
             {
-                Deck.Instance.UpdatePosition();
-                Discard.Instance.UpdatePosition();
                 isMoving = false;
                 transform.position = new Vector3(destination.position.x, destination.position.y, transform.position.z);
                // Debug.Log("Card Move completed");
             }
         }
+        else if( destination != null)
+        {
+            if(this.transform.position.x != destination.position.x || this.transform.position.y != destination.position.y) transform.position = new Vector3(destination.position.x, destination.position.y, transform.position.z);
+        }
+
         if(isShaking)
         {
              float speed = 45f;
@@ -122,15 +131,14 @@ public class Card : MonoBehaviour
 
     public void SetFront(bool b)
     {
+        //Debug.Log(this.name + " is front : " + b);
         if(b)
         {
             isRendered = true;
-             this.transform.position = new Vector3(transform.position.x, transform.position.y, -0.5f);
         }
         else
         {
             isRendered = false;
-            this.transform.position = new Vector3(transform.position.x, transform.position.y, -0.4f);
         }
     }
 
@@ -188,97 +196,115 @@ public class Card : MonoBehaviour
                 destination = GameObject.Find("DeckPosition").transform;
                 owner = Owner.Deck;
                 isMoving = true;
-                isHidden = true;
-                Deck.Instance.stack.Insert(0, this.gameObject);               
+                this.SetFront(false);
+                //isHidden = true;
+                SetHidden(true);
+                Deck.Instance.stack.Insert(0, this.gameObject);
                 break;
             case Position.Discard:
                 SetHidden(false);
                 destination = GameObject.Find("DiscardPosition").transform;
                 owner = Owner.Discard;
                 isMoving = true;
-                Discard.Instance.stack.Insert(0, this.gameObject);      
+                this.SetFront(true);
+                if(Discard.Instance.stack.Count >0 ) Discard.Instance.stack[0].GetComponent<Card>().SetFront(false);
+                Discard.Instance.stack.Insert(0, this.gameObject);
                 break;
             case Position.Player1_Slot1:
                 destination = GameObject.Find("PlayerHand_Slot1").transform;
                 GameManager.Instance.cardsJ1.Add(this);
                 owner = Owner.Player1;
                 isMoving = true;
+                this.SetFront(true);
                 break;
             case Position.Player1_Slot2:
                 destination = GameObject.Find("PlayerHand_Slot2").transform;
                 GameManager.Instance.cardsJ1.Add(this);
                 owner = Owner.Player1;
                 isMoving = true;
+                this.SetFront(true);
                 break;
             case Position.Player1_Slot3:
                 destination = GameObject.Find("PlayerHand_Slot3").transform;
                 GameManager.Instance.cardsJ1.Add(this);
                 owner = Owner.Player1;
                 isMoving = true;
+                this.SetFront(true);
                 break;
             case Position.Player1_Slot4:
                 destination = GameObject.Find("PlayerHand_Slot4").transform;
                 GameManager.Instance.cardsJ1.Add(this);
                 owner = Owner.Player1;
                 isMoving = true;
+                this.SetFront(true);
                 break;
             case Position.Player1_Slot5:
                 destination = GameObject.Find("PlayerHand_Slot5").transform;
                 GameManager.Instance.cardsJ1.Add(this);
                 owner = Owner.Player1;
                 isMoving = true;
+                this.SetFront(true);
                 break;
             case Position.Player1_Slot6:
                 destination = GameObject.Find("PlayerHand_Slot6").transform;
                 GameManager.Instance.cardsJ1.Add(this);
                 owner = Owner.Player1;
                 isMoving = true;
+                this.SetFront(true);
                 break;
             case Position.Player2_Slot1:
                 destination = GameObject.Find("Player2Hand_Slot1").transform;
                 GameManager.Instance.cardsJ2.Add(this);
                 owner = Owner.Player2;
                 isMoving = true;
+                this.SetFront(true);
                 break;
             case Position.Player2_Slot2:
                 destination = GameObject.Find("Player2Hand_Slot2").transform;
                 GameManager.Instance.cardsJ2.Add(this);
                 owner = Owner.Player2;
                 isMoving = true;
+                this.SetFront(true);
                 break;
             case Position.Player2_Slot3:
                 destination = GameObject.Find("Player2Hand_Slot3").transform;
                 GameManager.Instance.cardsJ2.Add(this);
                 owner = Owner.Player2;
                 isMoving = true;
+                this.SetFront(true);
                 break;
             case Position.Player2_Slot4:
                 destination = GameObject.Find("Player2Hand_Slot4").transform;
                 GameManager.Instance.cardsJ2.Add(this);
                 owner = Owner.Player2;
                 isMoving = true;
+                this.SetFront(true);
                 break;
             case Position.Player2_Slot5:
                 destination = GameObject.Find("Player2Hand_Slot5").transform;
                 GameManager.Instance.cardsJ2.Add(this);
                 owner = Owner.Player2;
                 isMoving = true;
+                this.SetFront(true);
                 break;
             case Position.Player2_Slot6:
                 destination = GameObject.Find("Player2Hand_Slot6").transform;
                 GameManager.Instance.cardsJ2.Add(this);
                 owner = Owner.Player2;
                 isMoving = true;
+                this.SetFront(true);
                 break;
             case Position.PlayerChoice:
                 destination = GameObject.Find("PlayerChoicePosition").transform;
                 owner = Owner.Player1;
                 isMoving = true;
+                this.SetFront(true);
                 break;
             case Position.Player2Choice:
                 destination = GameObject.Find("Player2ChoicePosition").transform;
                 owner = Owner.Player2;
                 isMoving = true;
+                this.SetFront(true);
                 break;
         }     
     }

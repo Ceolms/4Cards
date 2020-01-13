@@ -174,6 +174,8 @@ public class UIManager : MonoBehaviour
     private void Join()
     {
         searchingPanel.SetActive(true);
+        string nom = GameObject.Find("InputField").GetComponent<InputField>().text;
+        PlayerPrefs.SetString("PlayerName", nom);
         searching = true;
     }
     private void Search()
@@ -219,14 +221,15 @@ public class UIManager : MonoBehaviour
         mainPanel.SetActive(false);
         soloPanel.SetActive(false);
         settingsPanel.SetActive(false);
-       // Debug.Log("Lobby Joined");
+        GameObject.Find("InputField").GetComponent<InputField>().text = PlayerPrefs.GetString("PlayerName");
+        // Debug.Log("Lobby Joined");
     }
 
     private void OnJoinedRoom()
     {
         string nom = GameObject.Find("InputField").GetComponent<InputField>().text;
-        PlayerPrefs.SetString("gamemode", "multiplayer");
         PlayerPrefs.SetString("PlayerName", nom);
+        PlayerPrefs.SetString("gamemode", "multiplayer");
         if(isHost) PlayerPrefs.SetString("playerID", "player1");
         else PlayerPrefs.SetString("playerID", "player2");
         PhotonNetwork.LoadLevel("Game");
