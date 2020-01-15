@@ -22,6 +22,30 @@ public class MultiPlayerController : PlayerController
         }
     }
 
+
+    void Update()
+    {
+        if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer && photonView.isMine)
+        {
+            if (Input.touchCount > 0 && Input.touchCount < 2)
+            {
+                if (Input.GetTouch(0).phase == TouchPhase.Began)
+                {
+                    Ray ray = Camera.main.ScreenPointToRay(Input.GetTouch(0).position);
+                    GameManager.Instance.CheckTouch(ray, playerID);
+                }
+            }
+        }
+        else if(photonView.isMine)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                GameManager.Instance.CheckTouch(ray, playerID);
+            }
+        }
+    }
+
     [PunRPC]
     void SetPlayerNameText(string name, Card.Owner id)
     {
@@ -54,17 +78,33 @@ public class MultiPlayerController : PlayerController
     {
         GameManager.Instance.gameLogic.SetTrigger(s);
     }
+
     [PunRPC]
     void ShakeCard(string name)
     {
-        Debug.Log("I have to shake the card : " + name);
         GameObject.Find(name).GetComponent<Card>().Shake();
     }
-    [PunRPC]
 
-    void MoveTo(string name,Card.Position pos)
+    [PunRPC]
+    void MoveCard(string name,Card.Position pos)
     {
-        GameObject.Find("name").GetComponent<Card>().MoveTo(pos);
+        Card c = GameObject.Find("name").GetComponent<Card>();
+       c.MoveTo(pos);
+
+        if(LocalPlayerInstance.playerID == Card.Owner.Player1 && GameManager.Instance.state is P2Draw)
+        {
+           
+        }
+        else if (LocalPlayerInstance.playerID == Card.Owner.Player2 && GameManager.Instance.state is P1Draw)
+        {
+
+        }
+    }
+
+    [PunRPC]
+    void Exit()
+    {
+        //TODO EXIT other player
     }
 
 }

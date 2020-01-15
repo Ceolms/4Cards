@@ -16,13 +16,13 @@ public class P1Discard : CustomStateMachine
 
     public void DiscardCard()
     {
-        if (card.owner == Card.Owner.Player1 && card.position != Card.Position.PlayerChoice) // If the player want to discard one of his cards
+        if (card.owner == Card.Owner.Player1 && card.position != Card.Position.Player1Choice) // If the player want to discard one of his cards
         {
             Card.Position p = card.position;
             card.MoveTo(Card.Position.Discard); // move old card to discard
             //GameManager.Instance.cardsJ1.Remove(card);
 
-            Card c = GameManager.Instance.FindByPosition(Card.Position.PlayerChoice); // take the new one to slot
+            Card c = GameManager.Instance.FindByPosition(Card.Position.Player1Choice); // take the new one to slot
 
             c.SetHidden(true);
             c.MoveTo(p);
@@ -34,7 +34,7 @@ public class P1Discard : CustomStateMachine
             { IA.Instance.opponentKnownCards.Remove(card); }
             GameManager.Instance.ChangePhaseLong();
         }
-        else if (card.owner == Card.Owner.Player1 && card.position == Card.Position.PlayerChoice) // else if it's the one he drawn
+        else if (card.owner == Card.Owner.Player1 && card.position == Card.Position.Player1Choice) // else if it's the one he drawn
         {
             card.MoveTo(Card.Position.Discard);
 

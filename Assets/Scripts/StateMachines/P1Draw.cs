@@ -24,7 +24,11 @@ public class P1Draw : CustomStateMachine
         if (card.position == Card.Position.Deck)
         {
             c = Deck.Instance.Draw();
-            c.MoveTo(Card.Position.PlayerChoice);
+            c.MoveTo(Card.Position.Player1Choice);
+            if(GameManager.Instance.multiplayer)
+            {
+                MultiPlayerController.LocalPlayerInstance.photonView.RPC("MoveCard", PhotonTargets.Others, c.name,Card.Position.Player1Choice);
+            }
             c.SetHidden(false);
             Deck.Instance.ShowParticles(false);
             Discard.Instance.ShowParticles(false);
@@ -33,7 +37,11 @@ public class P1Draw : CustomStateMachine
         else if (card.position == Card.Position.Discard)
         {
             c = Discard.Instance.Draw();
-            c.MoveTo(Card.Position.PlayerChoice);
+            c.MoveTo(Card.Position.Player1Choice);
+            if (GameManager.Instance.multiplayer)
+            {
+                MultiPlayerController.LocalPlayerInstance.photonView.RPC("MoveCard", PhotonTargets.Others, c.name, Card.Position.Player1Choice);
+            }
             c.SetHidden(false);
             Deck.Instance.ShowParticles(false);
             Discard.Instance.ShowParticles(false);
@@ -45,7 +53,6 @@ public class P1Draw : CustomStateMachine
 
     public override void Execute(Card c)
     {
-        //Debug.Log("On draw phase , player 1 clicked :" + c);
         if (c != null)
         {
             card = c;

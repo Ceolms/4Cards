@@ -84,12 +84,6 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (selectedCard != null)
-        {
-            CustomDebug.Instance.SetText(selectedCard.name);
-            CustomDebug.Instance.Log(selectedCard.owner.ToString());
-        }
-        else CustomDebug.Instance.SetText("null");
         if (gameBegin && multiplayer && state is NewRound)
         {
             if (PhotonNetwork.playerList.Length >= 2)
@@ -135,7 +129,8 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            SceneManager.LoadScene("Main Menu");
+            MultiPlayerController.LocalPlayerInstance.photonView.RPC("Exit", PhotonTargets.Others);
+            PhotonNetwork.LeaveRoom();
         }
     }
 
@@ -158,10 +153,14 @@ public class GameManager : MonoBehaviour
         {
             Exit();
         }
+
+
         else if (powerPanelVisible)
         {
             CheckPower();
         }
+
+
         else if (Physics.Raycast(ray, out hit) && s == null)
         {
             GameObject cardHit = hit.collider.gameObject;
@@ -544,14 +543,19 @@ public class GameManager : MonoBehaviour
 
     }
 
-    //IA Functions
+    //IA Functions --------------------------
 
     public Card LookCard(int index)
     {
         if (index > cardsJ2.Count) Debug.LogError("Error LookCard index : " + index);
         return cardsJ2[index];
     }
-    // Multi player Functions
+    // Multi player Functions ----------------
+
+    void OnLeftRoom()
+    {
+        PhotonNetwork.LoadLevel(0);
+    }
 
     //swap the hands positions so the player 2 is still a the bottom of the screen
     public void SwapHandsPosition()

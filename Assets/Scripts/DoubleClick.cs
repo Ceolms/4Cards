@@ -6,7 +6,6 @@ public class DoubleClick : MonoBehaviour // This class is used to check if a car
 {
     public Card card;
     private bool isRunning = false;
-    [SerializeField]
     private int count = 0;
     public Card.Owner playerID;
 
@@ -35,7 +34,7 @@ public class DoubleClick : MonoBehaviour // This class is used to check if a car
             GameManager.Instance.selectedCard = null;
             GameManager.Instance.state.Execute(this.card);
         }
-        else if(GameManager.Instance.multiplayer && GameManager.Instance.selectedCard.owner == MultiPlayerController.LocalPlayerInstance.playerID)
+        else if(GameManager.Instance.multiplayer && card.owner == MultiPlayerController.LocalPlayerInstance.playerID)
         {
             GameManager.Instance.selectedCard = null;
             GameManager.Instance.TryDeleteCard(this.card, playerID);

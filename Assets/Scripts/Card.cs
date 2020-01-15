@@ -9,7 +9,7 @@ public class Card : MonoBehaviour
     public static float timeToHide = 1.8f; 
     public enum Color {Spades ,Club ,Heart ,Diamond }
     public enum Owner {Deck = 3 ,Discard  = 4 ,Player1  = 1 ,Player2  = 2 }
-    public enum Position {Deck,Discard,Player1_Slot1,Player1_Slot2,Player1_Slot3,Player1_Slot4, Player1_Slot5, Player1_Slot6, Player2_Slot1,Player2_Slot2,Player2_Slot3,Player2_Slot4, Player2_Slot5,Player2_Slot6, PlayerChoice,Player2Choice} // to set position on the board
+    public enum Position {Deck,Discard,Player1_Slot1,Player1_Slot2,Player1_Slot3,Player1_Slot4, Player1_Slot5, Player1_Slot6, Player2_Slot1,Player2_Slot2,Player2_Slot3,Player2_Slot4, Player2_Slot5,Player2_Slot6, Player1Choice,Player2Choice} // to set position on the board
     private Outline outline;
     public string value; // A , 2 ,6 , K...
 
@@ -294,7 +294,7 @@ public class Card : MonoBehaviour
                 isMoving = true;
                 this.SetFront(true);
                 break;
-            case Position.PlayerChoice:
+            case Position.Player1Choice:
                 destination = GameObject.Find("PlayerChoicePosition").transform;
                 owner = Owner.Player1;
                 isMoving = true;
