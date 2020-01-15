@@ -19,8 +19,13 @@ public class P1Discard : CustomStateMachine
         if (card.owner == Card.Owner.Player1 && card.position != Card.Position.Player1Choice) // If the player want to discard one of his cards
         {
             Card.Position p = card.position;
+            if (GameManager.Instance.multiplayer)
+            {
+                MultiPlayerController.LocalPlayerInstance.photonView.RPC("DiscardCard", PhotonTargets.Others, p, MultiPlayerController.LocalPlayerInstance.playerID);
+                MultiPlayerController.LocalPlayerInstance.photonView.RPC("MoveCardToHand", PhotonTargets.Others, p, MultiPlayerController.LocalPlayerInstance.playerID);
+            }
+
             card.MoveTo(Card.Position.Discard); // move old card to discard
-            //GameManager.Instance.cardsJ1.Remove(card);
 
             Card c = GameManager.Instance.FindByPosition(Card.Position.Player1Choice); // take the new one to slot
 
@@ -31,11 +36,17 @@ public class P1Discard : CustomStateMachine
             if (card.value == "Q") GameManager.Instance.UsePower('Q');
             if (card.value == "J") GameManager.Instance.UsePower('J');
             if (!GameManager.Instance.multiplayer && IA.Instance.opponentKnownCards.Contains(card))
-            { IA.Instance.opponentKnownCards.Remove(card); }
+            {
+                IA.Instance.opponentKnownCards.Remove(card);
+            }
             GameManager.Instance.ChangePhaseLong();
         }
         else if (card.owner == Card.Owner.Player1 && card.position == Card.Position.Player1Choice) // else if it's the one he drawn
         {
+            if (GameManager.Instance.multiplayer)
+            {
+                MultiPlayerController.LocalPlayerInstance.photonView.RPC("DiscardCard", PhotonTargets.Others, card.position, MultiPlayerController.LocalPlayerInstance.playerID);
+            }
             card.MoveTo(Card.Position.Discard);
 
             if (card.value == "Q") GameManager.Instance.UsePower('Q');

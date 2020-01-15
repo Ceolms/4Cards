@@ -36,7 +36,7 @@ public class MultiPlayerController : PlayerController
                 }
             }
         }
-        else if(photonView.isMine)
+        else if (photonView.isMine)
         {
             if (Input.GetMouseButtonDown(0))
             {
@@ -68,7 +68,7 @@ public class MultiPlayerController : PlayerController
     }
 
     [PunRPC]
-    void SetAnimatorBool(string s,bool b)
+    void SetAnimatorBool(string s, bool b)
     {
         GameManager.Instance.gameLogic.SetBool(s, b);
     }
@@ -86,25 +86,119 @@ public class MultiPlayerController : PlayerController
     }
 
     [PunRPC]
-    void MoveCard(string name,Card.Position pos)
+    void DrawCard(Card.Position pos, Card.Owner player)
     {
-        Card c = GameObject.Find("name").GetComponent<Card>();
-       c.MoveTo(pos);
-
-        if(LocalPlayerInstance.playerID == Card.Owner.Player1 && GameManager.Instance.state is P2Draw)
+        if (player == Card.Owner.Player1)
         {
-           
-        }
-        else if (LocalPlayerInstance.playerID == Card.Owner.Player2 && GameManager.Instance.state is P1Draw)
-        {
+            if (pos == Card.Position.Deck)
+            {
+                Card c = Deck.Instance.Draw();
+                c.MoveTo(Card.Position.Player1Choice);
+
+            }
+            else
+            {
+                Card c = Discard.Instance.Draw();
+                c.SetHidden(true);
+                c.MoveTo(Card.Position.Player1Choice);
+            }
 
         }
+        else
+        {
+            if (pos == Card.Position.Deck)
+            {
+                Card c = Deck.Instance.Draw();
+                c.MoveTo(Card.Position.Player2Choice);
+
+            }
+            else
+            {
+                Card c = Discard.Instance.Draw();
+                c.SetHidden(true);
+                c.MoveTo(Card.Position.Player2Choice);
+            }
+        }
+        GameManager.Instance.ChangePhase();
+    }
+
+
+    [PunRPC]
+    void DiscardCard(Card.Position pos, Card.Owner player)
+    {
+        Card c = GameManager.Instance.FindByPosition(pos);
+
+        c.MoveTo(Card.Position.Discard);
+
+        if (player == Card.Owner.Player1)
+        {
+            GameManager.Instance.cardsJ1.Remove(c);
+        }
+        else
+        {
+            GameManager.Instance.cardsJ2.Remove(c);
+        }
+        GameManager.Instance.ChangePhase();
+    }
+
+    [PunRPC]
+    void DeleteCard(Card.Position pos, Card.Owner player)
+    {
+        Card c = GameManager.Instance.FindByPosition(pos);
+
+        c.MoveTo(Card.Position.Discard);
+
+        if (player == Card.Owner.Player1)
+        {
+            GameManager.Instance.cardsJ1.Remove(c);
+        }
+        else
+        {
+            GameManager.Instance.cardsJ2.Remove(c);
+        }
+    }
+
+
+    [PunRPC]
+    void MoveCardToHand(Card.Position pos, Card.Owner player)
+    {
+        if(player == Card.Owner.Player1)
+        {
+            Card c = GameManager.Instance.FindByPosition(Card.Position.Player1Choice);
+            c.MoveTo(pos);
+        }
+        else
+        {
+            Card c = GameManager.Instance.FindByPosition(Card.Position.Player2Choice);
+            c.MoveTo(pos);
+        }
+    }
+
+
+    [PunRPC]
+    void ExchangeCards(Card.Position positionP1,Card.Position positionP2)
+    {
+        Card cardP1 = GameManager.Instance.FindByPosition(positionP1);
+        Card cardP2 = GameManager.Instance.FindByPosition(positionP2);
+
+        GameManager.Instance.cardsJ1.Remove(cardP1);
+        GameManager.Instance.cardsJ2.Remove(cardP2);
+
+        cardP1.MoveTo(positionP2);
+        cardP2.MoveTo(positionP1);
     }
 
     [PunRPC]
     void Exit()
     {
-        //TODO EXIT other player
+        //TODO Clean UI Exit
+
+        PhotonNetwork.LeaveRoom();
+    }
+
+    void OnLeftRoom()
+    {
+        PhotonNetwork.LoadLevel(0);
     }
 
 }

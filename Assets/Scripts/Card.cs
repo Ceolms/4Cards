@@ -134,10 +134,12 @@ public class Card : MonoBehaviour
         //Debug.Log(this.name + " is front : " + b);
         if(b)
         {
+            Debug.Log(this.name + " is set to front");
             isRendered = true;
         }
         else
         {
+            Debug.Log(this.name + " is set to back");
             isRendered = false;
         }
     }

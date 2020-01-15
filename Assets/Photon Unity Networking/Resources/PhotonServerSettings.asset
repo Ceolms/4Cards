@@ -43,4 +43,12 @@ MonoBehaviour:
   - SetAnimatorTrigger
   - MoveTo
   - ShakeCard
+  - Exit
+  - MoveCard
+  - Draw
+  - DrawCard
+  - DiscardCard
+  - ExchangeCards
+  - MoveCardToHand
+  - DeleteCard
   DisableAutoOpenWizard: 1

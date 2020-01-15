@@ -24,11 +24,13 @@ public class P1Draw : CustomStateMachine
         if (card.position == Card.Position.Deck)
         {
             c = Deck.Instance.Draw();
-            c.MoveTo(Card.Position.Player1Choice);
-            if(GameManager.Instance.multiplayer)
+
+            if (GameManager.Instance.multiplayer)
             {
-                MultiPlayerController.LocalPlayerInstance.photonView.RPC("MoveCard", PhotonTargets.Others, c.name,Card.Position.Player1Choice);
+                // DrawCard(Card.Position pos, Card.Owner player)
+                MultiPlayerController.LocalPlayerInstance.photonView.RPC("DrawCard", PhotonTargets.Others, c.position, MultiPlayerController.LocalPlayerInstance.playerID);
             }
+            c.MoveTo(Card.Position.Player1Choice);
             c.SetHidden(false);
             Deck.Instance.ShowParticles(false);
             Discard.Instance.ShowParticles(false);
@@ -37,16 +39,19 @@ public class P1Draw : CustomStateMachine
         else if (card.position == Card.Position.Discard)
         {
             c = Discard.Instance.Draw();
-            c.MoveTo(Card.Position.Player1Choice);
+
             if (GameManager.Instance.multiplayer)
             {
-                MultiPlayerController.LocalPlayerInstance.photonView.RPC("MoveCard", PhotonTargets.Others, c.name, Card.Position.Player1Choice);
+                MultiPlayerController.LocalPlayerInstance.photonView.RPC("DrawCard", PhotonTargets.Others, c.position, MultiPlayerController.LocalPlayerInstance.playerID);
             }
+            c.MoveTo(Card.Position.Player1Choice);
             c.SetHidden(false);
             Deck.Instance.ShowParticles(false);
             Discard.Instance.ShowParticles(false);
             if (!GameManager.Instance.multiplayer)
-            { IA.Instance.opponentKnownCards.Add(c); }
+            {
+                IA.Instance.opponentKnownCards.Add(c);
+            }
             GameManager.Instance.ChangePhase();
         }
     }

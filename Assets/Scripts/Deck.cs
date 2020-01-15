@@ -32,13 +32,14 @@ public class Deck : MonoBehaviour
 
     public void UpdatePosition()
     {
+        Debug.Log("UpdatePosition");
         if (stack.Count > 0)
         {
             stack[0].GetComponent<Card>().SetFront(true);
 
             for (int i = 1; i < stack.Count; i++)
             {
-                stack[0].GetComponent<Card>().SetFront(false);
+                stack[i].GetComponent<Card>().SetFront(false);
             }
         }
     }
@@ -62,11 +63,6 @@ public class Deck : MonoBehaviour
 
     private IEnumerator Distribute()
     {
-        CustomDebug.Instance.Log("Deck Before Distribution : ");
-        foreach(GameObject go in stack)
-        {
-            CustomDebug.Instance.Log(go.name);
-        }
         yield return new WaitForSeconds(0.5f);
 
         Card card = Draw();
