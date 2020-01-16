@@ -278,6 +278,7 @@ public class GameManager : MonoBehaviour
     }
     public void TryDeleteCard(Card cardSelected, Card.Owner player)
     {
+        if (!state.CanDeleteCard()) return; // you can't delete a card at the look phase  , the beginning or the ending of the round
         if (cardSelected.owner == player && cardSelected.position != Card.Position.Discard && cardSelected.position != Card.Position.Deck)
         {
             if (Discard.Instance.stack.Count > 0 && cardSelected.value.Equals(Discard.Instance.stack[0].GetComponent<Card>().value))

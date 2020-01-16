@@ -44,14 +44,6 @@ public class TextViewer : MonoBehaviour
         textLine.color = defaultColor;
     }
 
-    public void  SetText(string s,Color c)
-    {
-        oldLine = s;
-        textLine.enabled = true;
-        textLine.text = s;
-        textLine.color = c;
-    }
-
     public void HideText()
     {
         textLine.enabled = false;

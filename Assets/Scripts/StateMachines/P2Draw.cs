@@ -7,13 +7,25 @@ public class P2Draw : CustomStateMachine
     Card card;
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        TextViewer.Instance.SetText("Player 2 Draw");
+        if (!GameManager.Instance.multiplayer)
+        {
+            TextViewer.Instance.SetText("IA Draw");
+        }
+        else
+        {
+            TextViewer.Instance.SetText(GameManager.Instance.namePlayer2 + " Draw");
+        }
         GameManager.Instance.state = this;
 
         if (!GameManager.Instance.multiplayer)
         {
             IA.Instance.CheckDeleteCard();
             IA.Instance.DrawPhase();
+        }
+        else
+        {
+            Discard.Instance.ShowParticles(true);
+            Deck.Instance.ShowParticles(true);
         }
     }
 
@@ -53,7 +65,6 @@ public class P2Draw : CustomStateMachine
 
     public override void Execute(Card c)
     {
-        Debug.Log("Executing P2Draw");
         if (c != null && GameManager.Instance.multiplayer && MultiPlayerController.LocalPlayerInstance.playerID == Card.Owner.Player2)
         {
             card = c;
@@ -67,5 +78,10 @@ public class P2Draw : CustomStateMachine
     public override void ChangePhase()
     {
         GameManager.Instance.gameLogic.SetTrigger("DrawComplete");
+    }
+
+    public override bool CanDeleteCard()
+    {
+        return true;
     }
 }

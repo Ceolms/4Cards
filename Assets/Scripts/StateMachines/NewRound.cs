@@ -13,7 +13,7 @@ public class NewRound : CustomStateMachine
         GameManager.Instance.cardsJ1 = new List<Card>();
         GameManager.Instance.cardsJ2 = new List<Card>();
         if (!GameManager.Instance.multiplayer) IA.Instance.NewRound();
-        Discard.Instance.stack = new List<GameObject>();
+        Discard.Instance.stack = new List<Card>();
         TextViewer.Instance.SetText("Distribute Phase");
         GameManager.Instance.state = this;
         GameManager.Instance.gameLogic.SetBool("LookCompleteP1", false);
@@ -34,6 +34,11 @@ public class NewRound : CustomStateMachine
     public override void ChangePhase()
     {
         // nothing to do here
+    }
+
+    public override bool CanDeleteCard()
+    {
+        return false;
     }
 }
 

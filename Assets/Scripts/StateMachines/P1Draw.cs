@@ -12,7 +12,14 @@ public class P1Draw : CustomStateMachine
         {
             IA.Instance.CheckDeleteCard();
         }
-        TextViewer.Instance.SetText("Player 1 Draw");
+        if (!GameManager.Instance.multiplayer)
+        {
+            TextViewer.Instance.SetText("IA Draw");
+        }
+        else
+        {
+            TextViewer.Instance.SetText(GameManager.Instance.namePlayer1 + " Draw");
+        }
         Discard.Instance.ShowParticles(true);
         Deck.Instance.ShowParticles(true);
         GameManager.Instance.state = this;
@@ -63,7 +70,14 @@ public class P1Draw : CustomStateMachine
             card = c;
             if (GameManager.Instance.powerChar == 'N')
             {
-                Draw();
+                if (GameManager.Instance.multiplayer && MultiPlayerController.LocalPlayerInstance.playerID == Card.Owner.Player1)
+                {
+                    Draw();
+                }
+                else if (!GameManager.Instance.multiplayer)
+                {
+                    Draw();
+                }
             }
         }
 
@@ -72,5 +86,10 @@ public class P1Draw : CustomStateMachine
     public override void ChangePhase()
     {
         GameManager.Instance.gameLogic.SetTrigger("DrawComplete");
+    }
+
+    public override bool CanDeleteCard()
+    {
+        return true;
     }
 }

@@ -8,7 +8,14 @@ public class P1Discard : CustomStateMachine
 
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        TextViewer.Instance.SetText("Player 1 Discard");
+        if (!GameManager.Instance.multiplayer)
+        {
+            TextViewer.Instance.SetText("Player 1 Discard");
+        }
+        else
+        {
+            TextViewer.Instance.SetText(GameManager.Instance.namePlayer1 + " Discard");
+        }
         Discard.Instance.ShowParticles(false);
         Deck.Instance.ShowParticles(false);
         GameManager.Instance.state = this;
@@ -62,7 +69,14 @@ public class P1Discard : CustomStateMachine
         card = c;
         if (GameManager.Instance.powerChar == 'N')
         {
-            DiscardCard();
+            if (GameManager.Instance.multiplayer && MultiPlayerController.LocalPlayerInstance.playerID == Card.Owner.Player1)
+            {
+                DiscardCard();
+            }
+            else if (!GameManager.Instance.multiplayer)
+            {
+                DiscardCard();
+            }
         }
     }
 
@@ -70,5 +84,10 @@ public class P1Discard : CustomStateMachine
     {
         if (GameManager.Instance.endRoundPlayer == Card.Owner.Player2) GameManager.Instance.gameLogic.SetTrigger("EndRound");
         else GameManager.Instance.gameLogic.SetTrigger("DiscardComplete");
+    }
+
+    public override bool CanDeleteCard()
+    {
+        return true;
     }
 }

@@ -6,4 +6,6 @@ public abstract class CustomStateMachine : StateMachineBehaviour
 {
     public abstract void Execute(Card c);
     public abstract void ChangePhase();
+
+    public abstract bool  CanDeleteCard();
 }

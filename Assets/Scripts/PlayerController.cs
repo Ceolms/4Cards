@@ -33,7 +33,6 @@ public class PlayerController : MonoBehaviour
         {
             if (Input.GetMouseButtonDown(0))
             {
-                Debug.Log("MouseDown");
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 GameManager.Instance.CheckTouch(ray, playerID);
             }

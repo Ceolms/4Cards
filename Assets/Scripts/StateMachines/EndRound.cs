@@ -70,4 +70,9 @@ public class EndRound : CustomStateMachine
     {
         
     }
+
+    public override bool CanDeleteCard()
+    {
+        return false;
+    }
 }

@@ -129,7 +129,7 @@ public class MultiPlayerController : PlayerController
         Card c = GameManager.Instance.FindByPosition(pos);
 
         c.MoveTo(Card.Position.Discard);
-
+        c.SetHidden(false);
         if (player == Card.Owner.Player1)
         {
             GameManager.Instance.cardsJ1.Remove(c);
@@ -147,7 +147,7 @@ public class MultiPlayerController : PlayerController
         Card c = GameManager.Instance.FindByPosition(pos);
 
         c.MoveTo(Card.Position.Discard);
-
+        c.SetHidden(false);
         if (player == Card.Owner.Player1)
         {
             GameManager.Instance.cardsJ1.Remove(c);

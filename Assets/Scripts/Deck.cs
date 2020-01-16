@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class Deck : MonoBehaviour
 {
-    public List<GameObject> stack;
+    public List<Card> stack;
     public static System.Random rnd = new System.Random();
     public static Deck Instance;
     public bool receivedDeckEvent = false;
@@ -19,7 +19,7 @@ public class Deck : MonoBehaviour
         Instance = this;
         ps = this.transform.GetChild(0).GetComponent<ParticleSystem>();
         ShowParticles(false);
-        stack = new List<GameObject>();
+        stack = new List<Card>();
     }
     private void Update()
     {
@@ -29,10 +29,9 @@ public class Deck : MonoBehaviour
             receivedDeckEvent = false;
         }
     }
-
+    /*
     public void UpdatePosition()
     {
-        Debug.Log("UpdatePosition");
         if (stack.Count > 0)
         {
             stack[0].GetComponent<Card>().SetFront(true);
@@ -42,13 +41,13 @@ public class Deck : MonoBehaviour
                 stack[i].GetComponent<Card>().SetFront(false);
             }
         }
-    }
+    }*/
 
     public Card Draw()
     {
-        GameObject obj = RemoveAndGet<GameObject>(this.stack, 0);
-        UpdatePosition();
-        return obj.GetComponent<Card>();
+        Card obj = RemoveAndGet<Card>(this.stack, 0);
+      //  UpdatePosition();
+        return obj;
     }
 
     private static T RemoveAndGet<T>(IList<T> list, int index)
@@ -90,10 +89,10 @@ public class Deck : MonoBehaviour
         card.MoveTo(Card.Position.Player2_Slot4);
         yield return new WaitUntil(() => card.isMoving == false);
         card = Draw();
-        card.SetFront(true);
+       // card.SetFront(true);
         card.MoveTo(Card.Position.Discard);
         yield return new WaitUntil(() => card.isMoving == false);
-        stack[0].GetComponent<Card>().SetFront(true);
+     //   stack[0].GetComponent<Card>().SetFront(true);
         GameManager.Instance.gameLogic.SetTrigger("DistributeComplete"); // Draw Phase Complete, proceed to next phase
     }
 
@@ -106,7 +105,7 @@ public class Deck : MonoBehaviour
             Card c = go.GetComponent<Card>();
             c.MoveTo(Card.Position.Deck);
         }
-        UpdatePosition();
+      //  UpdatePosition();
         if (GameManager.Instance.multiplayer && MultiPlayerController.LocalPlayerInstance.playerID == Card.Owner.Player1)
         {
             Debug.Log("Gamemode : multi player 1");
@@ -119,10 +118,10 @@ public class Deck : MonoBehaviour
         {
             Debug.Log("Gamemode : multi player 2");
             string[] dataSplit = deckData.Split(',');
-            Deck.Instance.stack = new List<GameObject>();
+            Deck.Instance.stack = new List<Card>();
             for (int i = 0; i < dataSplit.Length - 1; i++)
             {
-                GameObject o = GameObject.Find(dataSplit[i]);
+                Card o = GameObject.Find(dataSplit[i]).GetComponent<Card>();
                 if (o != null)
                     Deck.Instance.stack.Add(o);
             }
@@ -140,13 +139,13 @@ public class Deck : MonoBehaviour
     {
         Debug.Log("Shuffle");
         if(stack.Count == 0 ) Debug.LogError("Stack empty");
-        List<GameObject> cards = stack.ToList<GameObject>();
+        List<Card> cards = stack.ToList<Card>();
         stack.Clear();
 
         for (int i = 0; i < cards.Count; i++)
         {
             cards[i].GetComponent<Card>().isHidden = true;
-            GameObject temp = cards[i];
+            Card temp = cards[i];
             int randomIndex = Random.Range(i, cards.Count);
             cards[i] = cards[randomIndex];
             cards[randomIndex] = temp;
@@ -154,7 +153,7 @@ public class Deck : MonoBehaviour
         for (int i = 0; i < cards.Count; i++)
         {
             cards[i].GetComponent<Card>().isHidden = true;
-            GameObject temp = cards[i];
+            Card temp = cards[i];
             int randomIndex = Random.Range(i, cards.Count);
             cards[i] = cards[randomIndex];
             cards[randomIndex] = temp;
@@ -163,9 +162,9 @@ public class Deck : MonoBehaviour
         for (int i = 0; i < cards.Count; i++)
         {
             stack.Add(cards[i]);
-            cards[i].GetComponent<Card>().SetFront(false);
+          //  cards[i].GetComponent<Card>().SetFront(false);
         }
-        stack[0].GetComponent<Card>().SetFront(true);
+     //   stack[0].GetComponent<Card>().SetFront(true);
         //Debug.Log("Shuffling Done");
 
     }
@@ -188,7 +187,7 @@ public class Deck : MonoBehaviour
     {
         StringBuilder myStringBuilder = new StringBuilder("");
         StringBuilder debugString = new StringBuilder("");
-        foreach (GameObject obj in stack)
+        foreach (Card obj in stack)
         {
             myStringBuilder.Append(obj.name + ",");
             debugString.Append(obj.name + "\n");

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Discard : MonoBehaviour
 {
-    public List<GameObject> stack;
+    public List<Card> stack;
     public static System.Random rnd = new System.Random();
     public static Discard Instance;
     ParticleSystem ps;
@@ -15,9 +15,9 @@ public class Discard : MonoBehaviour
         Instance = this;
         ps = this.transform.GetChild(0).GetComponent<ParticleSystem>();
         ShowParticles(false);
-        stack = new List<GameObject>();
+        stack = new List<Card>();
     }
-
+    /*
     public void UpdatePosition()
     {
         if (stack.Count > 0)
@@ -29,13 +29,13 @@ public class Discard : MonoBehaviour
                 stack[i].GetComponent<Card>().SetFront(false);
             }
         }
-    }
+    }*/
 
     public Card Draw()
     {
-        GameObject obj = RemoveAndGet<GameObject>(this.stack, 0);
-        UpdatePosition();
-        return obj.GetComponent<Card>();
+        Card obj = RemoveAndGet<Card>(this.stack, 0);
+      //  UpdatePosition();
+        return obj;
     }
 
     private static T RemoveAndGet<T>(IList<T> list, int index)

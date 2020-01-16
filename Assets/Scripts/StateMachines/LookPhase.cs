@@ -98,5 +98,11 @@ public class LookPhase : CustomStateMachine
 
     public override void ChangePhase()
     {
+        // nothing to do here
+    }
+
+    public override bool CanDeleteCard()
+    {
+        return false;
     }
 }

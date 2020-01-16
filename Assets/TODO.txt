@@ -1,11 +1,8 @@
--Alpha- Fini !
 
-	Bugs : IA Queen
-		   Fix Card MoveToward
+	Fix Card MoveToward
 
-	Synchro Deck et stateMachine
-	Ui Wait for P2
-	RPC
+	End Round
+	Powers
 
 -Beta-
 

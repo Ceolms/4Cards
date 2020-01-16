@@ -7,7 +7,14 @@ public class P2Discard : CustomStateMachine
     Card card;
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        TextViewer.Instance.SetText("Player 2 Discard");
+        if (!GameManager.Instance.multiplayer)
+        {
+            TextViewer.Instance.SetText("IA Discard");
+        }
+        else
+        {
+            TextViewer.Instance.SetText(GameManager.Instance.namePlayer2 + " Discard");
+        }
         Discard.Instance.ShowParticles(false);
         Deck.Instance.ShowParticles(false);
         GameManager.Instance.state = this;
@@ -15,10 +22,6 @@ public class P2Discard : CustomStateMachine
         if (!GameManager.Instance.multiplayer)
         {
             IA.Instance.DiscardPhase();
-        }
-        else
-        {
-
         }
     }
 
@@ -34,8 +37,8 @@ public class P2Discard : CustomStateMachine
             }
 
             card.MoveTo(Card.Position.Discard); // move old card to discard
-
-            Card c = GameManager.Instance.FindByPosition(Card.Position.Player1Choice); // take the new one to slot
+            card.SetHidden(false);
+            Card c = GameManager.Instance.FindByPosition(Card.Position.Player2Choice); // take the new one to slot
 
             c.SetHidden(true);
             c.MoveTo(p);
@@ -51,7 +54,7 @@ public class P2Discard : CustomStateMachine
                 MultiPlayerController.LocalPlayerInstance.photonView.RPC("DiscardCard", PhotonTargets.Others, card.position, MultiPlayerController.LocalPlayerInstance.playerID);
             }
             card.MoveTo(Card.Position.Discard);
-
+            card.SetHidden(false);
             if (card.value == "Q") GameManager.Instance.UsePower('Q');
             if (card.value == "J") GameManager.Instance.UsePower('J');
             { IA.Instance.opponentKnownCards.Remove(card); }
@@ -62,9 +65,9 @@ public class P2Discard : CustomStateMachine
 
     public override void Execute(Card c)
     {
-        card = c;
         if (GameManager.Instance.powerChar == 'N' && GameManager.Instance.multiplayer && MultiPlayerController.LocalPlayerInstance.playerID == Card.Owner.Player2)
         {
+            card = c;
             DiscardCard();
         }
     }
@@ -73,5 +76,10 @@ public class P2Discard : CustomStateMachine
     {
         if (GameManager.Instance.endRoundPlayer == Card.Owner.Player1) GameManager.Instance.gameLogic.SetTrigger("EndRound");
         else GameManager.Instance.gameLogic.SetTrigger("DiscardComplete");
+    }
+
+    public override bool CanDeleteCard()
+    {
+        return true;
     }
 }
