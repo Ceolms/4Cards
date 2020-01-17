@@ -188,11 +188,17 @@ public class MultiPlayerController : PlayerController
         cardP2.MoveTo(positionP1);
     }
 
+
+    [PunRPC]
+    void EndRound(Card.Owner player)
+    {
+        GameManager.Instance.endRoundPlayer = player;
+        TextViewer.Instance.SetTextTemporary("END ROUND", Color.red);
+    }
+
     [PunRPC]
     void Exit()
     {
-        //TODO Clean UI Exit
-
         PhotonNetwork.LeaveRoom();
     }
 

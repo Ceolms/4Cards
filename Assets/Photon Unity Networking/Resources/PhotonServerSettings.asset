@@ -51,4 +51,5 @@ MonoBehaviour:
   - ExchangeCards
   - MoveCardToHand
   - DeleteCard
+  - EndRound
   DisableAutoOpenWizard: 1

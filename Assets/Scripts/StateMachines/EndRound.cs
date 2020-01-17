@@ -7,7 +7,6 @@ public class EndRound : CustomStateMachine
 {
     int scoreP1 = 0 ;
     int scoreP2 = 0 ;
-
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         scoreP1 = 0;
@@ -33,28 +32,46 @@ public class EndRound : CustomStateMachine
         Debug.Log("Scores : " + scoreP1 + " : " + scoreP2);
         if(scoreP1 == scoreP2)
         {
-            if(GameManager.Instance.endRoundPlayer == Card.Owner.Player1)
+            if(GameManager.Instance.endRoundPlayer == Card.Owner.Player1) // player 1 lose
             {
-                TextViewer.Instance.SetText("You Lose !");
+
+                if(GameManager.Instance.multiplayer && MultiPlayerController.LocalPlayerInstance.playerID == Card.Owner.Player2)
+                {
+                    TextViewer.Instance.SetText("You Won !");
+                }
+                else TextViewer.Instance.SetText("You Lose !");
+
                 GameManager.Instance.scoreP2 += 1;
                 GameManager.Instance.firstToPlay = 2;
             }
-            else
+            else //player 2 lose
             {
-                TextViewer.Instance.SetText("You Won !");
+                if (GameManager.Instance.multiplayer && MultiPlayerController.LocalPlayerInstance.playerID == Card.Owner.Player2)
+                {
+                    TextViewer.Instance.SetText("You Lose !");
+                }
+                TextViewer.Instance.SetText("You Won !"); // player 1 win
                 GameManager.Instance.scoreP1 += 1;
                 GameManager.Instance.firstToPlay = 1;
             }
-        }
-        else if(scoreP1 < scoreP2)
+        } 
+        else if(scoreP1 < scoreP2) //player 1 win
         {
-            TextViewer.Instance.SetText("You Won !");
+            if (GameManager.Instance.multiplayer && MultiPlayerController.LocalPlayerInstance.playerID == Card.Owner.Player2)
+            {
+                TextViewer.Instance.SetText("You Lose !");
+            }
+            TextViewer.Instance.SetText("You Won !"); // player 1 win
             GameManager.Instance.scoreP1 += 1;
             GameManager.Instance.firstToPlay = 1;
         }
-        else
+        else //player 2 win
         {
-            TextViewer.Instance.SetText("You Lose !");
+            if (GameManager.Instance.multiplayer && MultiPlayerController.LocalPlayerInstance.playerID == Card.Owner.Player2)
+            {
+                TextViewer.Instance.SetText("You Won !");
+            }
+            else TextViewer.Instance.SetText("You Lose !");
             GameManager.Instance.scoreP2 += 1;
             GameManager.Instance.firstToPlay = 2;
         }
@@ -68,7 +85,6 @@ public class EndRound : CustomStateMachine
 
     public override void ChangePhase()
     {
-        
     }
 
     public override bool CanDeleteCard()

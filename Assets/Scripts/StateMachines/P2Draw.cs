@@ -14,21 +14,15 @@ public class P2Draw : CustomStateMachine
         else
         {
             TextViewer.Instance.SetText(GameManager.Instance.namePlayer2 + " Draw");
+            if (MultiPlayerController.LocalPlayerInstance.playerID == Card.Owner.Player2)
+            {
+
+                Discard.Instance.ShowParticles(true);
+                Deck.Instance.ShowParticles(true);
+            }
         }
         GameManager.Instance.state = this;
-
-        if (!GameManager.Instance.multiplayer)
-        {
-            IA.Instance.CheckDeleteCard();
-            IA.Instance.DrawPhase();
-        }
-        else
-        {
-            Discard.Instance.ShowParticles(true);
-            Deck.Instance.ShowParticles(true);
-        }
     }
-
 
     private void Draw()
     {

@@ -21,7 +21,7 @@ public class Card : MonoBehaviour
     private bool isRendered = true; // to show only top card of deck / discard
     public bool isHidden = true; // hidden card face
 
-    public bool isMoving;
+    public bool isMoving { get; private set; }
     private bool isShaking;
     private bool shakeLeft;
     private Transform destination;

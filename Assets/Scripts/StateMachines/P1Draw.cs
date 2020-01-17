@@ -11,17 +11,22 @@ public class P1Draw : CustomStateMachine
         if (!GameManager.Instance.multiplayer)
         {
             IA.Instance.CheckDeleteCard();
-        }
-        if (!GameManager.Instance.multiplayer)
-        {
-            TextViewer.Instance.SetText("IA Draw");
+            TextViewer.Instance.SetText("Player Draw");
+
+            Discard.Instance.ShowParticles(true);
+            Deck.Instance.ShowParticles(true);
         }
         else
         {
             TextViewer.Instance.SetText(GameManager.Instance.namePlayer1 + " Draw");
+
+            if (MultiPlayerController.LocalPlayerInstance.playerID == Card.Owner.Player1)
+            {
+
+                Discard.Instance.ShowParticles(true);
+                Deck.Instance.ShowParticles(true);
+            }
         }
-        Discard.Instance.ShowParticles(true);
-        Deck.Instance.ShowParticles(true);
         GameManager.Instance.state = this;
     }
 

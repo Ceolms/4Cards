@@ -76,7 +76,17 @@ public class GameManager : MonoBehaviour
         {
             multiplayer = true;
             PhotonNetwork.Instantiate(prefabPlayer.name, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
-            // manager = GameObject.Find("MultiplayerManager").GetComponent<NetworkManager>();
+
+
+            if (PlayerPrefs.GetString("playerID").Equals("player2"))
+            {
+                Vector3 pos = GameObject.Find("DeckPosition").transform.position;
+                SwapHandsPosition();
+                foreach (Card c in cardsList)
+                {
+                    c.transform.position = pos;
+                }
+            }
         }
         else Debug.LogError("Error, Gamemode not set");
     }
@@ -139,7 +149,7 @@ public class GameManager : MonoBehaviour
     {
         RaycastHit hit;
         string s = CheckTouchUI(ray);
-        if (s != null && s.Equals("ActionButton") && state is P1Discard)
+        if (s != null && s.Equals("ActionButton") && (state is P1Discard || (multiplayer && MultiPlayerController.LocalPlayerInstance.playerID == Card.Owner.Player2)))
         {
             Debug.Log("EndRound Clicked! ");
             SetEndTurn(player);
@@ -167,16 +177,16 @@ public class GameManager : MonoBehaviour
             Card c = cardHit.GetComponent<Card>();
 
             if (c == null) return;
-            if (powerChar == 'N' && c.owner == player )
+            if (powerChar == 'N' && c.owner == player)
             {
                 if (db != null && db.card == c)
                 {
                     db.Click(player);
                 }
-                else if(db != null && db.card != c)
+                else if (db != null && db.card != c)
                 {
                     Destroy(db);
-                    this.db  = this.gameObject.AddComponent(typeof(DoubleClick)) as DoubleClick;
+                    this.db = this.gameObject.AddComponent(typeof(DoubleClick)) as DoubleClick;
                     this.db.card = c;
                     this.db.Click(player);
                 }
@@ -435,6 +445,12 @@ public class GameManager : MonoBehaviour
     {
         endRoundPlayer = player;
         TextViewer.Instance.SetTextTemporary("END ROUND", Color.red);
+
+        if (multiplayer)
+        {
+            MultiPlayerController.LocalPlayerInstance.photonView.RPC("EndRound", PhotonTargets.Others, MultiPlayerController.LocalPlayerInstance.playerID);
+
+        }
     }
     public void ChangePhase()
     {
@@ -589,10 +605,6 @@ public class GameManager : MonoBehaviour
         GameManager.Instance.UpdateScoreText();
 
         MultiPlayerController.LocalPlayerInstance.photonView.RPC("SetPlayerNameText", PhotonTargets.Others, MultiPlayerController.LocalPlayerInstance.namePlayer, MultiPlayerController.LocalPlayerInstance.playerID);
-        if (MultiPlayerController.LocalPlayerInstance.playerID == Card.Owner.Player2)
-        {
-            SwapHandsPosition();
-        }
         state.Execute(null);
     }
 }

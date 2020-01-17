@@ -1,17 +1,18 @@
 
-	Fix Card MoveToward
-
 	End Round
+	Click New Round
 	Powers
+
+	Waiting for player 2 
+	Ui Un joueur a quitté
 
 -Beta-
 
-Reglage temps carte visible & phase suivante
-
 Niveau IA
 
+Options ( volume ) 
 Sons
-Polish 
+Rework Graphismes  
 Features
 
 -Gold!-
