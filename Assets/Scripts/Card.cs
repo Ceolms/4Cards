@@ -122,7 +122,8 @@ public class Card : MonoBehaviour
     public IEnumerator Hide()
     {
         yield return new WaitForSeconds(timeToHide);
-        isHidden = true;
+        if (this.position != Position.Discard) isHidden = true;
+
     }
 
     public void SetParticles(bool b)
@@ -201,8 +202,6 @@ public class Card : MonoBehaviour
                 destination = GameObject.Find("DeckPosition").transform;
                 owner = Owner.Deck;
                 isMoving = true;
-               // this.SetFront(false);
-                //isHidden = true;
                 SetHidden(true);
                 Deck.Instance.stack.Insert(0, this);
                 break;

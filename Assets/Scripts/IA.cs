@@ -196,7 +196,7 @@ public class IA : MonoBehaviour
     }
     private void LookCard(int slot)
     {
-        Card c = GameManager.Instance.LookCard(slot);
+        Card c = GameManager.Instance.cardsJ2[slot];
         knownCards.Add(c);
         c.Shake();
     }

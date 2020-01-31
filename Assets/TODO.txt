@@ -1,7 +1,10 @@
 
 	End Round
-	Click New Round
 	Powers
+
+
+	Click New Round
+
 
 	Waiting for player 2 
 	Ui Un joueur a quitté

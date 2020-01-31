@@ -26,13 +26,9 @@ public class P2Draw : CustomStateMachine
 
     private void Draw()
     {
-        Debug.Log("Draw P2");
         Card c = null;
-        Debug.Log(card.position);
         if (card.position == Card.Position.Deck)
         {
-            Debug.Log("Card is in Deck");
-
             c = Deck.Instance.Draw();
             MultiPlayerController.LocalPlayerInstance.photonView.RPC("DrawCard", PhotonTargets.Others, c.position, MultiPlayerController.LocalPlayerInstance.playerID);
 
@@ -44,7 +40,6 @@ public class P2Draw : CustomStateMachine
         }
         else if (card.position == Card.Position.Discard)
         {
-            Debug.Log("Card is in Discard");
             c = Discard.Instance.Draw();
 
             MultiPlayerController.LocalPlayerInstance.photonView.RPC("DrawCard", PhotonTargets.Others, c.position, MultiPlayerController.LocalPlayerInstance.playerID);

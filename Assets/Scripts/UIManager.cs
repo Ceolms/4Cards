@@ -199,7 +199,7 @@ public class UIManager : MonoBehaviour
             offsetY -= 1;
             btnMatch.GetComponent<OnClickMatchJoin>().SetButtonMatch(room.Name);
         }
-        if(rooms.Count == 0) Debug.Log("0 rooms founds");
+       // if(rooms.Count == 0) Debug.Log("0 rooms founds");
     }
 
     public void JoinMatch(string nom)

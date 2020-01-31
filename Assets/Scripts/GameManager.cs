@@ -10,11 +10,11 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
     public Animator gameLogic;
-    private float animatorSpeed;
+    private float animatorSpeed = 1 ;
     [HideInInspector]
     public GameObject powerPanel; // panel with Yes/No question to use power
     private float phaseChangeTime = 0f;
-    private float phaseChangeTimeLong = 2f;
+    private float phaseChangeTimeLong = 2f; // 2f
     public GameObject prefabPlayer;
     public GameObject prefabPlayerSolo;
     [HideInInspector]
@@ -64,7 +64,7 @@ public class GameManager : MonoBehaviour
         {
             cardsList.Add(o.GetComponent<Card>());
         }
-        animatorSpeed = gameLogic.speed;
+        ResumeGame();
         powerChar = 'N';
 
         if (PlayerPrefs.GetString("gamemode").Equals("IA"))
@@ -112,6 +112,8 @@ public class GameManager : MonoBehaviour
             Card.Position p1 = selectedCard.position;
             Card.Position p2 = selectedOpponentCard.position;
 
+            MultiPlayerController.LocalPlayerInstance.photonView.RPC("ExchangeCards", PhotonTargets.Others,p1,p2);
+
             selectedCard.MoveTo(p2);
             selectedOpponentCard.MoveTo(p1);
 
@@ -120,7 +122,7 @@ public class GameManager : MonoBehaviour
             selectedCard = null;
             selectedOpponentCard = null;
             powerChar = 'N';
-            gameLogic.speed = animatorSpeed;
+            ResumeGame();
         }
     }
 
@@ -151,26 +153,24 @@ public class GameManager : MonoBehaviour
         string s = CheckTouchUI(ray);
         if (s != null && s.Equals("ActionButton") && (state is P1Discard || (multiplayer && MultiPlayerController.LocalPlayerInstance.playerID == Card.Owner.Player2)))
         {
-            Debug.Log("EndRound Clicked! ");
             SetEndTurn(player);
         }
         else if (s != null && s.Equals("ActionButton") && state is EndRound)
         {
-            Debug.Log("New Round Clicked! ");
             gameLogic.SetTrigger("NewRoundStart");
+            if(multiplayer)
+            {
+                MultiPlayerController.LocalPlayerInstance.photonView.RPC("NewRound", PhotonTargets.Others);
+            }
         }
         else if (s != null && s.Equals("ExitButton"))
         {
             Exit();
         }
-
-
         else if (powerPanelVisible)
         {
             CheckPower();
         }
-
-
         else if (Physics.Raycast(ray, out hit) && s == null)
         {
             GameObject cardHit = hit.collider.gameObject;
@@ -207,12 +207,17 @@ public class GameManager : MonoBehaviour
                 if (c.owner == player)
                 {
                     c.SetHidden(false);
+                    if (GameManager.Instance.multiplayer) MultiPlayerController.LocalPlayerInstance.photonView.RPC("ShakeCard", PhotonTargets.Others, c.name);
                     foreach (Card card in cardsJ1)
                     {
                         if (card != null) card.SetParticles(false);
                     }
                     powerChar = 'N';
-                    gameLogic.speed = animatorSpeed;
+                    ResumeGame();
+                    if (multiplayer)
+                    {
+                        MultiPlayerController.LocalPlayerInstance.photonView.RPC("ResumeAnimator", PhotonTargets.Others);
+                    }
                     c.SetHidden(true);
                 }
             }
@@ -293,6 +298,11 @@ public class GameManager : MonoBehaviour
         {
             if (Discard.Instance.stack.Count > 0 && cardSelected.value.Equals(Discard.Instance.stack[0].GetComponent<Card>().value))
             {
+
+                if (multiplayer)
+                {
+                    MultiPlayerController.LocalPlayerInstance.photonView.RPC("DeleteCard", PhotonTargets.Others, cardSelected.position,MultiPlayerController.LocalPlayerInstance.playerID);
+                }
                 cardSelected.MoveTo(Card.Position.Discard);
 
                 if (cardSelected.value == "Q") UsePower('Q');
@@ -309,9 +319,9 @@ public class GameManager : MonoBehaviour
                     GameManager.Instance.gameLogic.SetTrigger("EndRound");
                 }
             }
-            else
+            else // wrong card
             {
-                TextViewer.Instance.SetTextTemporary("Wrong card !", Color.red);
+                TextViewer.Instance.SetTextTemporary("Wrong card !", Color.red, 1.8f);
                 int[] arrayPos = new int[] { 1, 2, 3, 4, 5, 6 };
                 if (player == Card.Owner.Player1)
                 {
@@ -367,6 +377,11 @@ public class GameManager : MonoBehaviour
                                     case (6):
                                         p = Card.Position.Player1_Slot6;
                                         break;
+                                }
+
+                                if (multiplayer)
+                                {
+                                    MultiPlayerController.LocalPlayerInstance.photonView.RPC("WrongCard", PhotonTargets.Others, p,MultiPlayerController.LocalPlayerInstance.playerID);
                                 }
                                 Card c = Deck.Instance.Draw();
                                 c.MoveTo(p);
@@ -430,6 +445,10 @@ public class GameManager : MonoBehaviour
                                         p = Card.Position.Player2_Slot6;
                                         break;
                                 }
+                                if (multiplayer)
+                                {
+                                    MultiPlayerController.LocalPlayerInstance.photonView.RPC("WrongCard", PhotonTargets.Others, p, MultiPlayerController.LocalPlayerInstance.playerID);
+                                }
                                 Card c = Deck.Instance.Draw();
                                 c.MoveTo(p);
                                 break;
@@ -444,16 +463,16 @@ public class GameManager : MonoBehaviour
     public void SetEndTurn(Card.Owner player)
     {
         endRoundPlayer = player;
-        TextViewer.Instance.SetTextTemporary("END ROUND", Color.red);
+        TextViewer.Instance.SetTextTemporary("END ROUND", Color.red, 1.8f);
 
         if (multiplayer)
         {
             MultiPlayerController.LocalPlayerInstance.photonView.RPC("EndRound", PhotonTargets.Others, MultiPlayerController.LocalPlayerInstance.playerID);
-
         }
     }
     public void ChangePhase()
     {
+        
         StartCoroutine(WaitAndChange(phaseChangeTime));
     }
     public void ChangePhaseLong()
@@ -478,7 +497,7 @@ public class GameManager : MonoBehaviour
 
     public void CheckPower()
     {
-        if (!gameLogic.GetCurrentAnimatorStateInfo(0).IsName("NewRound") && !gameLogic.GetCurrentAnimatorStateInfo(0).IsName("LookPhase") && !gameLogic.GetCurrentAnimatorStateInfo(0).IsName("EndPhase"))
+        if (state.CanDeleteCard())
         {
             if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer)
             {
@@ -492,15 +511,58 @@ public class GameManager : MonoBehaviour
                         {
                             powerPanel.SetActive(false);
                             powerPanelVisible = false;
-                            foreach (Card card in cardsJ1)
+
+                            Debug.Log("power activated");
+                            if (!multiplayer)
                             {
-                                card.SetParticles(true);
-                            }
-                            if (powerChar == 'J')
-                            {
-                                foreach (Card card in cardsJ2)
+                                Debug.Log("highlighting solo");
+                                foreach (Card card in cardsJ1)
                                 {
                                     card.SetParticles(true);
+                                }
+                                if (powerChar == 'J')
+                                {
+                                    foreach (Card card in cardsJ2)
+                                    {
+                                        card.SetParticles(true);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if(MultiPlayerController.LocalPlayerInstance.playerID == Card.Owner.Player1)
+                                {
+                                    Debug.Log("Player 1 highlight cardsJ1");
+                                    foreach (Card card in cardsJ1)
+                                    {
+                                      
+                                        card.SetParticles(true);
+                                    }
+                                    if (powerChar == 'J')
+                                    {
+                                        Debug.Log("Player 1 highlight cardsJ2 ( Jack power ) ");
+                                        foreach (Card card in cardsJ2)
+                                        {
+                                            card.SetParticles(true);
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    Debug.Log("Player 2 highlight cardsJ2");
+                                    foreach (Card card in cardsJ2)
+                                    {
+                                      
+                                        card.SetParticles(true);
+                                    }
+                                    if (powerChar == 'J')
+                                    {
+                                        Debug.Log("Player 2 highlight cardsJ1 ( Jack power ) ");
+                                        foreach (Card card in cardsJ1)
+                                        {
+                                            card.SetParticles(true);
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -508,7 +570,11 @@ public class GameManager : MonoBehaviour
                         {
                             powerPanel.SetActive(false);
                             powerPanelVisible = false;
-                            gameLogic.speed = animatorSpeed;
+                            ResumeGame();
+                            if (multiplayer)
+                            {
+                                MultiPlayerController.LocalPlayerInstance.photonView.RPC("ResumeAnimator", PhotonTargets.Others);
+                            }
                             powerChar = 'N';
                         }
                     }
@@ -516,7 +582,6 @@ public class GameManager : MonoBehaviour
             }
             else
             {
-                //Debug.Log("WindowsApplication");
                 if (Input.GetMouseButtonDown(0))
                 {
                     Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
@@ -541,7 +606,11 @@ public class GameManager : MonoBehaviour
                     {
                         powerPanel.SetActive(false);
                         powerPanelVisible = false;
-                        gameLogic.speed = animatorSpeed;
+                        ResumeGame();
+                        if (multiplayer)
+                        {
+                            MultiPlayerController.LocalPlayerInstance.photonView.RPC("ResumeAnimator", PhotonTargets.Others);
+                        }
                         powerChar = 'N';
                     }
                 }
@@ -551,7 +620,12 @@ public class GameManager : MonoBehaviour
 
     public void UsePower(char p)
     {
-        gameLogic.speed = 0;
+        PauseGame();
+
+        if(multiplayer)
+        {
+            MultiPlayerController.LocalPlayerInstance.photonView.RPC("PauseAnimator", PhotonTargets.Others);
+        }
         powerPanel.SetActive(true);
         powerPanelVisible = true;
         powerChar = p;
@@ -560,13 +634,6 @@ public class GameManager : MonoBehaviour
 
     }
 
-    //IA Functions --------------------------
-
-    public Card LookCard(int index)
-    {
-        if (index > cardsJ2.Count) Debug.LogError("Error LookCard index : " + index);
-        return cardsJ2[index];
-    }
     // Multi player Functions ----------------
 
     void OnLeftRoom()
@@ -606,5 +673,15 @@ public class GameManager : MonoBehaviour
 
         MultiPlayerController.LocalPlayerInstance.photonView.RPC("SetPlayerNameText", PhotonTargets.Others, MultiPlayerController.LocalPlayerInstance.namePlayer, MultiPlayerController.LocalPlayerInstance.playerID);
         state.Execute(null);
+    }
+
+    public void PauseGame()
+    {
+        gameLogic.speed = 0;
+    }
+
+    public void ResumeGame()
+    {
+        gameLogic.speed = animatorSpeed;
     }
 }

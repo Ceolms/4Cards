@@ -9,7 +9,6 @@ public class NewRound : CustomStateMachine
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        //Debug.Log("New Round StateEnter");
         GameManager.Instance.cardsJ1 = new List<Card>();
         GameManager.Instance.cardsJ2 = new List<Card>();
         if (!GameManager.Instance.multiplayer) IA.Instance.NewRound();

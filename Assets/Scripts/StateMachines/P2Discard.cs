@@ -39,7 +39,6 @@ public class P2Discard : CustomStateMachine
             card.MoveTo(Card.Position.Discard); // move old card to discard
             card.SetHidden(false);
             Card c = GameManager.Instance.FindByPosition(Card.Position.Player2Choice); // take the new one to slot
-
             c.SetHidden(true);
             c.MoveTo(p);
 

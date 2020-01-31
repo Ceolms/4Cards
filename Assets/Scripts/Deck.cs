@@ -29,20 +29,6 @@ public class Deck : MonoBehaviour
             receivedDeckEvent = false;
         }
     }
-    /*
-    public void UpdatePosition()
-    {
-        if (stack.Count > 0)
-        {
-            stack[0].GetComponent<Card>().SetFront(true);
-
-            for (int i = 1; i < stack.Count; i++)
-            {
-                stack[i].GetComponent<Card>().SetFront(false);
-            }
-        }
-    }*/
-
     public Card Draw()
     {
         Card obj = RemoveAndGet<Card>(this.stack, 0);
@@ -137,7 +123,7 @@ public class Deck : MonoBehaviour
 
     private void Shuffle()
     {
-        Debug.Log("Shuffle");
+       
         if(stack.Count == 0 ) Debug.LogError("Stack empty");
         List<Card> cards = stack.ToList<Card>();
         stack.Clear();
@@ -162,10 +148,7 @@ public class Deck : MonoBehaviour
         for (int i = 0; i < cards.Count; i++)
         {
             stack.Add(cards[i]);
-          //  cards[i].GetComponent<Card>().SetFront(false);
         }
-     //   stack[0].GetComponent<Card>().SetFront(true);
-        //Debug.Log("Shuffling Done");
 
     }
 
@@ -192,7 +175,6 @@ public class Deck : MonoBehaviour
             myStringBuilder.Append(obj.name + ",");
             debugString.Append(obj.name + "\n");
         }
-        Debug.Log("Sending deck");
         MultiPlayerController.LocalPlayerInstance.photonView.RPC("DeckShuffleData", PhotonTargets.Others, myStringBuilder.ToString());
     }
 }

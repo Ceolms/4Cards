@@ -138,8 +138,16 @@ public class MultiPlayerController : PlayerController
         {
             GameManager.Instance.cardsJ2.Remove(c);
         }
-        GameManager.Instance.ChangePhase();
+        GameManager.Instance.ChangePhaseLong();
     }
+
+    [PunRPC]
+    void WrongCard(Card.Position pos, Card.Owner player)
+    {
+        Card c = Deck.Instance.Draw();
+        c.MoveTo(pos);
+    }
+
 
     [PunRPC]
     void DeleteCard(Card.Position pos, Card.Owner player)
@@ -186,22 +194,43 @@ public class MultiPlayerController : PlayerController
 
         cardP1.MoveTo(positionP2);
         cardP2.MoveTo(positionP1);
+        GameManager.Instance.ResumeGame();
     }
+
 
 
     [PunRPC]
     void EndRound(Card.Owner player)
     {
         GameManager.Instance.endRoundPlayer = player;
-        TextViewer.Instance.SetTextTemporary("END ROUND", Color.red);
+        TextViewer.Instance.SetTextTemporary("END ROUND", Color.red, 1.8f);
     }
+
+    [PunRPC]
+    void NewRound()
+    {
+        GameManager.Instance.gameLogic.SetTrigger("NewRoundStart");
+    }
+
+    [PunRPC]
+    void PauseAnimator()
+    {
+        GameManager.Instance.PauseGame();
+        TextViewer.Instance.SetText("Opponent is thinking");
+    }
+
+    [PunRPC]
+    void ResumeAnimator()
+    {
+        GameManager.Instance.ResumeGame();
+    }
+
 
     [PunRPC]
     void Exit()
     {
         PhotonNetwork.LeaveRoom();
     }
-
     void OnLeftRoom()
     {
         PhotonNetwork.LoadLevel(0);

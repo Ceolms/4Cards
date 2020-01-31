@@ -49,27 +49,27 @@ public class TextViewer : MonoBehaviour
         textLine.enabled = false;
     }
 
-    public void SetTextTemporary(string s)
+    public void SetTextTemporary(string s,float t)
     {
         oldLine = textLine.text;
         textLine.enabled = true;
         textLine.text = s;
         textLine.color = defaultColor;
-        StartCoroutine(ResetOldText());
+        StartCoroutine(ResetOldText(t));
     }
 
-    public void SetTextTemporary(string s , Color c)
+    public void SetTextTemporary(string s , Color c,float t)
     {
         oldLine = textLine.text;
         textLine.enabled = true;
         textLine.text = s;
         textLine.color = c;
-        StartCoroutine(ResetOldText());
+        StartCoroutine(ResetOldText(t));
     }
 
-    private IEnumerator ResetOldText()
+    private IEnumerator ResetOldText(float t)
     {
-        yield return new WaitForSeconds(1.8f);
+        yield return new WaitForSeconds(t);
         textLine.text = oldLine;
         textLine.color = defaultColor;
     }

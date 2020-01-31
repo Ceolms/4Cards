@@ -52,4 +52,10 @@ MonoBehaviour:
   - MoveCardToHand
   - DeleteCard
   - EndRound
+  - WaitForPowerChoice
+  - WrongCard
+  - PauseAnimator
+  - ResumeAnimator
+  - Exchange
+  - NewRound
   DisableAutoOpenWizard: 1
