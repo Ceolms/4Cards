@@ -10,6 +10,7 @@ public class P2Draw : CustomStateMachine
         if (!GameManager.Instance.multiplayer)
         {
             TextViewer.Instance.SetText("IA Draw");
+            IA.Instance.DrawPhase();
         }
         else
         {

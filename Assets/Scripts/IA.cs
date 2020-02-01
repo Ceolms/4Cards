@@ -37,6 +37,7 @@ public class IA : MonoBehaviour
 
     public void DrawPhase()
     {
+        Debug.Log("DrawPhase");
         StartCoroutine(DrawCoroutine());
     }
 
@@ -82,8 +83,9 @@ public class IA : MonoBehaviour
     public void DiscardPhase()
     {
         bool usePower = false;
-        //Debug.Log("IA Discard phase");
+        Debug.Log("IA Discard phase");
         Card chooseCard = GameManager.Instance.FindByPosition(Card.Position.Player2Choice);
+        if (chooseCard == null) Debug.LogError("Problem finding choice card");
         int chooseCardValue = chooseCard.ValueToInt();
         Card cardToDelete = chooseCard;
         int cardToDeleteValue = chooseCardValue;

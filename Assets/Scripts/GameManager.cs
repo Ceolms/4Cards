@@ -9,6 +9,8 @@ using UnityEngine.UI;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
+    private SpriteCollection spritesCollection;
+   
     public Animator gameLogic;
     private float animatorSpeed = 1 ;
     [HideInInspector]
@@ -50,7 +52,6 @@ public class GameManager : MonoBehaviour
     public List<Card> cardsJ1 = new List<Card>();
     public List<Card> cardsJ2 = new List<Card>();
 
-    // Start is called before the first frame update
     void Start()
     {
         Instance = this;
@@ -58,6 +59,7 @@ public class GameManager : MonoBehaviour
         powerPanel = GameObject.Find("PowerPanel");
         powerPanel.SetActive(false);
 
+        spritesCollection = this.GetComponent<SpriteCollection>();
         List<GameObject> listObj = new List<GameObject>();
         listObj.AddRange(GameObject.FindGameObjectsWithTag("Card"));
         foreach (GameObject o in listObj)
@@ -91,7 +93,6 @@ public class GameManager : MonoBehaviour
         else Debug.LogError("Error, Gamemode not set");
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (gameBegin && multiplayer && state is NewRound)
@@ -126,8 +127,6 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
-
     public void UpdateScoreText()
     {
         GameObject.Find("ScoreText").GetComponent<Text>().color = Color.white;
@@ -146,7 +145,16 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // Player functions
+    public Sprite GetSelectedSprite()
+    {
+        int i = 0;
+        i = PlayerPrefs.GetInt("spriteIndex");
+
+        if (i == 0) return spritesCollection.spritesList[0];
+        else return spritesCollection.spritesList[i-1];
+    }
+
+    // Player functions -----------------------------------------------------------------------------------------------
     public void CheckTouch(Ray ray, Card.Owner player)
     {
         RaycastHit hit;
@@ -634,7 +642,7 @@ public class GameManager : MonoBehaviour
 
     }
 
-    // Multi player Functions ----------------
+    // Multi player Functions -------------------------------------------------------------------------------------------
 
     void OnLeftRoom()
     {

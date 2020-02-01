@@ -1,21 +1,16 @@
-
-	End Round
-	Powers
-
-
-	Click New Round
-
-
+Multi
 	Waiting for player 2 
 	Ui Un joueur a quitté
+
+Rework Interface
+Choix dos carte & Reward
+Règles
+
 
 -Beta-
 
 Niveau IA
-
 Options ( volume ) 
 Sons
-Rework Graphismes  
-Features
 
 -Gold!-

@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2465960029319122357}
   - component: {fileID: 2465960029319122358}
   - component: {fileID: 2465960029319122359}
+  - component: {fileID: 1966655503}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -50,7 +51,7 @@ MonoBehaviour:
     type: 3}
   prefabPlayerSolo: {fileID: 2155809382634216149, guid: 6c0bc4353dc434342a2a38070a85e0d5,
     type: 3}
-  gamemode: IA
+  multiplayer: 0
   debugMode: 0
   gameBegin: 0
   firstToPlay: 1
@@ -84,3 +85,24 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &1966655503
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2465960029319122352}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7c25307788263f40b4db292851ea9c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spritesList:
+  - {fileID: 21300104, guid: e923c6082eef89646b87f3cce6960c60, type: 3}
+  - {fileID: 21300106, guid: e923c6082eef89646b87f3cce6960c60, type: 3}
+  - {fileID: 21300108, guid: e923c6082eef89646b87f3cce6960c60, type: 3}
+  - {fileID: 21300110, guid: e923c6082eef89646b87f3cce6960c60, type: 3}
+  - {fileID: 21300112, guid: e923c6082eef89646b87f3cce6960c60, type: 3}
+  - {fileID: 21300114, guid: e923c6082eef89646b87f3cce6960c60, type: 3}
+  - {fileID: 21300116, guid: e923c6082eef89646b87f3cce6960c60, type: 3}
+  - {fileID: 21300118, guid: e923c6082eef89646b87f3cce6960c60, type: 3}

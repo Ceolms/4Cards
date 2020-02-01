@@ -10,6 +10,7 @@ public class P2Discard : CustomStateMachine
         if (!GameManager.Instance.multiplayer)
         {
             TextViewer.Instance.SetText("IA Discard");
+            IA.Instance.DiscardPhase();
         }
         else
         {
@@ -18,11 +19,6 @@ public class P2Discard : CustomStateMachine
         Discard.Instance.ShowParticles(false);
         Deck.Instance.ShowParticles(false);
         GameManager.Instance.state = this;
-
-        if (!GameManager.Instance.multiplayer)
-        {
-            IA.Instance.DiscardPhase();
-        }
     }
 
     public void DiscardCard()

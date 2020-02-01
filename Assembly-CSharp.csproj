@@ -142,6 +142,7 @@
     <Compile Include="Assets\Scripts\OnClickMatchJoin.cs" />
     <Compile Include="Assets\Scripts\Outline.cs" />
     <Compile Include="Assets\Scripts\PlayerController.cs" />
+    <Compile Include="Assets\Scripts\SpriteCollection.cs" />
     <Compile Include="Assets\Scripts\StateMachines\CustomStateMachine.cs" />
     <Compile Include="Assets\Scripts\StateMachines\EndRound.cs" />
     <Compile Include="Assets\Scripts\StateMachines\LookPhase.cs" />
