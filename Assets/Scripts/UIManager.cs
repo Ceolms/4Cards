@@ -11,6 +11,7 @@ public class UIManager : MonoBehaviour
     public GameObject soloPanel;
     public GameObject multiPanel;
     public GameObject settingsPanel;
+    public GameObject bonusPanel;
     public GameObject searchingPanel;
     public GameObject loadingCard;
     //public NetworkManager manager;
@@ -87,14 +88,17 @@ public class UIManager : MonoBehaviour
                 case ("ButtonSettings"):
                     Settings(buttonHit);
                     break;
+                case ("ButtonBonus"):
+                    Bonus(buttonHit);
+                    break;
                 case ("ButtonEasy"):
                     StartSolo("Easy");
                     break;
-                case ("ButtonMedium"):
-                    StartSolo("Medium");
+                case ("ButtonNormal"):
+                    StartSolo("Normal");
                     break;
-                case ("ButtonOverkill"):
-                    StartSolo("Overkill");
+                case ("ButtonUnfair"):
+                    StartSolo("Unfair");
                     break;
                 case ("ButtonCreate"):
                     Create();
@@ -127,6 +131,12 @@ public class UIManager : MonoBehaviour
         settingsPanel.GetComponent<UIMover>().Show();
         mainPanel.GetComponent<UIMover>().Hide();
     }
+
+    private void Bonus(GameObject button)
+    {
+        bonusPanel.GetComponent<UIMover>().Show();
+        mainPanel.GetComponent<UIMover>().Hide();
+    }
     private void Return(GameObject button)
     {
         if (PhotonNetwork.connected) PhotonNetwork.Disconnect();
@@ -135,6 +145,19 @@ public class UIManager : MonoBehaviour
         soloPanel.GetComponent<UIMover>().Hide();
         multiPanel.GetComponent<UIMover>().Hide();
         settingsPanel.GetComponent<UIMover>().Hide();
+        bonusPanel.GetComponent<UIMover>().Hide();
+
+        if(searching)
+        {
+            searching = false;
+
+            GameObject listPanel = GameObject.Find("ListMatchsPanel");
+            foreach (Transform child in listPanel.transform)
+            {
+                GameObject.Destroy(child.gameObject);
+            }
+            searchingPanel.SetActive(false);
+        }
     }
 
     private void StartSolo(string difficulty)
