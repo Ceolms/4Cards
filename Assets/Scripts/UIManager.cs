@@ -21,10 +21,7 @@ public class UIManager : MonoBehaviour
     void Start()
     {
         Instance = this;
-        soloPanel.SetActive(false);
-        multiPanel.SetActive(false);
-        settingsPanel.SetActive(false);
-        searchingPanel.SetActive(false);
+        mainPanel.GetComponent<UIMover>().Show();
     }
 
     // Update is called once per frame
@@ -44,17 +41,17 @@ public class UIManager : MonoBehaviour
         else
         {
             if (Input.GetMouseButtonDown(0))
-            { 
+            {
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 CheckTouchUI(ray);
             }
         }
-        if(searchingPanel.activeSelf)
+        if (searchingPanel.activeSelf)
         {
             loadingCard.transform.Rotate(new Vector3(0, 10, 0));
         }
 
-        if(searching && !cooldownSearch)
+        if (searching && !cooldownSearch)
         {
             cooldownSearch = true;
             StartCoroutine(CoolDownResearch());
@@ -64,7 +61,7 @@ public class UIManager : MonoBehaviour
     private IEnumerator CoolDownResearch()
     {
         Search();
-        yield return new WaitForSeconds(6);
+        yield return new WaitForSeconds(2);
         cooldownSearch = false;
     }
 
@@ -74,7 +71,7 @@ public class UIManager : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit))
         {
-            
+
             GameObject buttonHit = hit.collider.gameObject;
             switch (buttonHit.name)
             {
@@ -114,29 +111,30 @@ public class UIManager : MonoBehaviour
 
     private void Solo(GameObject button)
     {
-        soloPanel.SetActive(true);
-        mainPanel.SetActive(false);
-        multiPanel.SetActive(false);
-        settingsPanel.SetActive(false);
+        soloPanel.GetComponent<UIMover>().Show();
+        mainPanel.GetComponent<UIMover>().Hide();
+
     }
     private void Multi(GameObject button)
-    {   
+    {
         PhotonNetwork.ConnectUsingSettings("1.0");
+        multiPanel.GetComponent<UIMover>().Show();
+        mainPanel.GetComponent<UIMover>().Hide();
+        GameObject.Find("InputField").GetComponent<InputField>().text = PlayerPrefs.GetString("PlayerName");
     }
     private void Settings(GameObject button)
     {
-        settingsPanel.SetActive(true);
-        mainPanel.SetActive(false);
-        soloPanel.SetActive(false);
-        multiPanel.SetActive(false); 
+        settingsPanel.GetComponent<UIMover>().Show();
+        mainPanel.GetComponent<UIMover>().Hide();
     }
     private void Return(GameObject button)
     {
-        if(multiPanel.activeSelf) PhotonNetwork.Disconnect();
-        mainPanel.SetActive(true);
-        soloPanel.SetActive(false);
-        multiPanel.SetActive(false);
-        settingsPanel.SetActive(false);
+        if (PhotonNetwork.connected) PhotonNetwork.Disconnect();
+
+        mainPanel.GetComponent<UIMover>().Show();
+        soloPanel.GetComponent<UIMover>().Hide();
+        multiPanel.GetComponent<UIMover>().Hide();
+        settingsPanel.GetComponent<UIMover>().Hide();
     }
 
     private void StartSolo(string difficulty)
@@ -151,7 +149,7 @@ public class UIManager : MonoBehaviour
     private void Abort()
     {
         searching = false;
-        
+
         GameObject listPanel = GameObject.Find("ListMatchsPanel");
         foreach (Transform child in listPanel.transform)
         {
@@ -164,10 +162,10 @@ public class UIManager : MonoBehaviour
     private void Create()
     {
         string nom = GameObject.Find("InputField").GetComponent<InputField>().text;
-        if(!string.IsNullOrEmpty(nom))
+        if (!string.IsNullOrEmpty(nom))
         {
             isHost = true;
-            PhotonNetwork.CreateRoom(nom, new RoomOptions() { MaxPlayers = 2 },null);
+            PhotonNetwork.CreateRoom(nom, new RoomOptions() { MaxPlayers = 2 }, null);
         }
     }
     //Join Button - List alls matches available
@@ -199,7 +197,6 @@ public class UIManager : MonoBehaviour
             offsetY -= 1;
             btnMatch.GetComponent<OnClickMatchJoin>().SetButtonMatch(room.Name);
         }
-       // if(rooms.Count == 0) Debug.Log("0 rooms founds");
     }
 
     public void JoinMatch(string nom)
@@ -207,41 +204,33 @@ public class UIManager : MonoBehaviour
         PhotonNetwork.JoinRoom(nom);
     }
 
-
-    //call backs ---
+    //call backs ---------
 
     private void OnConnectedToMaster()
     {
         PhotonNetwork.JoinLobby(TypedLobby.Default);
-      //  Debug.Log("Connected to Master");
+        //  Debug.Log("Connected to Master");
     }
     private void OnJoinedLobby()
-    {
-        multiPanel.SetActive(true);
-        mainPanel.SetActive(false);
-        soloPanel.SetActive(false);
-        settingsPanel.SetActive(false);
-        GameObject.Find("InputField").GetComponent<InputField>().text = PlayerPrefs.GetString("PlayerName");
-        // Debug.Log("Lobby Joined");
-    }
+    {    }
 
     private void OnJoinedRoom()
     {
         string nom = GameObject.Find("InputField").GetComponent<InputField>().text;
         PlayerPrefs.SetString("PlayerName", nom);
         PlayerPrefs.SetString("gamemode", "multiplayer");
-        if(isHost) PlayerPrefs.SetString("playerID", "player1");
+        if (isHost) PlayerPrefs.SetString("playerID", "player1");
         else PlayerPrefs.SetString("playerID", "player2");
         PhotonNetwork.LoadLevel("Game");
     }
 
     private void OnDisconnectedFromPhoton()
-    {
-        Debug.Log("Disconnected from Photon");
-    }
+    {    }
 
     private void OnFailedToConnectToPhoton()
     {
         Debug.Log("Error connecting to Photon");
+
+        //TODO UI error connexion
     }
 }

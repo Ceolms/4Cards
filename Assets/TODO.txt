@@ -1,12 +1,13 @@
 Multi
 	Waiting for player 2 
 	Ui Un joueur a quitté
-
+	
+Corriger position Overlay
 Rework Interface
 Choix dos carte & Reward
 Règles
 
-
+UI no connection 
 -Beta-
 
 Niveau IA
