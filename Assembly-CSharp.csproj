@@ -131,8 +131,8 @@
     <Compile Include="Assets\PhotonChatApi\ChatState.cs" />
     <Compile Include="Assets\PhotonChatApi\ChatUserStatus.cs" />
     <Compile Include="Assets\PhotonChatApi\IChatClientListener.cs" />
+    <Compile Include="Assets\Scripts\BackCardSelector.cs" />
     <Compile Include="Assets\Scripts\Card.cs" />
-    <Compile Include="Assets\Scripts\CustomDebug.cs" />
     <Compile Include="Assets\Scripts\Deck.cs" />
     <Compile Include="Assets\Scripts\Discard.cs" />
     <Compile Include="Assets\Scripts\DoubleClick.cs" />
@@ -142,7 +142,6 @@
     <Compile Include="Assets\Scripts\OnClickMatchJoin.cs" />
     <Compile Include="Assets\Scripts\Outline.cs" />
     <Compile Include="Assets\Scripts\PlayerController.cs" />
-    <Compile Include="Assets\Scripts\SpriteCollection.cs" />
     <Compile Include="Assets\Scripts\StateMachines\CustomStateMachine.cs" />
     <Compile Include="Assets\Scripts\StateMachines\EndRound.cs" />
     <Compile Include="Assets\Scripts\StateMachines\LookPhase.cs" />
@@ -152,8 +151,11 @@
     <Compile Include="Assets\Scripts\StateMachines\P2Discard.cs" />
     <Compile Include="Assets\Scripts\StateMachines\P2Draw.cs" />
     <Compile Include="Assets\Scripts\TextViewer.cs" />
-    <Compile Include="Assets\Scripts\UIManager.cs" />
-    <Compile Include="Assets\Scripts\UIMover.cs" />
+    <Compile Include="Assets\Scripts\UIScripts\BackCard.cs" />
+    <Compile Include="Assets\Scripts\UIScripts\CustomDebug.cs" />
+    <Compile Include="Assets\Scripts\UIScripts\SpriteCollection.cs" />
+    <Compile Include="Assets\Scripts\UIScripts\UIManager.cs" />
+    <Compile Include="Assets\Scripts\UIScripts\UIMover.cs" />
     <None Include="Assets\UI\Casino UI\RPG Theme NGUI Skin\Shader\HealthMagic.shader" />
     <None Include="Assets\Textures\NewSurfaceShader.shader" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface-Mobile.shader" />

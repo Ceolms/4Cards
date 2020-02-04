@@ -59,9 +59,10 @@ TextureImporter:
     21300108: card_back_3
     21300110: card_back_4
     21300112: card_back_5
-    21300114: card_back_6
-    21300116: card_back_7
-    21300118: card_back_8
+    21300114: card_back_8
+    21300116: card_back_6
+    21300118: card_back_7
+    21300120: card_back_hidden
   externalObjects: {}
   serializedVersion: 9
   mipmaps:
@@ -1306,10 +1307,10 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: card_back_6
+      name: card_back_8
       rect:
         serializedVersion: 2
-        x: 1428
+        x: 1432
         y: 320
         width: 204
         height: 288
@@ -1326,11 +1327,11 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: card_back_7
+      name: card_back_6
       rect:
         serializedVersion: 2
-        x: 1632
-        y: 320
+        x: 1633
+        y: 321
         width: 204
         height: 288
       alignment: 0
@@ -1346,11 +1347,11 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: card_back_8
+      name: card_back_7
       rect:
         serializedVersion: 2
         x: 1836
-        y: 320
+        y: 322
         width: 204
         height: 288
       alignment: 0
@@ -1361,6 +1362,26 @@ TextureImporter:
       tessellationDetail: -1
       bones: []
       spriteID: 11e2b6d235389694ab628e1d7c6e851a
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: card_back_hidden
+      rect:
+        serializedVersion: 2
+        x: 1839
+        y: 29
+        width: 203
+        height: 289
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c1f9a7408621df14bbb576e1a5f85a40
       vertices: []
       indices: 
       edges: []

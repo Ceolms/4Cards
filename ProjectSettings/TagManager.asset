@@ -10,6 +10,7 @@ TagManager:
   - CardHolder
   - OutlineObject
   - OutlineMesh
+  - BackCard
   layers:
   - Default
   - TransparentFX

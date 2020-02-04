@@ -1,12 +1,18 @@
+
+Fix new Round
+Fix Jack selection
+
+Outline plus beau
+
 Multi
 	Waiting for player 2 
 	Ui Un joueur a quitté
-	
+	UI no connection 
+
 Rework Interface
-Choix dos carte & Reward
 Règles
 
-UI no connection 
+
 -Beta-
 
 Niveau IA

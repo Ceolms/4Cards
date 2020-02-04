@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Outline : MonoBehaviour
 {
-    Transform outlineObjectTransform;
+    public Transform outlineObjectTransform;
     public void StartOutline()
     {
         outlineObjectTransform = this.transform.GetChild(0);

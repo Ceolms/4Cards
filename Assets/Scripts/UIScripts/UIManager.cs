@@ -197,6 +197,7 @@ public class UIManager : MonoBehaviour
         searchingPanel.SetActive(true);
         string nom = GameObject.Find("InputField").GetComponent<InputField>().text;
         PlayerPrefs.SetString("PlayerName", nom);
+        if (nom.Equals("Thor")) PlayerPrefs.SetInt("ThorAchievement", 1);
         searching = true;
     }
     private void Search()
@@ -241,6 +242,7 @@ public class UIManager : MonoBehaviour
     {
         string nom = GameObject.Find("InputField").GetComponent<InputField>().text;
         PlayerPrefs.SetString("PlayerName", nom);
+        if (nom.Equals("Thor")) PlayerPrefs.SetInt("ThorAchievement", 1);
         PlayerPrefs.SetString("gamemode", "multiplayer");
         if (isHost) PlayerPrefs.SetString("playerID", "player1");
         else PlayerPrefs.SetString("playerID", "player2");
