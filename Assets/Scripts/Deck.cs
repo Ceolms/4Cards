@@ -89,7 +89,8 @@ public class Deck : MonoBehaviour
         foreach (GameObject go in cards)
         {
             Card c = go.GetComponent<Card>();
-            c.MoveTo(Card.Position.Deck);
+            if(c != null) c.MoveTo(Card.Position.Deck);
+
         }
       //  UpdatePosition();
         if (GameManager.Instance.multiplayer && MultiPlayerController.LocalPlayerInstance.playerID == Card.Owner.Player1)

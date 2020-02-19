@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour
     private float phaseChangeTimeLong = 2f; // 2f
     public GameObject prefabPlayer;
     public GameObject prefabPlayerSolo;
+    public GameObject ImageWaitingForPlayer;
     [HideInInspector]
     public bool multiplayer = false;
     private DoubleClick db;
@@ -73,12 +74,12 @@ public class GameManager : MonoBehaviour
         {
             gameBegin = true;
             GameObject pp = Instantiate(prefabPlayerSolo);
+            ImageWaitingForPlayer.SetActive(false);
         }
         else if (PlayerPrefs.GetString("gamemode").Equals("multiplayer"))
         {
             multiplayer = true;
             PhotonNetwork.Instantiate(prefabPlayer.name, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
-
 
             if (PlayerPrefs.GetString("playerID").Equals("player2"))
             {
@@ -88,6 +89,10 @@ public class GameManager : MonoBehaviour
                 {
                     c.transform.position = pos;
                 }
+            }
+            else
+            {
+                ImageWaitingForPlayer.SetActive(true);
             }
         }
         else Debug.LogError("Error, Gamemode not set");
@@ -100,6 +105,7 @@ public class GameManager : MonoBehaviour
             if (PhotonNetwork.playerList.Length >= 2)
             {
                 gameBegin = false;
+                ImageWaitingForPlayer.SetActive(false);
                 StartCoroutine(PrepareMultiplayer());
             }
         }
@@ -691,5 +697,17 @@ public class GameManager : MonoBehaviour
     public void ResumeGame()
     {
         gameLogic.speed = animatorSpeed;
+    }
+
+    private void OnDisconnectedFromPhoton()
+    {
+        Debug.Log("Disconnected from Photon");
+    }
+
+    private void OnFailedToConnectToPhoton()
+    {
+        Debug.Log("Error connecting to Photon");
+
+        //TODO UI error connexion
     }
 }

@@ -4780,12 +4780,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 156.5, y: 27.1, z: 1.95}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!1 &1642701399 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 9084257014706027038, guid: 9a6dbe70c7549bd48aca20494e25925f,
-    type: 3}
-  m_PrefabInstance: {fileID: 6381850423536168634}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1642701404 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9084257014705595966, guid: 9a6dbe70c7549bd48aca20494e25925f,
@@ -5214,7 +5208,6 @@ MonoBehaviour:
   settingsPanel: {fileID: 1563579373}
   bonusPanel: {fileID: 735301885}
   searchingPanel: {fileID: 891304138}
-  loadingCard: {fileID: 1642701399}
   buttonMatchPrefab: {fileID: 9217654810279390945, guid: 8bfe5316bbf884146bacfb1e7dfdbc0e,
     type: 3}
 --- !u!114 &1750396846
@@ -6546,21 +6539,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9084257014705595966, guid: 9a6dbe70c7549bd48aca20494e25925f,
-        type: 3}
-      propertyPath: m_LocalScale.x
-      value: 4.6000066
-      objectReference: {fileID: 0}
-    - target: {fileID: 9084257014705595966, guid: 9a6dbe70c7549bd48aca20494e25925f,
-        type: 3}
-      propertyPath: m_LocalScale.y
-      value: 5.2694163
-      objectReference: {fileID: 0}
-    - target: {fileID: 9084257014705595966, guid: 9a6dbe70c7549bd48aca20494e25925f,
-        type: 3}
-      propertyPath: m_LocalScale.z
-      value: 6.57211
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9a6dbe70c7549bd48aca20494e25925f, type: 3}

@@ -13,7 +13,6 @@ public class UIManager : MonoBehaviour
     public GameObject settingsPanel;
     public GameObject bonusPanel;
     public GameObject searchingPanel;
-    public GameObject loadingCard;
     //public NetworkManager manager;
     public GameObject buttonMatchPrefab;
     private bool isHost;
@@ -46,10 +45,6 @@ public class UIManager : MonoBehaviour
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
                 CheckTouchUI(ray);
             }
-        }
-        if (searchingPanel.activeSelf)
-        {
-            loadingCard.transform.Rotate(new Vector3(0, 10, 0));
         }
 
         if (searching && !cooldownSearch)
@@ -250,7 +245,9 @@ public class UIManager : MonoBehaviour
     }
 
     private void OnDisconnectedFromPhoton()
-    {    }
+    {
+        Debug.Log("Disconnected from Photon");
+    }
 
     private void OnFailedToConnectToPhoton()
     {

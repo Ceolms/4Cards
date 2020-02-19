@@ -17,7 +17,7 @@ public class Outline : MonoBehaviour
         {
             if (tr.tag.Equals("OutlineMesh"))
             {
-                tr.GetComponent<MeshRenderer>().enabled = b;
+                tr.gameObject.SetActive(b);
             }
         }
     }
