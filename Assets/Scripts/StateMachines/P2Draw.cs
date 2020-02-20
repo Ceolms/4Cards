@@ -43,7 +43,7 @@ public class P2Draw : CustomStateMachine
         {
             c = Discard.Instance.Draw();
 
-            MultiPlayerController.LocalPlayerInstance.photonView.RPC("DrawCard", PhotonTargets.Others, c.position, MultiPlayerController.LocalPlayerInstance.playerID);
+             MultiPlayerController.LocalPlayerInstance.photonView.RPC("DrawCard", PhotonTargets.Others, c.position, MultiPlayerController.LocalPlayerInstance.playerID);
 
             c.MoveTo(Card.Position.Player2Choice);
             c.SetHidden(false);

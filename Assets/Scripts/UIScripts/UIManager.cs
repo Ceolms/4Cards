@@ -101,6 +101,9 @@ public class UIManager : MonoBehaviour
                 case ("ButtonJoin"):
                     Join();
                     break;
+                case ("ButtonPlay"):
+                    JoinRandom();
+                    break;
                 case ("ButtonAbort"):
                     Abort();
                     break;
@@ -116,7 +119,9 @@ public class UIManager : MonoBehaviour
     }
     private void Multi(GameObject button)
     {
-        PhotonNetwork.ConnectUsingSettings("1.0");
+
+        PhotonNetwork.autoJoinLobby = false;
+        PhotonNetwork.ConnectToRegion(CloudRegionCode.eu, "1.0");
         multiPanel.GetComponent<UIMover>().Show();
         mainPanel.GetComponent<UIMover>().Hide();
         GameObject.Find("InputField").GetComponent<InputField>().text = PlayerPrefs.GetString("PlayerName");
@@ -134,7 +139,7 @@ public class UIManager : MonoBehaviour
     }
     private void Return(GameObject button)
     {
-        if (PhotonNetwork.connected) PhotonNetwork.Disconnect();
+         if (PhotonNetwork.connected) PhotonNetwork.Disconnect();
 
         mainPanel.GetComponent<UIMover>().Show();
         soloPanel.GetComponent<UIMover>().Hide();
@@ -180,6 +185,7 @@ public class UIManager : MonoBehaviour
     private void Create()
     {
         string nom = GameObject.Find("InputField").GetComponent<InputField>().text;
+        Debug.Log("Creating room : '" + nom + "'");
         if (!string.IsNullOrEmpty(nom))
         {
             isHost = true;
@@ -195,6 +201,16 @@ public class UIManager : MonoBehaviour
         if (nom.Equals("Thor")) PlayerPrefs.SetInt("ThorAchievement", 1);
         searching = true;
     }
+
+    public void JoinRandom()
+    {
+        isHost = false;
+        string nom = GameObject.Find("InputField").GetComponent<InputField>().text;
+        PlayerPrefs.SetString("PlayerName", nom);
+        if (nom.Equals("Thor")) PlayerPrefs.SetInt("ThorAchievement", 1);
+        PlayerPrefs.SetString("playerID", "player2");
+        PhotonNetwork.JoinRandomRoom(null, 2);
+    }
     private void Search()
     {
         float offsetX = -2.4f;
@@ -205,7 +221,6 @@ public class UIManager : MonoBehaviour
         {
             GameObject.Destroy(child.gameObject);
         }
-
         List<RoomInfo> rooms = new List<RoomInfo>(PhotonNetwork.GetRoomList());
         foreach (RoomInfo room in rooms)
         {
@@ -220,28 +235,43 @@ public class UIManager : MonoBehaviour
 
     public void JoinMatch(string nom)
     {
-        PhotonNetwork.JoinRoom(nom);
+        Debug.Log("Joining : '" + nom +"'");
+        PhotonNetwork.JoinRoom("GAME");
     }
 
     //call backs ---------
 
     private void OnConnectedToMaster()
     {
-        PhotonNetwork.JoinLobby(TypedLobby.Default);
-        //  Debug.Log("Connected to Master");
+         PhotonNetwork.JoinLobby(TypedLobby.Default);
+         Debug.Log("Connected to Master");
     }
     private void OnJoinedLobby()
-    {    }
+    {
+        Debug.Log("Lobby Joined");
+    }
 
     private void OnJoinedRoom()
-    {
+    {  
         string nom = GameObject.Find("InputField").GetComponent<InputField>().text;
+        Debug.Log("room name:'" + nom+"'");
         PlayerPrefs.SetString("PlayerName", nom);
         if (nom.Equals("Thor")) PlayerPrefs.SetInt("ThorAchievement", 1);
         PlayerPrefs.SetString("gamemode", "multiplayer");
         if (isHost) PlayerPrefs.SetString("playerID", "player1");
         else PlayerPrefs.SetString("playerID", "player2");
         PhotonNetwork.LoadLevel("Game");
+    }
+
+    void OnPhotonRandomJoinFailed()
+    {
+        Debug.Log("No random room found");
+        string nom = GameObject.Find("InputField").GetComponent<InputField>().text;
+        PlayerPrefs.SetString("PlayerName", nom);
+        if (nom.Equals("Thor")) PlayerPrefs.SetInt("ThorAchievement", 1);
+        isHost = true;
+        PlayerPrefs.SetString("playerID", "player1");
+        PhotonNetwork.CreateRoom(null, new RoomOptions() { MaxPlayers = 2 }, null);
     }
 
     private void OnDisconnectedFromPhoton()

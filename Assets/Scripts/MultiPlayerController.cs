@@ -1,15 +1,15 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Networking;
 
 public class MultiPlayerController : PlayerController
 {
     public static MultiPlayerController LocalPlayerInstance;
     public PhotonView photonView;
     // Start is called before the first frame update
+    
     void Start()
-    {
+    {   
         photonView = this.GetComponent<PhotonView>();
 
         if (photonView.isMine)
@@ -235,5 +235,4 @@ public class MultiPlayerController : PlayerController
     {
         PhotonNetwork.LoadLevel(0);
     }
-
 }

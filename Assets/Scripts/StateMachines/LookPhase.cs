@@ -55,7 +55,7 @@ public class LookPhase : CustomStateMachine
             }
             else
             {
-                if (GameManager.Instance.multiplayer) MultiPlayerController.LocalPlayerInstance.photonView.RPC("SetAnimatorBool", PhotonTargets.Others, "LookCompleteP1", true);
+                  if (GameManager.Instance.multiplayer) MultiPlayerController.LocalPlayerInstance.photonView.RPC("SetAnimatorBool", PhotonTargets.Others, "LookCompleteP1", true);
                 GameManager.Instance.gameLogic.SetBool("LookCompleteP1", true);
                 foreach (Card c in GameManager.Instance.cardsJ1)
                 {
@@ -78,7 +78,7 @@ public class LookPhase : CustomStateMachine
                 else if (cardsSelected == 2) selectedCard2 = c;
                 c.SetHidden(false);
                 c.SetParticles(false);
-                if (GameManager.Instance.multiplayer) MultiPlayerController.LocalPlayerInstance.photonView.RPC("ShakeCard", PhotonTargets.Others, c.name);
+                  if (GameManager.Instance.multiplayer) MultiPlayerController.LocalPlayerInstance.photonView.RPC("ShakeCard", PhotonTargets.Others, c.name);
             }
         }
         else
@@ -90,7 +90,7 @@ public class LookPhase : CustomStateMachine
                 else if (cardsSelected == 2) selectedCard2 = c;
                 c.SetHidden(false);
                 c.SetParticles(false);
-                if (GameManager.Instance.multiplayer) MultiPlayerController.LocalPlayerInstance.photonView.RPC("ShakeCard", PhotonTargets.Others, c.name);
+                  if (GameManager.Instance.multiplayer) MultiPlayerController.LocalPlayerInstance.photonView.RPC("ShakeCard", PhotonTargets.Others, c.name);
             }
         }
        
