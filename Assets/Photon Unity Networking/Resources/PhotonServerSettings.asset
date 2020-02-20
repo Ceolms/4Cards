@@ -12,50 +12,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f3758f8f58fdef43803eb9be1df0608, type: 3}
   m_Name: PhotonServerSettings
   m_EditorClassIdentifier: 
-  AppID: 033063be-664d-460e-aff5-f3cc0ce6600a
+  AppID: 6a3bed86-b1b8-4f10-a817-18db2932db67
   VoiceAppID: 
   ChatAppID: 
   HostType: 1
-  PreferredRegion: 8
+  PreferredRegion: 0
   EnabledRegions: -1
-  Protocol: 1
+  Protocol: 0
   ServerAddress: 
   ServerPort: 5055
   VoiceServerPort: 5055
   JoinLobby: 0
   EnableLobbyStatistics: 0
-  PunLogging: 0
-  NetworkLogging: 1
+  PunLogging: 1
+  NetworkLogging: 2
   RunInBackground: 1
   RpcList:
   - Chat
+  - ColorRpc
   - DestroyRpc
+  - DoJump
+  - Flash
   - InstantiateRpc
+  - Marco
   - PickupItemInit
+  - Polo
   - PunPickup
   - PunPickupSimple
   - PunRespawn
   - RequestForPickupItems
   - RequestForPickupTimes
-  - SetPlayerNameText
-  - DeckShuffleData
-  - SetAnimatorBool
-  - SetAnimatorTrigger
-  - MoveTo
-  - ShakeCard
+  - TaggedPlayer
   - Exit
-  - MoveCard
-  - Draw
-  - DrawCard
-  - DiscardCard
-  - ExchangeCards
-  - MoveCardToHand
-  - DeleteCard
-  - EndRound
-  - WaitForPowerChoice
-  - WrongCard
+  - NewRound
   - PauseAnimator
   - ResumeAnimator
-  - Exchange
-  - NewRound
+  - DeckShuffleData
+  - DeleteCard
+  - DiscardCard
+  - DrawCard
+  - EndRound
+  - ExchangeCards
+  - MoveCardToHand
+  - SetAnimatorBool
+  - SetAnimatorTrigger
+  - SetPlayerNameText
+  - ShakeCard
+  - WrongCard
   DisableAutoOpenWizard: 1

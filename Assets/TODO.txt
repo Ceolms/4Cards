@@ -2,7 +2,6 @@
 Fix new Round
 Fix Jack selection
 
-Outline plus beau
 
 Multi
 	Waiting for player 2 
@@ -12,6 +11,7 @@ Multi
 Rework Interface
 Règles
 
+// plus de commentaires
 
 -Beta-
 

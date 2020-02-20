@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 9084257014705595966}
   - component: {fileID: 9084257014704825886}
   - component: {fileID: 9084257014703826142}
+  - component: {fileID: 1642701400}
   m_Layer: 0
   m_Name: Loading_Card
   m_TagString: Card
@@ -27,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 9084257014706027038}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 13.631172, y: -2.1079297, z: -5.1764727}
-  m_LocalScale: {x: 11.006, y: 11.006, z: 11.006}
+  m_LocalScale: {x: 4.6000066, y: 5.2694163, z: 6.57211}
   m_Children:
   - {fileID: 546638578841383758}
   m_Father: {fileID: 0}
@@ -78,6 +79,19 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!114 &1642701400
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9084257014706027038}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 295baebe54f945b4c90da74795acdebc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 8
 --- !u!1001 &546638578841250250
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -144,10 +158,6 @@ PrefabInstance:
     - target: {fileID: 400004, guid: 1ef85d84ac19aa447adbdb438e5c6385, type: 3}
       propertyPath: m_LocalScale.z
       value: 0.09085953
-      objectReference: {fileID: 0}
-    - target: {fileID: 400000, guid: 1ef85d84ac19aa447adbdb438e5c6385, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 1ef85d84ac19aa447adbdb438e5c6385, type: 3}

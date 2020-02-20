@@ -28,8 +28,8 @@ public class P2Discard : CustomStateMachine
             Card.Position p = card.position;
             if (GameManager.Instance.multiplayer)
             {
-                MultiPlayerController.LocalPlayerInstance.photonView.RPC("DiscardCard", PhotonTargets.Others, p, MultiPlayerController.LocalPlayerInstance.playerID);
-                MultiPlayerController.LocalPlayerInstance.photonView.RPC("MoveCardToHand", PhotonTargets.Others, p, MultiPlayerController.LocalPlayerInstance.playerID);
+                 MultiPlayerController.LocalPlayerInstance.photonView.RPC("DiscardCard", PhotonTargets.Others, p, MultiPlayerController.LocalPlayerInstance.playerID);
+                 MultiPlayerController.LocalPlayerInstance.photonView.RPC("MoveCardToHand", PhotonTargets.Others, p, MultiPlayerController.LocalPlayerInstance.playerID);
             }
 
             card.MoveTo(Card.Position.Discard); // move old card to discard
@@ -46,7 +46,7 @@ public class P2Discard : CustomStateMachine
         {
             if (GameManager.Instance.multiplayer)
             {
-                MultiPlayerController.LocalPlayerInstance.photonView.RPC("DiscardCard", PhotonTargets.Others, card.position, MultiPlayerController.LocalPlayerInstance.playerID);
+                 MultiPlayerController.LocalPlayerInstance.photonView.RPC("DiscardCard", PhotonTargets.Others, card.position, MultiPlayerController.LocalPlayerInstance.playerID);
             }
             card.MoveTo(Card.Position.Discard);
             card.SetHidden(false);

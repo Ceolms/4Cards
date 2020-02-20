@@ -40,7 +40,7 @@ public class P1Draw : CustomStateMachine
             if (GameManager.Instance.multiplayer)
             {
                 // DrawCard(Card.Position pos, Card.Owner player)
-                MultiPlayerController.LocalPlayerInstance.photonView.RPC("DrawCard", PhotonTargets.Others, c.position, MultiPlayerController.LocalPlayerInstance.playerID);
+                  MultiPlayerController.LocalPlayerInstance.photonView.RPC("DrawCard", PhotonTargets.Others, c.position, MultiPlayerController.LocalPlayerInstance.playerID);
             }
             c.MoveTo(Card.Position.Player1Choice);
             c.SetHidden(false);
@@ -54,7 +54,7 @@ public class P1Draw : CustomStateMachine
 
             if (GameManager.Instance.multiplayer)
             {
-                MultiPlayerController.LocalPlayerInstance.photonView.RPC("DrawCard", PhotonTargets.Others, c.position, MultiPlayerController.LocalPlayerInstance.playerID);
+                  MultiPlayerController.LocalPlayerInstance.photonView.RPC("DrawCard", PhotonTargets.Others, c.position, MultiPlayerController.LocalPlayerInstance.playerID);
             }
             c.MoveTo(Card.Position.Player1Choice);
             c.SetHidden(false);
