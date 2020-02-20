@@ -13,6 +13,7 @@ public class UIManager : MonoBehaviour
     public GameObject settingsPanel;
     public GameObject bonusPanel;
     public GameObject searchingPanel;
+    public GameObject errorPanel;
     //public NetworkManager manager;
     public GameObject buttonMatchPrefab;
     private bool isHost;
@@ -139,15 +140,15 @@ public class UIManager : MonoBehaviour
     }
     private void Return(GameObject button)
     {
-         if (PhotonNetwork.connected) PhotonNetwork.Disconnect();
-
+        if (PhotonNetwork.connected) PhotonNetwork.Disconnect();
+        errorPanel.SetActive(false);
         mainPanel.GetComponent<UIMover>().Show();
         soloPanel.GetComponent<UIMover>().Hide();
         multiPanel.GetComponent<UIMover>().Hide();
         settingsPanel.GetComponent<UIMover>().Hide();
         bonusPanel.GetComponent<UIMover>().Hide();
 
-        if(searching)
+        if (searching)
         {
             searching = false;
 
@@ -235,7 +236,7 @@ public class UIManager : MonoBehaviour
 
     public void JoinMatch(string nom)
     {
-        Debug.Log("Joining : '" + nom +"'");
+        Debug.Log("Joining : '" + nom + "'");
         PhotonNetwork.JoinRoom("GAME");
     }
 
@@ -243,8 +244,8 @@ public class UIManager : MonoBehaviour
 
     private void OnConnectedToMaster()
     {
-         PhotonNetwork.JoinLobby(TypedLobby.Default);
-         Debug.Log("Connected to Master");
+        PhotonNetwork.JoinLobby(TypedLobby.Default);
+        Debug.Log("Connected to Master");
     }
     private void OnJoinedLobby()
     {
@@ -252,9 +253,9 @@ public class UIManager : MonoBehaviour
     }
 
     private void OnJoinedRoom()
-    {  
+    {
         string nom = GameObject.Find("InputField").GetComponent<InputField>().text;
-        Debug.Log("room name:'" + nom+"'");
+        Debug.Log("room name:'" + nom + "'");
         PlayerPrefs.SetString("PlayerName", nom);
         if (nom.Equals("Thor")) PlayerPrefs.SetInt("ThorAchievement", 1);
         PlayerPrefs.SetString("gamemode", "multiplayer");
@@ -282,7 +283,7 @@ public class UIManager : MonoBehaviour
     private void OnFailedToConnectToPhoton()
     {
         Debug.Log("Error connecting to Photon");
-
+        errorPanel.SetActive(true);
         //TODO UI error connexion
     }
 }

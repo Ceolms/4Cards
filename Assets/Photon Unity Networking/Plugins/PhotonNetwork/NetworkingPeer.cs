@@ -1619,7 +1619,7 @@ internal class NetworkingPeer : LoadBalancingPeer, IPhotonPeerListener
     {
         if (level == DebugLevel.ERROR)
         {
-            Debug.LogError(message);
+            Debug.LogWarning(message);
         }
         else if (level == DebugLevel.WARNING)
         {

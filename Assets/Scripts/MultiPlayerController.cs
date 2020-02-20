@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MultiPlayerController : PlayerController
 {
@@ -229,7 +230,15 @@ public class MultiPlayerController : PlayerController
     [PunRPC]
     void Exit()
     {
-        PhotonNetwork.LeaveRoom();
+        //TODO
+        // Pause game , 
+        GameManager.Instance.PauseGame();
+        // block new round / end round
+        GameObject actionButton = GameObject.Find("ActionButton");
+        actionButton.GetComponent<Button>().interactable = false;
+        actionButton.GetComponent<BoxCollider>().enabled = false;
+        // show UI
+        GameManager.Instance.ImagePlayerQuit.SetActive(true);
     }
     void OnLeftRoom()
     {
