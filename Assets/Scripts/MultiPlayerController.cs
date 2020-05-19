@@ -26,7 +26,7 @@ public class MultiPlayerController : PlayerController
 
     void Update()
     {
-        if (Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer && photonView.isMine)
+        if ((Application.platform == RuntimePlatform.Android || Application.platform == RuntimePlatform.IPhonePlayer) && photonView.isMine)
         {
             if (Input.touchCount > 0 && Input.touchCount < 2)
             {
@@ -230,13 +230,18 @@ public class MultiPlayerController : PlayerController
     [PunRPC]
     void Exit()
     {
-        //TODO
+        Debug.Log("The other player exited");
         // Pause game , 
         GameManager.Instance.PauseGame();
         // block new round / end round
         GameObject actionButton = GameObject.Find("ActionButton");
+        Deck.Instance.ShowParticles(false);
+        Discard.Instance.ShowParticles(false);
         actionButton.GetComponent<Button>().interactable = false;
         actionButton.GetComponent<BoxCollider>().enabled = false;
+
+        foreach (Card c in GameManager.Instance.cardsJ1) c.SetParticles(false);
+        foreach (Card c in GameManager.Instance.cardsJ2) c.SetParticles(false);
         // show UI
         GameManager.Instance.ImagePlayerQuit.SetActive(true);
     }

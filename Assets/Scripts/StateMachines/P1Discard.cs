@@ -20,7 +20,6 @@ public class P1Discard : CustomStateMachine
         Deck.Instance.ShowParticles(false);
         GameManager.Instance.state = this;
     }
-
     public void DiscardCard()
     {
         if (card.owner == Card.Owner.Player1 && card.position != Card.Position.Player1Choice) // If the player want to discard one of his cards

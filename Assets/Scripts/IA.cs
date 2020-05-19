@@ -148,7 +148,7 @@ public class IA : MonoBehaviour
             {
                 score += c.ValueToInt();
             }
-            if (score <= 6)
+            if (score <= 6 && GameManager.Instance.endRoundPlayer == Card.Owner.Deck)
             {
                 Debug.Log("IA decided to end the round !");
                 GameManager.Instance.SetEndTurn(Card.Owner.Player2);

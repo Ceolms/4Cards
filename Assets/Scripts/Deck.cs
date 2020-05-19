@@ -98,7 +98,7 @@ public class Deck : MonoBehaviour
             Debug.Log("Gamemode : multi player 1");
             Shuffle();
             SendDeck();
-
+            SoundPlayer.Instance.Play("Shuffle");
             StartCoroutine(Distribute());
         }
         else if (GameManager.Instance.multiplayer && receivedDeckEvent) // player 2

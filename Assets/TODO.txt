@@ -1,21 +1,12 @@
 
-Fix new Round
-Fix Jack selection
-
-
-Multi
-	Ui Un joueur a quitté
-
-Rework Interface
-Règles
 
 // plus de commentaires
 
 -Beta-
 
 Niveau IA
+Règles
 
-Sons
 Options ( volume ) 
 
 

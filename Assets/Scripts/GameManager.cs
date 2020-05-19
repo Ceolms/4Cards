@@ -29,9 +29,8 @@ public class GameManager : MonoBehaviour
     public bool gameBegin;
     [HideInInspector]
     public int firstToPlay = 1;
-    [HideInInspector]
 
-    public Card.Owner endRoundPlayer; // 0 false , 1 for P1 and 2 for P2
+    public Card.Owner endRoundPlayer = Card.Owner.Deck;
 
     public string namePlayer1;
     public string namePlayer2;
@@ -54,7 +53,7 @@ public class GameManager : MonoBehaviour
     public List<Card> cardsJ1 = new List<Card>();
     public List<Card> cardsJ2 = new List<Card>();
 
-    void Start()
+    void Awake()
     {
         Instance = this;
         gameLogic = GetComponent<Animator>();
@@ -168,7 +167,7 @@ public class GameManager : MonoBehaviour
         string s = CheckTouchUI(ray);
         if (s != null && s.Equals("ActionButton") && (state is P1Discard || (multiplayer && MultiPlayerController.LocalPlayerInstance.playerID == Card.Owner.Player2)))
         {
-            SetEndTurn(player);
+            if(endRoundPlayer == Card.Owner.Deck) SetEndTurn(player);
         }
         else if (s != null && s.Equals("ActionButton") && state is EndRound)
         {
@@ -178,7 +177,7 @@ public class GameManager : MonoBehaviour
                 MultiPlayerController.LocalPlayerInstance.photonView.RPC("NewRound", PhotonTargets.Others);
             }
         }
-        else if (s != null && s.Equals("ExitButton"))
+        else if (s != null && (s.Equals("ExitButton") || s.Equals("ImagePlayerQuit")))
         {
             Exit();
         }
@@ -647,6 +646,11 @@ public class GameManager : MonoBehaviour
         if (p == 'Q') GameObject.Find("TextPower").GetComponent<UnityEngine.UI.Text>().text = "Queen : Look at one of your cards";
         else if (p == 'J') GameObject.Find("TextPower").GetComponent<UnityEngine.UI.Text>().text = "Jack : Exchange two cards";
 
+    }
+
+    private void OnApplicationQuit()
+    {
+        Exit();
     }
 
     // Multi player Functions -------------------------------------------------------------------------------------------

@@ -7,9 +7,13 @@ public class Card : MonoBehaviour
 {
     public static int speed = 7;
     public static float timeToHide = 1.8f;
+    private static bool isPlayingHideSound;
+    private static float frontZaxis = -0.2f;
+    private static float backZaxis = 0.010f;
+    [SerializeField]
+    private float targetZ;
+    private float stackIndex;
 
-    private static float frontZ = -0.2f;
-    private static float backZ = -0.17f;
     public enum Color { Spades, Club, Heart, Diamond }
     public enum Owner { Deck = 3, Discard = 4, Player1 = 1, Player2 = 2 }
     public enum Position { Deck, Discard, Player1_Slot1, Player1_Slot2, Player1_Slot3, Player1_Slot4, Player1_Slot5, Player1_Slot6, Player2_Slot1, Player2_Slot2, Player2_Slot3, Player2_Slot4, Player2_Slot5, Player2_Slot6, Player1Choice, Player2Choice } // to set position on the board
@@ -23,7 +27,6 @@ public class Card : MonoBehaviour
     [SerializeField]
     private bool isRendered = true; // to show only top card of deck / discard
     public bool isHidden = true; // hidden card face
-
     public bool isMoving { get; private set; }
     private bool isShaking;
     private bool shakeLeft;
@@ -49,42 +52,20 @@ public class Card : MonoBehaviour
         frontFace = transform.Find("Front").gameObject;
         backFace = transform.Find("Back").gameObject;
 
-        backFace.GetComponent<SpriteRenderer>().sprite = GameManager.Instance.GetSelectedSprite();
+        if (GameManager.Instance.GetSelectedSprite() == null) Debug.LogError("Error selected sprite is null");
+        else backFace.GetComponent<SpriteRenderer>().sprite = GameManager.Instance.GetSelectedSprite();
     }
 
     // Update is called once per frame
     void Update()
     {
-        CheckPosition();
 
         if (!isShaking && this.transform.eulerAngles.z != 0) // Fix card rotation while not shaking
         {
             this.transform.rotation = new Quaternion(0, this.transform.rotation.y, 0, this.transform.rotation.w);
         }
 
-        if (isRendered) // if the card is not hidden behind another card
-        {
-            boxCollider.enabled = true;
-            this.transform.position = new Vector3(transform.position.x, transform.position.y, frontZ);
-
-            float rotY = this.transform.eulerAngles.y;
-
-            if (isHidden) // hidden face
-            {
-                if (this.transform.rotation.y != 0) this.transform.Rotate(0, 8, 0, Space.Self);
-                if (-5 < rotY && rotY < 5) this.transform.eulerAngles = new Vector3(0, 0, 0);
-            }
-            else
-            {
-                if (this.transform.rotation.y != 180) this.transform.Rotate(0, 8, 0, Space.Self);
-                if (170 < rotY && rotY < 190) this.transform.eulerAngles = new Vector3(0, 180, 0);
-            }
-        }
-        else
-        {
-            this.transform.position = new Vector3(transform.position.x, transform.position.y, backZ);
-            boxCollider.enabled = false;
-        }
+        CheckPosition();
 
         if (isMoving)
         {
@@ -96,13 +77,8 @@ public class Card : MonoBehaviour
             else
             {
                 isMoving = false;
-                // transform.position = new Vector3(destination.position.x, destination.position.y, transform.position.z);
             }
-        }/*
-        else if( destination != null)
-        {
-            if(this.transform.position.x != destination.position.x || this.transform.position.y != destination.position.y) transform.position = new Vector3(destination.position.x, destination.position.y, transform.position.z);
-        }*/
+        }
 
         if (isShaking)
         {
@@ -127,13 +103,23 @@ public class Card : MonoBehaviour
         else
         {
             isHidden = false;
+            if (!(GameManager.Instance.state is EndRound) && !(GameManager.Instance.state is NewRound))
+            {
+                SoundPlayer.Instance.Play("cardReturnVisible");
+            }
         }
     }
     public IEnumerator Hide()
     {
         yield return new WaitForSeconds(timeToHide);
         if (this.position != Position.Discard) isHidden = true;
-
+        if (!(GameManager.Instance.state is EndRound) && !(GameManager.Instance.state is NewRound) && !isPlayingHideSound)
+        {
+            isPlayingHideSound = true;
+            SoundPlayer.Instance.Play("cardReturnHidden");
+            yield return new WaitForSeconds(4);
+            isPlayingHideSound = false;
+        }
     }
 
     public void SetParticles(bool b)
@@ -141,6 +127,10 @@ public class Card : MonoBehaviour
         outline.SetActive(b);
     }
 
+
+    // visible position = -0,02
+    // hidden positon 0,011        
+    //                0,012...
     private void CheckPosition()
     {
         if (this.position != Position.Deck && this.position != Position.Discard)
@@ -154,6 +144,36 @@ public class Card : MonoBehaviour
         else
         {
             isRendered = false;
+        }
+
+        if (isRendered) // if the card is not hidden behind another card
+        {
+            boxCollider.enabled = true;
+            this.transform.position = new Vector3(transform.position.x, transform.position.y, frontZaxis);
+
+            float rotY = this.transform.eulerAngles.y;
+
+            if (isHidden) // hidden face
+            {
+                if (this.transform.rotation.y != 0) this.transform.Rotate(0, 8, 0, Space.Self);
+                if (-5 < rotY && rotY < 5) this.transform.eulerAngles = new Vector3(0, 0, 0);
+            }
+            else
+            {
+                if (this.transform.rotation.y != 180) this.transform.Rotate(0, 8, 0, Space.Self);
+                if (170 < rotY && rotY < 190) this.transform.eulerAngles = new Vector3(0, 180, 0);
+            }
+            targetZ = -0.02f;
+            stackIndex = 0;
+        }
+        else
+        {
+            if (this.position == Position.Deck) stackIndex = (float)Deck.Instance.stack.IndexOf(this);
+            else stackIndex = (float)Discard.Instance.stack.IndexOf(this);
+            targetZ = backZaxis + (stackIndex/1000f);
+
+            this.transform.position = new Vector3(transform.position.x, transform.position.y, targetZ);
+            boxCollider.enabled = false;
         }
     }
 
@@ -206,6 +226,10 @@ public class Card : MonoBehaviour
             GameManager.Instance.cardsJ2.Remove(this);
         }
         this.position = p;
+        if (p != Card.Position.Deck)
+        {
+            SoundPlayer.Instance.PlayRandomCard();
+        }
         switch (p)
         {
             case Position.Deck:
